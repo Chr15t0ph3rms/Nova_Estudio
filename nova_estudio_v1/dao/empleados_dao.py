@@ -57,7 +57,7 @@ class EmpleadosDAO:
         sql = """
         UPDATE empleados
         SET nombre = %s, app = %s, apm = %s, puesto = %s, telefono = %s
-        WHERE id_empleados = %s
+        WHERE id_empleado = %s
         """
 
         cursor.execute(sql, (

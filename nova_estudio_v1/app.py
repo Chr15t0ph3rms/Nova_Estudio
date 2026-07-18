@@ -89,6 +89,7 @@ def ver_empleados():
 
 def insertar_empleado():
     print("INSERTAR UN NUEVO EMPLEADO")
+    id_empleado = input("Escribe el ID del empleado: ")
     nombre = input("Escribe el nombre: ")
     app = input("Escribe el apellido paterno: ")
     apm = input("Escribe el apellido materno: ")
@@ -98,7 +99,7 @@ def insertar_empleado():
     try:
         empleados_dao = EmpleadosDAO()
         ultimo_id = empleados_dao.obtener_ultimo_id() + 1
-        empleado = Empleados(ultimo_id, nombre, app, apm, puesto, telefono)
+        empleado = Empleados(id_empleado, nombre, app, apm, puesto, telefono)
         empleados_dao.insertar(empleado)
         print("Inserción del nuevo empleado fue exitosa")
     except Exception as e:
