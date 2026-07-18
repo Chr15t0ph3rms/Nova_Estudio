@@ -1,20 +1,20 @@
-from conexion import Conexion
+from database.conexion import Conexion
 from modelos.empleados import Empleados
 
-class EmpleadoDAO:
+class EmpleadosDAO:
 
     #SELECT * FROM empleado
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
-        cursor.execute("SELECT * FROM empleado")
+        cursor.execute("SELECT * FROM empleados")
         registros = cursor.fetchall()
 
         empleados = []
         for registro in registros : 
             empleado = Empleados(
-                id_empleados = registro[0],
+                id_empleado = registro[0],
                 nombre = registro[1],
                 app = registro[2],
                 apm = registro[3],
@@ -32,12 +32,12 @@ class EmpleadoDAO:
         cursor = conexion.cursor()
 
         sql = """
-        INSERT INTO empleado(id_empleados, nombre, app, apm, puesto, telefono)
+        INSERT INTO empleados(id_empleado, nombre, app, apm, puesto, telefono)
         VALUES(%s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(sql, (
-            empleado.id_empleados,
+            empleado.id_empleado,
             empleado.nombre,
             empleado.app,
             empleado.apm,
@@ -55,19 +55,19 @@ class EmpleadoDAO:
         cursor = conexion.cursor()
 
         sql = """
-        UPDATE empleado
+        UPDATE empleados
         SET nombre = %s, app = %s, apm = %s, puesto = %s, telefono = %s
         WHERE id_empleados = %s
         """
 
         cursor.execute(sql, (
-                       empleado.nombre,
-                       empleado.app,
-                       empleado.apm,
-                       empleado.puesto,
-                       empleado.telefono,
-                       empleado.id_empleados
-                       ) )
+                        empleado.nombre,
+                        empleado.app,
+                        empleado.apm,
+                        empleado.puesto,
+                        empleado.telefono,
+                        empleado.id_empleado
+                        ) )
         
         conexion.commit()
         cursor.close()
@@ -78,7 +78,7 @@ class EmpleadoDAO:
        conexion = Conexion.obtener_conexion()
        cursor = conexion.cursor()
 
-       cursor.execute("DELETE FROM empleado WHERE id_empleados = %s",(id,))
+       cursor.execute("DELETE FROM empleados WHERE id_empleado = %s",(id,))
 
        conexion.commit()
        cursor.close()
@@ -89,7 +89,7 @@ class EmpleadoDAO:
        conexion = Conexion.obtener_conexion()
        cursor = conexion.cursor()
 
-       cursor.execute("SELECT MAX(id_empleados) FROM empleado")
+       cursor.execute("SELECT MAX(id_empleado) FROM empleados")
        resultado = cursor.fetchone()
 
        cursor.close()

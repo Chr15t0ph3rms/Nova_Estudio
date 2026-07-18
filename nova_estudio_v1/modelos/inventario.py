@@ -1,4 +1,4 @@
-class Inventario    :
+class Inventario:
     
     #Constructor
     def __init__(self, id_inventario, nombre, tipo, estado, cantidad, disponible):
