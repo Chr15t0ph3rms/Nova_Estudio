@@ -2,9 +2,11 @@
 
 from dao.inventario_dao import InventarioDAO
 from dao.empleados_dao import EmpleadosDAO
+from dao.eventos_dao import EventosDAO
 
 from modelos.inventario import Inventario
 from modelos.empleados import Empleados
+from modelos.eventos import Eventos
 
 #Inventario
 def ver_inventario():
@@ -136,6 +138,77 @@ def eliminar_empleado():
         print(f"Error al eliminar el empleado {id}")
         print(e)
 
+#eventos-------------------------------------------------------------------------
+def ver_eventos():
+    try:
+        eventos_dao = EventosDAO()
+        eventos = eventos_dao.obtener_todo()
+
+        if len(eventos) == 0:
+            print("No hay eventos registrados")
+        else:
+            for evento in eventos:
+                print(f" {evento.id_evento} - {evento.nombre} - {evento.fecha} - {evento.hora} - {evento.calle} - {evento.colonia} - {evento.numero_exterior} - {evento.costo} - {evento.sonido}")
+        print("\n Conexion exitosa con la base de datos")
+    except Exception as e:
+        print("Error")
+        print(e)
+
+def insertar_evento():
+    print("INSERTAR UN NUEVO EVENTO")
+    id_evento = input("Escribe el ID del evento: ")
+    nombre = input("Escribe el nombre: ")
+    fecha = input("Escribe la fecha: ")
+    hora = input("Escribe la hora: ")
+    calle = input("Escribe la calle: ")
+    colonia = input("Escribe la colonia: ")
+    numero_exterior = input("Escribe el número exterior: ")
+    costo = input("Escribe el costo: ")
+    sonido = input("Escribe si tiene sonido (sí/no): ")
+
+    try:
+        eventos_dao = EventosDAO()
+        ultimo_id = eventos_dao.obtener_ultimo_id() + 1
+        evento = Eventos(id_evento, nombre, fecha, hora, calle, colonia, numero_exterior, costo, sonido)
+        eventos_dao.insertar(evento)
+        print("Inserción del nuevo evento fue exitosa")
+    except Exception as e:
+        print("Error al insertar el evento")
+        print(e)
+
+def actualizar_evento():
+    try:
+        eventos_dao = EventosDAO()
+        print("Lista de eventos disponibles")
+        ver_eventos()
+        id = int(input("Seleccione el id del evento a actualizar: "))
+        nombre = input("Escribe el nombre: ")
+        fecha = input("Escribe la fecha: ")
+        hora = input("Escribe la hora: ")
+        calle = input("Escribe la calle: ")
+        colonia = input("Escribe la colonia: ")
+        numero_exterior = input("Escribe el número exterior: ")
+        costo = input("Escribe el costo: ")
+        sonido = input("Escribe si tiene sonido (sí/no): ")
+        evento = Eventos(id, nombre, fecha, hora, calle, colonia, numero_exterior, costo, sonido)
+        eventos_dao.actualizar(evento)
+        print("El evento fue actualizado con éxito")
+    except Exception as e:
+        print("Error al actualizar el evento")
+        print(e)
+
+def eliminar_evento():
+    try:
+        eventos_dao = EventosDAO()
+        print("Lista de eventos disponibles")
+        ver_eventos()
+        id = int(input("Escriba el id del evento a eliminar: "))
+        eventos_dao.eliminar(id)
+        print(f"El evento {id} ha sido eliminado con éxito")
+    except Exception as e:
+        print(f"Error al eliminar el evento {id}")
+        print(e)
+
 def menu_inventario():
     print("1. Ver todos los inventarios")
     print("2. Insertar un nuevo inventario")
@@ -170,6 +243,23 @@ def menu_empleados():
         case 4:
             eliminar_empleado()
 
+def menu_eventos():
+    print("1. Ver todos los eventos")
+    print("2. Insertar un nuevo evento")
+    print("3. Actualizar un evento existente")
+    print("4. Eliminar un evento existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
+    match opcion:
+        case 1:
+            ver_eventos()
+        case 2:
+            insertar_evento()
+        case 3:
+            actualizar_evento()
+        case 4:
+            eliminar_evento()
+
 #ft.app(target=main_window)
 
 def main():
@@ -177,12 +267,15 @@ def main():
     print("Menú de opciones:")
     print("1. Inventario")
     print("2. Empleados")
+    print("3. Eventos")
     opcion = int(input("Escribe tu opción: "))
     match opcion:
         case 1:
             menu_inventario()
         case 2:
             menu_empleados()
+        case 3:
+            menu_eventos()
 
     print("Saliendo del sistema de Nova Estudio ... ")
    
