@@ -148,7 +148,7 @@ def ver_eventos():
             print("No hay eventos registrados")
         else:
             for evento in eventos:
-                print(f" {evento.id_evento} - {evento.nombre} - {evento.fecha} - {evento.hora} - {evento.calle} - {evento.colonia} - {evento.numero_exterior} - {evento.costo} - {evento.sonido}")
+                print(f" {evento.id_evento} - {evento.nombre} - {evento.fecha} - {evento.hora} - {evento.calle} - {evento.colonia} - {evento.numero_exterior} - {evento.costo}")
         print("\n Conexion exitosa con la base de datos")
     except Exception as e:
         print("Error")
@@ -164,12 +164,12 @@ def insertar_evento():
     colonia = input("Escribe la colonia: ")
     numero_exterior = input("Escribe el número exterior: ")
     costo = input("Escribe el costo: ")
-    sonido = input("Escribe si tiene sonido (sí/no): ")
+
 
     try:
         eventos_dao = EventosDAO()
         ultimo_id = eventos_dao.obtener_ultimo_id() + 1
-        evento = Eventos(id_evento, nombre, fecha, hora, calle, colonia, numero_exterior, costo, sonido)
+        evento = Eventos(id_evento, nombre, fecha, hora, calle, colonia, numero_exterior, costo)
         eventos_dao.insertar(evento)
         print("Inserción del nuevo evento fue exitosa")
     except Exception as e:
@@ -189,8 +189,7 @@ def actualizar_evento():
         colonia = input("Escribe la colonia: ")
         numero_exterior = input("Escribe el número exterior: ")
         costo = input("Escribe el costo: ")
-        sonido = input("Escribe si tiene sonido (sí/no): ")
-        evento = Eventos(id, nombre, fecha, hora, calle, colonia, numero_exterior, costo, sonido)
+        evento = Eventos(id, nombre, fecha, hora, calle, colonia, numero_exterior, costo)
         eventos_dao.actualizar(evento)
         print("El evento fue actualizado con éxito")
     except Exception as e:
@@ -263,21 +262,26 @@ def menu_eventos():
 #ft.app(target=main_window)
 
 def main():
-    print("=== Nova Estudio === ")
-    print("Menú de opciones:")
-    print("1. Inventario")
-    print("2. Empleados")
-    print("3. Eventos")
-    opcion = int(input("Escribe tu opción: "))
-    match opcion:
-        case 1:
-            menu_inventario()
-        case 2:
-            menu_empleados()
-        case 3:
-            menu_eventos()
+    while True:
+        print("=== Nova Estudio === ")
+        print("Menú de opciones:")
+        print("1. Inventario")
+        print("2. Empleados")
+        print("3. Eventos")
+        print("4. Salir")
+        opcion = int(input("Escribe tu opción: "))
 
-    print("Saliendo del sistema de Nova Estudio ... ")
+        if opcion == 1:
+            menu_inventario()
+        elif opcion == 2:
+            menu_empleados()
+        elif opcion == 3:
+            menu_eventos()
+        elif opcion == 4:
+            print("Saliendo del sistema de Nova Estudio ... ")
+            break
+        else:
+            print("Opción no válida")
    
 
 if __name__ == "__main__":

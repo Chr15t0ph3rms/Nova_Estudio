@@ -3,7 +3,7 @@ from modelos.eventos import Eventos
 
 class EventosDAO:
 
-    #SELECT * FROM eventos
+    #SELECT * FROM evento
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -21,8 +21,7 @@ class EventosDAO:
                 calle = registro[4],
                 colonia = registro[5],
                 numero_exterior = registro[6],
-                costo = registro[7],
-                sonido = registro[8]
+                costo = registro[7]
             )
             eventos.append(evento)
         cursor.close()
@@ -35,8 +34,8 @@ class EventosDAO:
         cursor = conexion.cursor()
 
         sql = """
-        INSERT INTO evento(id_evento, nombre, fecha, hora, calle, colonia, numero_exterior, costo, sonido)
-        VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s)
+        INSERT INTO evento(id_evento, nombre, fecha, hora, calle, colonia, numero_exterior, costo)
+        VALUES(%s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(sql, (
@@ -47,8 +46,7 @@ class EventosDAO:
             evento.calle,
             evento.colonia,
             evento.numero_exterior,
-            evento.costo,
-            evento.sonido
+            evento.costo
         ))
 
         conexion.commit()
@@ -62,7 +60,7 @@ class EventosDAO:
 
         sql = """
         UPDATE evento
-        SET nombre = %s, fecha = %s, hora = %s, calle = %s, colonia = %s, numero_exterior = %s, costo = %s, sonido = %s
+        SET nombre = %s, fecha = %s, hora = %s, calle = %s, colonia = %s, numero_exterior = %s, costo = %s
         WHERE id_evento = %s
         """
 
@@ -74,7 +72,6 @@ class EventosDAO:
                         evento.colonia,
                         evento.numero_exterior,
                         evento.costo,
-                        evento.sonido,
                         evento.id_evento
                         ) )
         
