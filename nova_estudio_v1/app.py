@@ -3,10 +3,12 @@
 from dao.inventario_dao import InventarioDAO
 from dao.empleados_dao import EmpleadosDAO
 from dao.eventos_dao import EventosDAO
+from dao.paquetes_dao import PaquetesDAO
 
 from modelos.inventario import Inventario
 from modelos.empleados import Empleados
 from modelos.eventos import Eventos
+from modelos.paquetes import Paquetes
 
 #Inventario
 def ver_inventario():
@@ -208,6 +210,69 @@ def eliminar_evento():
         print(f"Error al eliminar el evento {id}")
         print(e)
 
+#paquetes-------------------------------------------------------------------------
+def ver_paquetes():
+    try:
+        paquetes_dao = PaquetesDAO()
+        paquetes = paquetes_dao.obtener_todo()
+
+        if len(paquetes) == 0:
+            print("No hay paquetes registrados")
+        else:
+            for paquete in paquetes:
+                print(f" {paquete.id_paquetes} - {paquete.nombre} - {paquete.tipo_paquete} - {paquete.costo} - {paquete.descripcion}")
+        print("\n Conexion exitosa con la base de datos")
+    except Exception as e:
+        print("Error")
+        print(e)
+
+def insertar_paquetes():
+    print("INSERTAR UN NUEVO PAQUETE")
+    id_paquete = input("Escribe el ID del paquete: ")
+    nombre = input("Escribe el nombre: ")
+    tipo_paquete = input("Escribe el tipo de paquete: ")
+    costo = input("Escribe el costo: ")
+    descripcion = input("Escribe la descripción: ")
+
+    try:
+        paquetes_dao = PaquetesDAO()
+        ultimo_id = paquetes_dao.obtener_ultimo_id() + 1
+        paquete = Paquetes(id_paquete, nombre, tipo_paquete, costo, descripcion)
+        paquetes_dao.insertar(paquete)
+        print("Inserción del nuevo paquete fue exitosa")
+    except Exception as e:
+        print("Error al insertar el paquete")
+        print(e)
+
+def actualizar_paquetes():
+    try:
+        paquetes_dao = PaquetesDAO()
+        print("Lista de paquetes disponibles")
+        ver_paquetes()
+        id = int(input("Seleccione el id del paquete a actualizar: "))
+        nombre = input("Escribe el nombre: ")
+        tipo_paquete = input("Escribe el tipo de paquete: ")
+        costo = input("Escribe el costo: ")
+        descripcion = input("Escribe la descripción: ")
+        paquete = Paquetes(id, nombre, tipo_paquete, costo, descripcion)
+        paquetes_dao.actualizar(paquete)
+        print("El paquete fue actualizado con éxito")
+    except Exception as e:
+        print("Error al actualizar el paquete")
+        print(e)
+
+def eliminar_paquetes():
+    try:
+        paquetes_dao = PaquetesDAO()
+        print("Lista de paquetes disponibles")
+        ver_paquetes()
+        id = int(input("Escriba el id del paquete a eliminar: "))
+        paquetes_dao.eliminar(id)
+        print(f"El paquete {id} ha sido eliminado con éxito")
+    except Exception as e:
+        print(f"Error al eliminar el paquete {id}")
+        print(e)
+
 def menu_inventario():
     print("1. Ver todos los inventarios")
     print("2. Insertar un nuevo inventario")
@@ -259,6 +324,22 @@ def menu_eventos():
         case 4:
             eliminar_evento()
 
+def menu_paquetes():
+    print("1. Ver todos los paquetes")
+    print("2. Insertar un nuevo paquete")
+    print("3. Actualizar un paquete existente")
+    print("4. Eliminar un paquete existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
+    match opcion:
+        case 1:
+            ver_paquetes()
+        case 2:
+            insertar_paquetes()
+        case 3:
+            actualizar_paquetes()
+        case 4:
+            eliminar_paquetes()
 #ft.app(target=main_window)
 
 def main():
@@ -268,7 +349,8 @@ def main():
         print("1. Inventario")
         print("2. Empleados")
         print("3. Eventos")
-        print("4. Salir")
+        print("4. Paquetes")
+        print("5. Salir")
         opcion = int(input("Escribe tu opción: "))
 
         if opcion == 1:
@@ -278,6 +360,8 @@ def main():
         elif opcion == 3:
             menu_eventos()
         elif opcion == 4:
+            menu_paquetes()
+        elif opcion == 5:
             print("Saliendo del sistema de Nova Estudio ... ")
             break
         else:
