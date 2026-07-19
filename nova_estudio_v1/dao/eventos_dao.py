@@ -98,7 +98,7 @@ class EventosDAO:
        conexion = Conexion.obtener_conexion()
        cursor = conexion.cursor()
 
-       cursor.execute("SELECT MAX(id_evento) FROM eventos")
+       cursor.execute("SELECT MAX(id_evento) FROM evento")
        resultado = cursor.fetchone()
 
        cursor.close()
