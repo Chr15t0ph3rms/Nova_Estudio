@@ -4,13 +4,19 @@ from dao.inventario_dao import InventarioDAO
 from dao.empleados_dao import EmpleadosDAO
 from dao.eventos_dao import EventosDAO
 from dao.paquetes_dao import PaquetesDAO
+from dao.agencia_dao import AgenciaDAO
+from dao.cliente_dao import ClienteDAO
+from dao.contrato_dao import ContratoDAO
 
 from modelos.inventario import Inventario
 from modelos.empleados import Empleados
 from modelos.eventos import Eventos
 from modelos.paquetes import Paquetes
+from modelos.agencia import Agencia
+from modelos.cliente import Cliente
+from modelos.contrato import Contrato
 
-#Inventario
+#Inventario-------------------------------------------------------------------------
 def ver_inventario():
     try:
         inventario_dao = InventarioDAO()
@@ -75,7 +81,7 @@ def eliminar_inventario():
         print(f"Error al eliminar el inventario {id}")
         print(e)
 
-#empleados-------------------------------------------------------------------------
+#Empleados-------------------------------------------------------------------------
 def ver_empleados():
     try:
         empleados_dao = EmpleadosDAO()
@@ -140,7 +146,7 @@ def eliminar_empleado():
         print(f"Error al eliminar el empleado {id}")
         print(e)
 
-#eventos-------------------------------------------------------------------------
+#Eventos-------------------------------------------------------------------------
 def ver_eventos():
     try:
         eventos_dao = EventosDAO()
@@ -210,7 +216,7 @@ def eliminar_evento():
         print(f"Error al eliminar el evento {id}")
         print(e)
 
-#paquetes-------------------------------------------------------------------------
+#Paquetes-------------------------------------------------------------------------
 def ver_paquetes():
     try:
         paquetes_dao = PaquetesDAO()
@@ -280,15 +286,224 @@ def menu_inventario():
     print("4. Eliminar un inventario existente")
     opcion = int(input("Selecciona una opción (1-4): "))
 
+#Agencia-------------------------------------------------------------------------
+def ver_agencia():
+    try:
+        agencias_dao = AgenciaDAO()
+        agencias = agencias_dao.obtener_todo()
+
+        if len(agencias) == 0:
+            print("No hay agencias registradas")
+        else:
+            for agencia in agencias:
+                print(f" {agencia.id_agencia} - {agencia.nombre} - {agencia.app} - {agencia.apm} - {agencia.telefono} - {agencia.correo} - {agencia.empleados}")
+        print("\n Conexion exitosa con la base de datos")
+    except Exception as e:
+        print("Error")
+        print(e)
+
+def insertar_agencia():
+    print("INSERTAR UNA NUEVA AGENCIA")
+    id_agencia = input("Escribe el ID de la agencia: ")
+    agencia_nombre = input("Escribe el nombre de la agencia: ")
+    nombre = input("Escribe el nombre: ")
+    app = input("Escribe el apellido paterno: ")
+    apm = input("Escribe el apellido materno: ")
+    telefono = input("Escribe el teléfono: ")
+    correo = input("Escribe el correo: ")
+    empleados = input("Escribe el número de empleados: ")
+    descripcion = input("Escribe la descripción: ")
+
+    try:
+        agencias_dao = AgenciaDAO()
+        ultimo_id = agencias_dao.obtener_ultimo_id() + 1
+        agencia = Agencia(id_agencia, agencia_nombre, nombre, app, apm, telefono, correo, empleados)
+        agencias_dao.insertar(agencia)
+        print("Inserción de la nueva agencia fue exitosa")
+    except Exception as e:
+        print("Error al insertar la agencia")
+        print(e)
+
+def actualizar_agencia():
+    try:
+        agencias_dao = AgenciaDAO()
+        print("Lista de agencias disponibles")
+        ver_agencia()
+        id = int(input("Seleccione el id de la agencia a actualizar: "))
+        agencia_nombre = input("Escribe el nombre de la agencia: ")
+        nombre = input("Escribe el nombre: ")
+        app = input("Escribe el apellido paterno: ")
+        apm = input("Escribe el apellido materno: ")
+        telefono = input("Escribe el teléfono: ")
+        correo = input("Escribe el correo: ")
+        empleados = input("Escribe el número de empleados: ")
+        agencia = Agencia(id, agencia_nombre, nombre, app, apm, telefono, correo, empleados)
+        agencias_dao.actualizar(agencia)
+        print("La agencia fue actualizada con éxito")
+    except Exception as e:
+        print("Error al actualizar la agencia")
+        print(e)
+
+def eliminar_agencia():
+    try:
+        agencias_dao = AgenciaDAO()
+        print("Lista de agencias disponibles")
+        ver_agencia()
+        id = int(input("Escriba el id de la agencia a eliminar: "))
+        agencias_dao.eliminar(id)
+        print(f"La agencia {id} ha sido eliminada con éxito")
+    except Exception as e:
+        print(f"Error al eliminar la agencia {id}")
+        print(e)
+
+#Cliente-------------------------------------------------------------------------
+def ver_clientes():
+    try:
+        clientes_dao = ClienteDAO()
+        clientes = clientes_dao.obtener_todo()
+
+        if len(clientes) == 0:
+            print("No hay clientes registrados")
+        else:
+            for cliente in clientes:
+                print(f" {cliente.id_cliente} - {cliente.nombre} - {cliente.app} - {cliente.apm} - {cliente.telefono} - {cliente.correo} - {cliente.calle} - {cliente.colonia} - {cliente.numero_exterior}")
+        print("\n Conexion exitosa con la base de datos")
+    except Exception as e:
+        print("Error")
+        print(e)
+
+def insertar_clientes():
+    print("INSERTAR UN NUEVO CLIENTE")
+    id_cliente = input("Escribe el ID del cliente: ")
+    nombre = input("Escribe el nombre: ")
+    app = input("Escribe el apellido paterno: ")
+    apm = input("Escribe el apellido materno: ")
+    telefono = input("Escribe el teléfono: ")
+    correo = input("Escribe el correo: ")
+    calle = input("Escribe la calle: ")
+    colonia = input("Escribe la colonia: ")
+    numero_exterior = input("Escribe el número exterior: ")
+
+    try:
+        clientes_dao = ClienteDAO()
+        ultimo_id = clientes_dao.obtener_ultimo_id() + 1
+        cliente = Cliente(id_cliente, nombre, app, apm, telefono, correo, calle, colonia, numero_exterior)
+        clientes_dao.insertar(cliente)
+        print("Inserción del nuevo cliente fue exitosa")
+    except Exception as e:
+        print("Error al insertar el cliente")
+        print(e)
+
+def actualizar_clientes():
+    try:
+        clientes_dao = ClienteDAO()
+        print("Lista de clientes disponibles")
+        ver_clientes()
+        id = int(input("Seleccione el id del cliente a actualizar: "))
+        nombre = input("Escribe el nombre: ")
+        app = input("Escribe el apellido paterno: ")
+        apm = input("Escribe el apellido materno: ")
+        telefono = input("Escribe el teléfono: ")
+        correo = input("Escribe el correo: ")
+        calle = input("Escribe la calle: ")
+        colonia = input("Escribe la colonia: ")
+        numero_exterior = input("Escribe el número exterior: ")
+        cliente = Cliente(id, nombre, app, apm, telefono, correo, calle, colonia, numero_exterior)
+        clientes_dao.actualizar(cliente)
+        print("El cliente fue actualizado con éxito")
+    except Exception as e:
+        print("Error al actualizar el cliente")
+        print(e)
+
+def eliminar_clientes():
+    try:
+        clientes_dao = ClienteDAO()
+        print("Lista de clientes disponibles")
+        ver_clientes()
+        id = int(input("Escriba el id del cliente a eliminar: "))
+        clientes_dao.eliminar(id)
+        print(f"El cliente {id} ha sido eliminado con éxito")
+    except Exception as e:
+        print(f"Error al eliminar el cliente {id}")
+        print(e)
+
+#Contrato-------------------------------------------------------------------------
+def ver_contratos():
+    try:
+        contratos_dao = ContratoDAO()
+        contratos = contratos_dao.obtener_todo()
+
+        if len(contratos) == 0:
+            print("No hay contratos registrados")
+        else:
+            for contrato in contratos:
+                print(f" {contrato.id_contrato} - {contrato.fecha_firma} - {contrato.costo} - {contrato.paquetes}")
+        print("\n Conexion exitosa con la base de datos")
+    except Exception as e:
+        print("Error")
+        print(e)
+
+def insertar_contratos():
+    print("INSERTAR UN NUEVO CONTRATO")
+    id_contrato = input("Escribe el ID del contrato: ")
+    fecha_firma = input("Escribe la fecha de firma: ")
+    costo = float(input("Escribe el costo: "))
+    paquetes = input("Escribe los paquetes: ")
+
+    try:
+        contratos_dao = ContratoDAO()
+        ultimo_id = contratos_dao.obtener_ultimo_id() + 1
+        contrato = Contrato(id_contrato, fecha_firma, costo, paquetes)
+        contratos_dao.insertar(contrato)
+        print("Inserción del nuevo contrato fue exitosa")
+    except Exception as e:
+        print("Error al insertar el contrato")
+        print(e)
+
+def actualizar_contratos():
+    try:
+        contratos_dao = ContratoDAO()
+        print("Lista de contratos disponibles")
+        ver_contratos()
+        id = int(input("Seleccione el id del contrato a actualizar: "))
+        fecha_firma = input("Escribe la fecha de firma: ")
+        costo = float(input("Escribe el costo: "))
+        paquetes = input("Escribe los paquetes: ")
+        contrato = Contrato(id, fecha_firma, costo, paquetes)
+        contratos_dao.actualizar(contrato)
+        print("El contrato fue actualizado con éxito")
+    except Exception as e:
+        print("Error al actualizar el contrato")
+        print(e)
+
+def eliminar_contratos():
+    try:
+        contratos_dao = ContratoDAO()
+        print("Lista de contratos disponibles")
+        ver_contratos()
+        id = int(input("Escriba el id del contrato a eliminar: "))
+        contratos_dao.eliminar(id)
+        print(f"El contrato {id} ha sido eliminado con éxito")
+    except Exception as e:
+        print(f"Error al eliminar el contrato {id}")
+        print(e)
+
+def menu_agencia():
+    print("1. Ver todas las agencias")
+    print("2. Insertar una nueva agencia")
+    print("3. Actualizar una agencia existente")
+    print("4. Eliminar una agencia existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
     match opcion:
         case 1:
-            ver_inventario()
+            ver_agencia()
         case 2:
-            insertar_inventario()
+            insertar_agencia()
         case 3:
-            actualizar_inventario()
+            actualizar_agencia()
         case 4:
-            eliminar_inventario()
+            eliminar_agencia()
 
 def menu_empleados():
     print("1. Ver todos los empleados")
@@ -340,6 +555,40 @@ def menu_paquetes():
             actualizar_paquetes()
         case 4:
             eliminar_paquetes()
+
+def menu_clientes():
+    print("1. Ver todos los clientes")
+    print("2. Insertar un nuevo cliente")
+    print("3. Actualizar un cliente existente")
+    print("4. Eliminar un cliente existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
+    match opcion:
+        case 1:
+            ver_clientes()
+        case 2:
+            insertar_clientes()
+        case 3:
+            actualizar_clientes ()
+        case 4:
+            eliminar_clientes()
+
+def menu_contratos():
+    print("1. Ver todos los contratos")
+    print("2. Insertar un nuevo contrato")
+    print("3. Actualizar un contrato existente")
+    print("4. Eliminar un contrato existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
+    match opcion:
+        case 1:
+            ver_contratos()
+        case 2:
+            insertar_contratos()
+        case 3:
+            actualizar_contratos()
+        case 4:
+            eliminar_contratos()
 #ft.app(target=main_window)
 
 def main():
@@ -350,7 +599,10 @@ def main():
         print("2. Empleados")
         print("3. Eventos")
         print("4. Paquetes")
-        print("5. Salir")
+        print("5. Agencia")
+        print("6. Clientes")    
+        print("7. Contratos")
+        print("8. Salir")
         opcion = int(input("Escribe tu opción: "))
 
         if opcion == 1:
@@ -362,7 +614,13 @@ def main():
         elif opcion == 4:
             menu_paquetes()
         elif opcion == 5:
-            print("Saliendo del sistema de Nova Estudio ... ")
+            menu_agencia()
+        elif opcion == 6:
+            menu_clientes()
+        elif opcion == 7:
+            menu_contratos()
+        elif opcion == 8:
+            print("Saliendo del programa...")
             break
         else:
             print("Opción no válida")
