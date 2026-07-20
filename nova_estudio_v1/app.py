@@ -286,6 +286,18 @@ def menu_inventario():
     print("4. Eliminar un inventario existente")
     opcion = int(input("Selecciona una opción (1-4): "))
 
+    match opcion:
+        case 1:
+            ver_inventario()
+        case 2:
+            insertar_inventario()
+        case 3:
+            actualizar_inventario()
+        case 4:
+            eliminar_inventario()
+        case _:
+            print("Opción no válida")
+
 #Agencia-------------------------------------------------------------------------
 def ver_agencia():
     try:
