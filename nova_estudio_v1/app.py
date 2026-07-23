@@ -1,4 +1,5 @@
-#import flet as ft
+import flet as ft
+from ui.Inicio import main as inicio_main
 
 from dao.inventario_dao import InventarioDAO
 from dao.empleados_dao import EmpleadosDAO
@@ -278,26 +279,7 @@ def eliminar_paquetes():
     except Exception as e:
         print(f"Error al eliminar el paquete {id}")
         print(e)
-
-def menu_inventario():
-    print("1. Ver todos los inventarios")
-    print("2. Insertar un nuevo inventario")
-    print("3. Actualizar un inventario existente")
-    print("4. Eliminar un inventario existente")
-    opcion = int(input("Selecciona una opción (1-4): "))
-
-    match opcion:
-        case 1:
-            ver_inventario()
-        case 2:
-            insertar_inventario()
-        case 3:
-            actualizar_inventario()
-        case 4:
-            eliminar_inventario()
-        case _:
-            print("Opción no válida")
-
+        
 #Agencia-------------------------------------------------------------------------
 def ver_agencia():
     try:
@@ -500,6 +482,25 @@ def eliminar_contratos():
         print(f"Error al eliminar el contrato {id}")
         print(e)
 
+def menu_inventario():
+    print("1. Ver todos los inventarios")
+    print("2. Insertar un nuevo inventario")
+    print("3. Actualizar un inventario existente")
+    print("4. Eliminar un inventario existente")
+    opcion = int(input("Selecciona una opción (1-4): "))
+
+    match opcion:
+        case 1:
+            ver_inventario()
+        case 2:
+            insertar_inventario()
+        case 3:
+            actualizar_inventario()
+        case 4:
+            eliminar_inventario()
+        case _:
+            print("Opción no válida")
+
 def menu_agencia():
     print("1. Ver todas las agencias")
     print("2. Insertar una nueva agencia")
@@ -601,11 +602,14 @@ def menu_contratos():
             actualizar_contratos()
         case 4:
             eliminar_contratos()
-#ft.app(target=main_window)
 
+# Si quieres iniciar la UI de Flet desde este archivo, usa el target correcto:
+# ft.app(target=inicio_main)
+
+# Para ejecutar el menú de consola con main(), deja esta función tal como está.
 def main():
     while True:
-        print("=== Nova Estudio === ")
+        print("=== No va Estudio === ")
         print("Menú de opciones:")
         print("1. Inventario")
         print("2. Empleados")
@@ -639,4 +643,8 @@ def main():
    
 
 if __name__ == "__main__":
-    main()
+    modo = input("Elige modo (ui/consola): ").strip().lower()
+    if modo == "ui":
+        ft.run(inicio_main)
+    else:
+        main()
