@@ -8,7 +8,6 @@ from dao.paquetes_dao import PaquetesDAO
 from dao.agencia_dao import AgenciaDAO
 from dao.cliente_dao import ClienteDAO
 from dao.contrato_dao import ContratoDAO
-
 from modelos.inventario import Inventario
 from modelos.empleados import Empleados
 from modelos.eventos import Eventos
@@ -40,7 +39,7 @@ def insertar_inventario():
     estado = input("Escribe el estado: ")
     cantidad = int(input("Escribe la cantidad: "))
     disponible = True
-  
+
     try:
         inventario_dao = InventarioDAO()
         ultimo_id = inventario_dao.obtener_ultimo_id() + 1

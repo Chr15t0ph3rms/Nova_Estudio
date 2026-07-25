@@ -44,7 +44,7 @@ def main(page: ft.Page):
                                 alignment=ft.MainAxisAlignment.CENTER,
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 controls=[
-                                    ft.Icon(ft.icons.PERSON, size=60, color=ft.Colors.WHITE),
+                                    ft.Icon(ft.Icons.PERSON, size=60, color=ft.Colors.WHITE),
                                     ft.Text("Usuario", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                                     ft.Text(
                                         "Accede para solicitar eventos,\nver DJs y gestionar tus contrataciones",
@@ -70,7 +70,7 @@ def main(page: ft.Page):
                                 alignment=ft.MainAxisAlignment.CENTER,
                                 horizontal_alignment=ft.CrossAxisAlignment.CENTER,
                                 controls=[
-                                    ft.Icon(ft.icons.ADMIN_PANEL_SETTINGS, size=60, color=ft.Colors.WHITE),
+                                    ft.Icon(ft.Icons.ADMIN_PANEL_SETTINGS, size=60, color=ft.Colors.WHITE),
                                     ft.Text("Administrador", size=24, weight=ft.FontWeight.BOLD, color=ft.Colors.WHITE),
                                     ft.Text(
                                         "Accede al panel de administrador\npara gestionar la agencia",
