@@ -1,12 +1,36 @@
 import flet as ft
+from ui.inisio_sesion_u import inicio_sesion_u
 
 def main(page: ft.Page):
+    
     page.title = "DJ Staff Nova Studio"
     page.bgcolor = ft.Colors.BLACK
     page.window_width = 900
     page.window_height = 600
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
+
+    # Widget container
+    contenido = ft.Container(
+        padding = 5,
+        expand = True
+    )
+
+    def inicio():
+        return ft.Column(
+            controls = [
+                fondo
+            ],
+            spacing = 10
+        )
+
+    def mostrar_inicio(e = None):
+        contenido.content = inicio()
+        page.update()
+
+    def inicio_u(e = None):
+        contenido.content = inicio_sesion_u(mostrar_inicio)
+        page.update()
 
     fondo = ft.Container(
         image=ft.DecorationImage(
@@ -81,6 +105,7 @@ def main(page: ft.Page):
                                         "Entrar como administrador",
                                         bgcolor=ft.Colors.GREY_700,
                                         color=ft.Colors.WHITE,
+                                        on_click = inicio_u
                                     ),
                                 ],
                             ),
@@ -91,7 +116,13 @@ def main(page: ft.Page):
         ),
     )
 
-    page.add(fondo)
+    layout = ft.Row(
+        controls = [
+            contenido
+        ],
+        expand = True
+    )
 
-if __name__ == "__main__":
-    ft.app(target=main)
+    page.add(layout) # Sin el page.add no se mostraria nada
+
+    mostrar_inicio()
