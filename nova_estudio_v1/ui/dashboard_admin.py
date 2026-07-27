@@ -1,18 +1,23 @@
 import flet as ft
 
-def dashboard_admin_view(page: ft.Page):
-    return ft.Container(
-        expand=True,
-        bgcolor="#1e1e2f",
-        content=ft.Column(
-            controls=[
-                ft.Text("Panel de Administrador", size=30, weight=ft.FontWeight.BOLD, color="white"),
-                ft.Row([
-                    ft.Card(content=ft.Container(ft.Text("Usuarios: 1,250", color="white"), padding=20, bgcolor="#2a2a3d")),
-                    ft.Card(content=ft.Container(ft.Text("Servicios: 85", color="white"), padding=20, bgcolor="#2a2a3d")),
-                    ft.Card(content=ft.Container(ft.Text("Ingresos del mes: $12,450", color="white"), padding=20, bgcolor="#2a2a3d")),
-                    ft.Card(content=ft.Container(ft.Text("Eventos activos: 320", color="white"), padding=20, bgcolor="#2a2a3d")),
-                ])
+def dashboard_view(page: ft.Page):
+    page.bgcolor = ft.colors.BLACK
+    page.add(
+        ft.Column(
+            [
+                ft.Text("Panel de administración", size=22, color=ft.colors.WHITE, weight=ft.FontWeight.BOLD),
+                ft.Row(
+                    [
+                        ft.Container(ft.Text("Servicios: 12", color=ft.colors.WHITE), bgcolor=ft.colors.GREY_900, padding=20, border_radius=8),
+                        ft.Container(ft.Text("Eventos: 8", color=ft.colors.WHITE), bgcolor=ft.colors.GREY_900, padding=20, border_radius=8),
+                        ft.Container(ft.Text("Usuarios: 25", color=ft.colors.WHITE), bgcolor=ft.colors.GREY_900, padding=20, border_radius=8),
+                        ft.Container(ft.Text("Mensajes: 5", color=ft.colors.WHITE), bgcolor=ft.colors.GREY_900, padding=20, border_radius=8),
+                    ],
+                    spacing=10,
+                ),
+                ft.Text("Calendario - Mayo 2025", color=ft.colors.GREY_300),
+                ft.Text("Actividad reciente", color=ft.colors.GREY_300),
             ],
-        ),
+            spacing=20,
+        )
     )
