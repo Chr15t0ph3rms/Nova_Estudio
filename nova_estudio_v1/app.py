@@ -2,6 +2,7 @@ import flet as ft
 from ui.Inicio import main as inicio_main
 from ui.registro_admin import registro_admin_view
 
+
 from dao.inventario_dao import InventarioDAO
 from dao.empleados_dao import EmpleadosDAO
 from dao.eventos_dao import EventosDAO
