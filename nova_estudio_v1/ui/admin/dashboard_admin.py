@@ -10,6 +10,7 @@ from ui.admin.eventos import eventos
 from ui.admin.inventario import inventario
 from ui.admin.paquetes import paquetes
 from ui.admin.contratos import contratos
+from ui.admin.agencia import agencia
 
 def dashboard_admin(page: ft.Page):
 
@@ -99,6 +100,10 @@ def dashboard_admin(page: ft.Page):
 
         elif opcion == "Contratos":
             contenido.content = contratos(page)
+            page.update()
+
+        elif opcion == "Agencia":
+            contenido.content = agencia(page)
             page.update()
 
     mostrar_dashboard()
