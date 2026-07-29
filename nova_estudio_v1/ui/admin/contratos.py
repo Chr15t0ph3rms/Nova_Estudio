@@ -1,50 +1,48 @@
 import flet as ft
 
-from dao.paquetes_dao import PaquetesDAO
-from modelos.paquetes import Paquetes
+from dao.contrato_dao import ContratoDAO
+from modelos.contrato import Contrato
 
 
-def paquetes(page: ft.Page):
+def contratos(page: ft.Page):
 
-    paquete_dao = PaquetesDAO()
+    contrato_dao = ContratoDAO()
 
-    paquete_seleccionado = None
+    contrato_seleccionado = None
 
 
     # CAMPOS DEL FORMULARIO
 
-    txt_nombre = ft.TextField(
-        label="Nombre del paquete",
-        width=250
-    )
+    txt_fecha_firma = ft.TextField(
 
+        label="Fecha de firma",
 
-    txt_tipo_paquete = ft.TextField(
-        label="Tipo de paquete",
         width=250
+
     )
 
 
     txt_costo = ft.TextField(
+
         label="Costo",
+
         width=250
+
     )
 
 
-    txt_descripcion = ft.TextField(
+    txt_paquetes = ft.TextField(
 
-        label="Descripción",
+        label="Paquetes",
 
-        width=250,
-
-        multiline=True
+        width=250
 
     )
 
 
     txt_buscar = ft.TextField(
 
-        label="Buscar paquete",
+        label="Buscar contrato",
 
         prefix_icon=ft.Icons.SEARCH,
 
@@ -54,9 +52,9 @@ def paquetes(page: ft.Page):
 
 
 
-    # TABLA PAQUETES
+    # TABLA CONTRATOS
 
-    tabla_paquetes = ft.DataTable(
+    tabla_contratos = ft.DataTable(
 
         columns=[
 
@@ -64,21 +62,21 @@ def paquetes(page: ft.Page):
                 ft.Text("ID")
             ),
 
-            ft.DataColumn(
-                ft.Text("Nombre")
-            ),
 
             ft.DataColumn(
-                ft.Text("Tipo")
+                ft.Text("Fecha Firma")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Costo")
             ),
 
+
             ft.DataColumn(
-                ft.Text("Descripción")
+                ft.Text("Paquetes")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Acciones")
@@ -90,27 +88,25 @@ def paquetes(page: ft.Page):
 
     ) 
 
-    # DIALOGO PAQUETE
+    # DIALOGO CONTRATO
 
     dialogo = ft.AlertDialog(
 
         modal=True,
 
         title=ft.Text(
-            "Nuevo Paquete"
+            "Nuevo Contrato"
         ),
 
         content=ft.Column(
 
             [
 
-                txt_nombre,
-
-                txt_tipo_paquete,
+                txt_fecha_firma,
 
                 txt_costo,
 
-                txt_descripcion
+                txt_paquetes
 
             ],
 
@@ -122,20 +118,20 @@ def paquetes(page: ft.Page):
 
 
 
-    # CARGAR PAQUETES
+    # CARGAR CONTRATOS
 
-    def cargar_paquetes():
+    def cargar_contratos():
 
-        tabla_paquetes.rows.clear()
+        tabla_contratos.rows.clear()
 
         try:
 
-            lista_paquetes = paquete_dao.obtener_todo()
+            lista_contratos = contrato_dao.obtener_todo()
 
 
-            for paquete in lista_paquetes:
+            for contrato in lista_contratos:
 
-                tabla_paquetes.rows.append(
+                tabla_contratos.rows.append(
 
                     ft.DataRow(
 
@@ -144,7 +140,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(paquete.id_paquetes)
+                                    str(contrato.id_contrato)
                                 )
 
                             ),
@@ -153,7 +149,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    paquete.nombre
+                                    str(contrato.fecha_firma)
                                 )
 
                             ),
@@ -162,7 +158,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    paquete.tipo_paquete
+                                    str(contrato.costo)
                                 )
 
                             ),
@@ -171,16 +167,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(paquete.costo)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.descripcion
+                                    contrato.paquetes
                                 )
 
                             ),
@@ -198,8 +185,8 @@ def paquetes(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, p=paquete:
-                                                editar_paquete(p)
+                                            on_click=lambda e, c=contrato:
+                                                editar_contrato(c)
 
                                         ),
 
@@ -212,8 +199,8 @@ def paquetes(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, p=paquete:
-                                                eliminar_paquete(p)
+                                            on_click=lambda e, c=contrato:
+                                                eliminar_contrato(c)
 
                                         )
 
@@ -237,7 +224,7 @@ def paquetes(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al cargar paquetes: {error}"
+                f"Error al cargar contratos: {error}"
 
             )
 
@@ -247,41 +234,36 @@ def paquetes(page: ft.Page):
 
     def limpiar_campos():
 
-        txt_nombre.value = ""
-
-        txt_tipo_paquete.value = ""
+        txt_fecha_firma.value = ""
 
         txt_costo.value = ""
 
-        txt_descripcion.value = "" 
+        txt_paquetes.value = "" 
 
-    # GUARDAR PAQUETE
-
-    def guardar_paquete(e):
+    # GUARDAR CONTRATOS
+    def guardar_contrato(e):
 
         try:
 
-            nuevo_id = paquete_dao.obtener_ultimo_id() + 1
+            nuevo_id = contrato_dao.obtener_ultimo_id() + 1
 
 
-            paquete = Paquetes(
+            contrato = Contrato(
 
                 nuevo_id,
 
-                txt_nombre.value,
-
-                txt_tipo_paquete.value,
+                txt_fecha_firma.value,
 
                 txt_costo.value,
 
-                txt_descripcion.value
+                txt_paquetes.value
 
             )
 
 
-            paquete_dao.insertar(
+            contrato_dao.insertar(
 
-                paquete
+                contrato
 
             )
 
@@ -290,12 +272,12 @@ def paquetes(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_paquetes()
+            cargar_contratos()
 
 
             mostrar_mensaje(
 
-                "Paquete registrado correctamente."
+                "Contrato registrado correctamente."
 
             )
 
@@ -304,34 +286,32 @@ def paquetes(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al guardar paquete: {error}"
+                f"Error al guardar contrato: {error}"
 
             )
 
 
 
-    # EDITAR PAQUETE
+    # EDITAR CONTRATO
 
-    def editar_paquete(paquete):
+    def editar_contrato(contrato):
 
-        nonlocal paquete_seleccionado
-
-
-        paquete_seleccionado = paquete
+        nonlocal contrato_seleccionado
 
 
-        txt_nombre.value = paquete.nombre
+        contrato_seleccionado = contrato
 
-        txt_tipo_paquete.value = paquete.tipo_paquete
 
-        txt_costo.value = str(paquete.costo)
+        txt_fecha_firma.value = contrato.fecha_firma
 
-        txt_descripcion.value = paquete.descripcion
+        txt_costo.value = str(contrato.costo)
+
+        txt_paquetes.value = contrato.paquetes
 
 
         dialogo.title = ft.Text(
 
-            "Editar Paquete"
+            "Editar Contrato"
 
         )
 
@@ -344,7 +324,7 @@ def paquetes(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=actualizar_paquete
+                on_click=actualizar_contrato
 
             ),
 
@@ -366,30 +346,28 @@ def paquetes(page: ft.Page):
 
 
 
-    # ACTUALIZAR PAQUETE
+    # ACTUALIZAR CONTRATO
 
-    def actualizar_paquete(e):
+    def actualizar_contrato(e):
 
         try:
 
-            paquete_actualizado = Paquetes(
+            contrato_actualizado = Contrato(
 
-                paquete_seleccionado.id_paquetes,
+                contrato_seleccionado.id_contrato,
 
-                txt_nombre.value,
-
-                txt_tipo_paquete.value,
+                txt_fecha_firma.value,
 
                 txt_costo.value,
 
-                txt_descripcion.value
+                txt_paquetes.value
 
             )
 
 
-            paquete_dao.actualizar(
+            contrato_dao.actualizar(
 
-                paquete_actualizado
+                contrato_actualizado
 
             )
 
@@ -398,12 +376,12 @@ def paquetes(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_paquetes()
+            cargar_contratos()
 
 
             mostrar_mensaje(
 
-                "Paquete actualizado correctamente."
+                "Contrato actualizado correctamente."
 
             )
 
@@ -412,29 +390,29 @@ def paquetes(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al actualizar paquete: {error}"
+                f"Error al actualizar contrato: {error}"
 
             ) 
 
-    # ELIMINAR PAQUETE
+    # ELIMINAR CONTRATOS
 
-    def eliminar_paquete(paquete):
+    def eliminar_contrato(contrato):
 
         try:
 
-            paquete_dao.eliminar(
+            contrato_dao.eliminar(
 
-                paquete.id_paquetes
+                contrato.id_contrato
 
             )
 
 
-            cargar_paquetes()
+            cargar_contratos()
 
 
             mostrar_mensaje(
 
-                "Paquete eliminado correctamente."
+                "Contrato eliminado correctamente."
 
             )
 
@@ -443,29 +421,29 @@ def paquetes(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al eliminar paquete: {error}"
+                f"Error al eliminar contrato: {error}"
 
             )
 
 
 
-    # BUSCAR PAQUETES
+    # BUSCAR CONTRATOS
 
-    def buscar_paquetes(e):
+    def buscar_contratos(e):
 
         texto = txt_buscar.value.lower()
 
 
-        tabla_paquetes.rows.clear()
+        tabla_contratos.rows.clear()
 
 
-        for paquete in paquete_dao.obtener_todo():
+        for contrato in contrato_dao.obtener_todo():
 
 
-            if texto in paquete.nombre.lower():
+            if texto in str(contrato.id_contrato).lower() or texto in str(contrato.paquetes).lower():
 
 
-                tabla_paquetes.rows.append(
+                tabla_contratos.rows.append(
 
                     ft.DataRow(
 
@@ -474,7 +452,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(paquete.id_paquetes)
+                                    str(contrato.id_contrato)
                                 )
 
                             ),
@@ -483,7 +461,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    paquete.nombre
+                                    str(contrato.fecha_firma)
                                 )
 
                             ),
@@ -492,7 +470,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    paquete.tipo_paquete
+                                    str(contrato.costo)
                                 )
 
                             ),
@@ -501,16 +479,7 @@ def paquetes(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(paquete.costo)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.descripcion
+                                    contrato.paquetes
                                 )
 
                             ),
@@ -528,8 +497,8 @@ def paquetes(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, p=paquete:
-                                                editar_paquete(p)
+                                            on_click=lambda e, c=contrato:
+                                                editar_contrato(c)
 
                                         ),
 
@@ -542,8 +511,8 @@ def paquetes(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, p=paquete:
-                                                eliminar_paquete(p)
+                                            on_click=lambda e, c=contrato:
+                                                eliminar_contrato(c)
 
                                         )
 
@@ -564,16 +533,16 @@ def paquetes(page: ft.Page):
 
 
 
-    # NUEVO PAQUETE
+    # NUEVO CONTRATOS
 
-    def nuevo_paquete(e):
+    def nuevo_contrato(e):
 
         limpiar_campos()
 
 
         dialogo.title = ft.Text(
 
-            "Nuevo Paquete"
+            "Nuevo Contrato"
 
         )
 
@@ -595,7 +564,7 @@ def paquetes(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=guardar_paquete
+                on_click=guardar_contrato
 
             )
 
@@ -609,6 +578,7 @@ def paquetes(page: ft.Page):
 
 
         page.update()
+
 
 
 
@@ -638,10 +608,10 @@ def paquetes(page: ft.Page):
 
 
 
-    txt_buscar.on_change = buscar_paquetes
+    txt_buscar.on_change = buscar_contratos
 
 
-    cargar_paquetes()
+    cargar_contratos()
 
 
 
@@ -663,7 +633,7 @@ def paquetes(page: ft.Page):
 
                         ft.Text(
 
-                            "Gestión de Paquetes",
+                            "Gestión de Contratos",
 
                             size=28,
 
@@ -681,11 +651,11 @@ def paquetes(page: ft.Page):
 
                         ft.ElevatedButton(
 
-                            "Nuevo Paquete",
+                            "Nuevo Contrato",
 
                             icon=ft.Icons.ADD,
 
-                            on_click=nuevo_paquete
+                            on_click=nuevo_contrato
 
                         )
 
@@ -701,7 +671,7 @@ def paquetes(page: ft.Page):
 
                     expand=True,
 
-                    content=tabla_paquetes
+                    content=tabla_contratos
 
                 )
 

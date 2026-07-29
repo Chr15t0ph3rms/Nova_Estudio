@@ -1,5 +1,6 @@
 import flet as ft
 from ui.inisio_sesion_u import inicio_sesion_u
+from ui.admin.dashboard_admin import dashboard_admin
 
 def main(page: ft.Page):
     

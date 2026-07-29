@@ -1,66 +1,86 @@
 import flet as ft
 
-from dao.inventario_dao import InventarioDAO
-from modelos.inventario import Inventario
+from dao.agencia_dao import AgenciaDAO
+from modelos.agencia import Agencia
 
 
-def inventario(page: ft.Page):
+def agencia(page: ft.Page):
 
-    inventario_dao = InventarioDAO()
+    agencia_dao = AgenciaDAO()
 
-    inventario_seleccionado = None
+    agencia_seleccionada = None
 
 
+    # =============================
     # CAMPOS DEL FORMULARIO
+    # =============================
+
+    txt_agencia_nombre = ft.TextField(
+
+        label="Nombre de la agencia",
+
+        width=250
+
+    )
+
 
     txt_nombre = ft.TextField(
-        label="Nombre del equipo",
+
+        label="Nombre responsable",
+
         width=250
+
     )
 
 
-    txt_tipo = ft.TextField(
-        label="Tipo",
+    txt_app = ft.TextField(
+
+        label="Apellido paterno",
+
         width=250
+
     )
 
 
-    txt_estado = ft.TextField(
-        label="Estado",
+    txt_apm = ft.TextField(
+
+        label="Apellido materno",
+
         width=250
+
     )
 
 
-    txt_cantidad = ft.TextField(
-        label="Cantidad",
+    txt_telefono = ft.TextField(
+
+        label="Teléfono",
+
         width=250
+
     )
 
 
-    txt_disponible = ft.Dropdown(
+    txt_correo = ft.TextField(
 
-        label="Disponible",
+        label="Correo",
 
-        width=250,
+        width=250
 
-        options=[
+    )
 
-            ft.dropdown.Option(
-                "True"
-            ),
 
-            ft.dropdown.Option(
-                "False"
-            )
+    txt_empleados = ft.TextField(
 
-        ]
+        label="Empleados",
+
+        width=250
 
     )
 
 
     txt_buscar = ft.TextField(
 
-        label="Buscar inventario",
+        label="Buscar agencia",
 
         prefix_icon=ft.Icons.SEARCH,
 
@@ -70,10 +90,11 @@ def inventario(page: ft.Page):
 
 
 
-    # TABLA INVENTARIO
+    # =============================
+    # TABLA AGENCIA
+    # =============================
 
-
-    tabla_inventario = ft.DataTable(
+    tabla_agencia = ft.DataTable(
 
         columns=[
 
@@ -82,23 +103,19 @@ def inventario(page: ft.Page):
             ),
 
             ft.DataColumn(
-                ft.Text("Nombre")
+                ft.Text("Agencia")
             ),
 
             ft.DataColumn(
-                ft.Text("Tipo")
+                ft.Text("Responsable")
             ),
 
             ft.DataColumn(
-                ft.Text("Estado")
+                ft.Text("Teléfono")
             ),
 
             ft.DataColumn(
-                ft.Text("Cantidad")
-            ),
-
-            ft.DataColumn(
-                ft.Text("Disponible")
+                ft.Text("Correo")
             ),
 
             ft.DataColumn(
@@ -109,31 +126,37 @@ def inventario(page: ft.Page):
 
         rows=[]
 
-    )
+    ) 
 
-    # DIALOGO INVENTARIO
+    # =============================
+    # DIALOGO AGENCIA
+    # =============================
 
     dialogo = ft.AlertDialog(
 
         modal=True,
 
         title=ft.Text(
-            "Nuevo Inventario"
+            "Nueva Agencia"
         ),
 
         content=ft.Column(
 
             [
 
+                txt_agencia_nombre,
+
                 txt_nombre,
 
-                txt_tipo,
+                txt_app,
 
-                txt_estado,
+                txt_apm,
 
-                txt_cantidad,
+                txt_telefono,
 
-                txt_disponible
+                txt_correo,
+
+                txt_empleados
 
             ],
 
@@ -145,20 +168,22 @@ def inventario(page: ft.Page):
 
 
 
-    # CARGAR INVENTARIO
+    # =============================
+    # CARGAR AGENCIA
+    # =============================
 
-    def cargar_inventario():
+    def cargar_agencia():
 
-        tabla_inventario.rows.clear()
+        tabla_agencia.rows.clear()
 
         try:
 
-            lista_inventario = inventario_dao.obtener_todo()
+            lista_agencias = agencia_dao.obtener_todo()
 
 
-            for item in lista_inventario:
+            for item in lista_agencias:
 
-                tabla_inventario.rows.append(
+                tabla_agencia.rows.append(
 
                     ft.DataRow(
 
@@ -167,7 +192,7 @@ def inventario(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(item.id_inventario)
+                                    str(item.id_agencia)
                                 )
 
                             ),
@@ -176,7 +201,7 @@ def inventario(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    item.nombre
+                                    item.agencia_nombre
                                 )
 
                             ),
@@ -185,7 +210,7 @@ def inventario(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    item.tipo
+                                    item.nombre + " " + item.app
                                 )
 
                             ),
@@ -194,7 +219,7 @@ def inventario(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    item.estado
+                                    item.telefono
                                 )
 
                             ),
@@ -203,20 +228,7 @@ def inventario(page: ft.Page):
                             ft.DataCell(
 
                                 ft.Text(
-                                    str(item.cantidad)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
+                                    item.correo
                                 )
 
                             ),
@@ -234,8 +246,8 @@ def inventario(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
+                                            on_click=lambda e, a=item:
+                                                editar_agencia(a)
 
                                         ),
 
@@ -248,8 +260,8 @@ def inventario(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
+                                            on_click=lambda e, a=item:
+                                                eliminar_agencia(a)
 
                                         )
 
@@ -272,61 +284,68 @@ def inventario(page: ft.Page):
         except Exception as error:
 
             mostrar_mensaje(
-                f"Error al cargar inventario: {error}"
+
+                f"Error al cargar agencia: {error}"
+
             )
 
 
 
+    # =============================
     # LIMPIAR CAMPOS
+    # =============================
 
     def limpiar_campos():
 
+        txt_agencia_nombre.value = ""
+
         txt_nombre.value = ""
 
-        txt_tipo.value = ""
+        txt_app.value = ""
 
-        txt_estado.value = ""
+        txt_apm.value = ""
 
-        txt_cantidad.value = ""
+        txt_telefono.value = ""
 
-        txt_disponible.value = None 
+        txt_correo.value = ""
 
-    # GUARDAR INVENTARIO
+        txt_empleados.value = "" 
 
-    def guardar_inventario(e):
+    # =============================
+    # GUARDAR AGENCIA
+    # =============================
+
+    def guardar_agencia(e):
 
         try:
 
-            nuevo_id = inventario_dao.obtener_ultimo_id() + 1
+            nuevo_id = agencia_dao.obtener_ultimo_id() + 1
 
 
-            disponible = True
-
-            if txt_disponible.value == "False":
-
-                disponible = False
-
-
-            nuevo_inventario = Inventario(
+            nueva_agencia = Agencia(
 
                 nuevo_id,
 
+                txt_agencia_nombre.value,
+
                 txt_nombre.value,
 
-                txt_tipo.value,
+                txt_app.value,
 
-                txt_estado.value,
+                txt_apm.value,
 
-                int(txt_cantidad.value),
+                txt_telefono.value,
 
-                disponible
+                txt_correo.value,
+
+                txt_empleados.value
 
             )
 
 
-            inventario_dao.insertar(
+            agencia_dao.insertar(
 
-                nuevo_inventario
+                nueva_agencia
 
             )
 
@@ -335,12 +354,12 @@ def inventario(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_inventario()
+            cargar_agencia()
 
 
             mostrar_mensaje(
 
-                "Inventario registrado correctamente."
+                "Agencia registrada correctamente."
 
             )
 
@@ -349,36 +368,42 @@ def inventario(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al guardar inventario: {error}"
+                f"Error al guardar agencia: {error}"
 
             )
 
 
 
-    # EDITAR INVENTARIO
+    # =============================
+    # EDITAR AGENCIA
+    # =============================
 
-    def editar_inventario(item):
+    def editar_agencia(item):
 
-        nonlocal inventario_seleccionado
+        nonlocal agencia_seleccionada
 
 
-        inventario_seleccionado = item
+        agencia_seleccionada = item
 
+
+        txt_agencia_nombre.value = item.agencia_nombre
 
         txt_nombre.value = item.nombre
 
-        txt_tipo.value = item.tipo
+        txt_app.value = item.app
 
-        txt_estado.value = item.estado
+        txt_apm.value = item.apm
 
-        txt_cantidad.value = str(item.cantidad)
+        txt_telefono.value = item.telefono
 
-        txt_disponible.value = str(item.disponible)
+        txt_correo.value = item.correo
+
+        txt_empleados.value = str(item.empleados)
 
 
         dialogo.title = ft.Text(
 
-            "Editar Inventario"
+            "Editar Agencia"
 
         )
 
@@ -391,7 +416,7 @@ def inventario(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=actualizar_inventario
+                on_click=actualizar_agencia
 
             ),
 
@@ -413,41 +438,38 @@ def inventario(page: ft.Page):
 
 
 
-    # ACTUALIZAR INVENTARIO
+    # =============================
+    # ACTUALIZAR AGENCIA
+    # =============================
 
-    def actualizar_inventario(e):
+    def actualizar_agencia(e):
 
         try:
 
-            disponible = True
+            agencia_actualizada = Agencia(
 
+                agencia_seleccionada.id_agencia,
 
-            if txt_disponible.value == "False":
-
-                disponible = False
-
-
-
-            inventario_actualizado = Inventario(
-
-                inventario_seleccionado.id_inventario,
+                txt_agencia_nombre.value,
 
                 txt_nombre.value,
 
-                txt_tipo.value,
+                txt_app.value,
 
-                txt_estado.value,
+                txt_apm.value,
 
-                int(txt_cantidad.value),
+                txt_telefono.value,
 
-                disponible
+                txt_correo.value,
+
+                txt_empleados.value
 
             )
 
 
-            inventario_dao.actualizar(
+            agencia_dao.actualizar(
 
-                inventario_actualizado
+                agencia_actualizada
 
             )
 
@@ -456,12 +478,12 @@ def inventario(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_inventario()
+            cargar_agencia()
 
 
             mostrar_mensaje(
 
-                "Inventario actualizado correctamente."
+                "Agencia actualizada correctamente."
 
             )
 
@@ -470,29 +492,31 @@ def inventario(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al actualizar inventario: {error}"
+                f"Error al actualizar agencia: {error}"
 
             ) 
 
-    # ELIMINAR INVENTARIO
+    # =============================
+    # ELIMINAR AGENCIA
+    # =============================
 
-    def eliminar_inventario(item):
+    def eliminar_agencia(item):
 
         try:
 
-            inventario_dao.eliminar(
+            agencia_dao.eliminar(
 
-                item.id_inventario
+                item.id_agencia
 
             )
 
 
-            cargar_inventario()
+            cargar_agencia()
 
 
             mostrar_mensaje(
 
-                "Inventario eliminado correctamente."
+                "Agencia eliminada correctamente."
 
             )
 
@@ -501,77 +525,78 @@ def inventario(page: ft.Page):
 
             mostrar_mensaje(
 
-                f"Error al eliminar inventario: {error}"
+                f"Error al eliminar agencia: {error}"
 
             )
 
 
 
-    # BUSCAR INVENTARIO
+    # =============================
+    # BUSCAR AGENCIA
+    # =============================
 
-    def buscar_inventario(e):
+    def buscar_agencia(e):
 
         texto = txt_buscar.value.lower()
 
 
-        tabla_inventario.rows.clear()
+        tabla_agencia.rows.clear()
 
 
-        for item in inventario_dao.obtener_todo():
+        for item in agencia_dao.obtener_todo():
 
 
-            if texto in item.nombre.lower():
+            if texto in item.agencia_nombre.lower() or texto in item.correo.lower():
 
 
-                tabla_inventario.rows.append(
+                tabla_agencia.rows.append(
 
                     ft.DataRow(
 
                         cells=[
 
                             ft.DataCell(
+
                                 ft.Text(
-                                    str(item.id_inventario)
+                                    str(item.id_agencia)
                                 )
+
                             ),
 
 
                             ft.DataCell(
+
                                 ft.Text(
-                                    item.nombre
+                                    item.agencia_nombre
                                 )
+
                             ),
 
 
                             ft.DataCell(
+
                                 ft.Text(
-                                    item.tipo
+                                    item.nombre + " " + item.app
                                 )
+
                             ),
 
 
                             ft.DataCell(
+
                                 ft.Text(
-                                    item.estado
+                                    item.telefono
                                 )
+
                             ),
 
 
                             ft.DataCell(
+
                                 ft.Text(
-                                    str(item.cantidad)
+                                    item.correo
                                 )
-                            ),
 
-
-                            ft.DataCell(
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
-                                )
                             ),
 
 
@@ -587,8 +612,8 @@ def inventario(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
+                                            on_click=lambda e, a=item:
+                                                editar_agencia(a)
 
                                         ),
 
@@ -601,8 +626,8 @@ def inventario(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
+                                            on_click=lambda e, a=item:
+                                                eliminar_agencia(a)
 
                                         )
 
@@ -623,16 +648,18 @@ def inventario(page: ft.Page):
 
 
 
-    # NUEVO INVENTARIO
+    # =============================
+    # NUEVA AGENCIA
+    # =============================
 
-    def nuevo_inventario(e):
+    def nueva_agencia(e):
 
         limpiar_campos()
 
 
         dialogo.title = ft.Text(
 
-            "Nuevo Inventario"
+            "Nueva Agencia"
 
         )
 
@@ -654,7 +681,7 @@ def inventario(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=guardar_inventario
+                on_click=guardar_agencia
 
             )
 
@@ -671,7 +698,9 @@ def inventario(page: ft.Page):
 
 
 
+    # =============================
     # CERRAR DIALOGO
+    # =============================
 
     def cerrar_dialogo():
 
@@ -681,7 +710,9 @@ def inventario(page: ft.Page):
 
 
 
+    # =============================
     # MENSAJES
+    # =============================
 
     def mostrar_mensaje(texto):
 
@@ -697,14 +728,16 @@ def inventario(page: ft.Page):
 
 
 
-    txt_buscar.on_change = buscar_inventario
+    txt_buscar.on_change = buscar_agencia
 
 
-    cargar_inventario()
+    cargar_agencia()
 
 
 
+    # =============================
     # INTERFAZ FINAL
+    # =============================
 
     return ft.Container(
 
@@ -722,7 +755,7 @@ def inventario(page: ft.Page):
 
                         ft.Text(
 
-                            "Gestión de Inventario",
+                            "Gestión de Agencia",
 
                             size=28,
 
@@ -740,11 +773,11 @@ def inventario(page: ft.Page):
 
                         ft.ElevatedButton(
 
-                            "Nuevo Inventario",
+                            "Nueva Agencia",
 
                             icon=ft.Icons.ADD,
 
-                            on_click=nuevo_inventario
+                            on_click=nueva_agencia
 
                         )
 
@@ -760,7 +793,7 @@ def inventario(page: ft.Page):
 
                     expand=True,
 
-                    content=tabla_inventario
+                    content=tabla_agencia
 
                 )
 
@@ -770,5 +803,4 @@ def inventario(page: ft.Page):
 
         )
 
-    ) 
-
+    )

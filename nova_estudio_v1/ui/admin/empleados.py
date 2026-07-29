@@ -1,79 +1,62 @@
 import flet as ft
 
-from dao.inventario_dao import InventarioDAO
-from modelos.inventario import Inventario
+from dao.empleados_dao import EmpleadosDAO
+from modelos.empleados import Empleados
 
 
-def inventario(page: ft.Page):
+def empleados(page: ft.Page):
 
-    inventario_dao = InventarioDAO()
+    empleado_dao = EmpleadosDAO()
 
-    inventario_seleccionado = None
+    empleado_seleccionado = None
 
 
+    # =============================
     # CAMPOS DEL FORMULARIO
+    # =============================
 
     txt_nombre = ft.TextField(
-        label="Nombre del equipo",
+        label="Nombre",
         width=250
     )
 
 
-    txt_tipo = ft.TextField(
-        label="Tipo",
+    txt_app = ft.TextField(
+        label="Apellido Paterno",
         width=250
     )
 
 
-    txt_estado = ft.TextField(
-        label="Estado",
+    txt_apm = ft.TextField(
+        label="Apellido Materno",
         width=250
     )
 
 
-    txt_cantidad = ft.TextField(
-        label="Cantidad",
+    txt_puesto = ft.TextField(
+        label="Puesto",
         width=250
     )
 
 
-    txt_disponible = ft.Dropdown(
-
-        label="Disponible",
-
-        width=250,
-
-        options=[
-
-            ft.dropdown.Option(
-                "True"
-            ),
-
-            ft.dropdown.Option(
-                "False"
-            )
-
-        ]
-
+    txt_telefono = ft.TextField(
+        label="Teléfono",
+        width=250
     )
 
 
     txt_buscar = ft.TextField(
-
-        label="Buscar inventario",
-
+        label="Buscar empleado",
         prefix_icon=ft.Icons.SEARCH,
-
         expand=True
-
     )
 
 
+    # =============================
+    # TABLA EMPLEADOS
+    # =============================
 
-    # TABLA INVENTARIO
-
-
-    tabla_inventario = ft.DataTable(
+    tabla_empleados = ft.DataTable(
 
         columns=[
 
@@ -86,19 +69,11 @@ def inventario(page: ft.Page):
             ),
 
             ft.DataColumn(
-                ft.Text("Tipo")
+                ft.Text("Puesto")
             ),
 
             ft.DataColumn(
-                ft.Text("Estado")
-            ),
-
-            ft.DataColumn(
-                ft.Text("Cantidad")
-            ),
-
-            ft.DataColumn(
-                ft.Text("Disponible")
+                ft.Text("Teléfono")
             ),
 
             ft.DataColumn(
@@ -111,14 +86,16 @@ def inventario(page: ft.Page):
 
     )
 
-    # DIALOGO INVENTARIO
+    # =============================
+    # DIALOGO EMPLEADO
+    # =============================
 
     dialogo = ft.AlertDialog(
 
         modal=True,
 
         title=ft.Text(
-            "Nuevo Inventario"
+            "Nuevo Empleado"
         ),
 
         content=ft.Column(
@@ -127,13 +104,13 @@ def inventario(page: ft.Page):
 
                 txt_nombre,
 
-                txt_tipo,
+                txt_app,
 
-                txt_estado,
+                txt_apm,
 
-                txt_cantidad,
+                txt_puesto,
 
-                txt_disponible
+                txt_telefono
 
             ],
 
@@ -144,81 +121,52 @@ def inventario(page: ft.Page):
     )
 
 
+    # =============================
+    # CARGAR EMPLEADOS
+    # =============================
 
-    # CARGAR INVENTARIO
+    def cargar_empleados():
 
-    def cargar_inventario():
-
-        tabla_inventario.rows.clear()
+        tabla_empleados.rows.clear()
 
         try:
 
-            lista_inventario = inventario_dao.obtener_todo()
+            lista_empleados = empleado_dao.obtener_todo()
 
 
-            for item in lista_inventario:
+            for empleado in lista_empleados:
 
-                tabla_inventario.rows.append(
+                tabla_empleados.rows.append(
 
                     ft.DataRow(
 
                         cells=[
 
                             ft.DataCell(
-
                                 ft.Text(
-                                    str(item.id_inventario)
+                                    str(empleado.id_empleado)
                                 )
-
                             ),
 
 
                             ft.DataCell(
-
                                 ft.Text(
-                                    item.nombre
+                                    f"{empleado.nombre} {empleado.app} {empleado.apm}"
                                 )
-
                             ),
 
 
                             ft.DataCell(
-
                                 ft.Text(
-                                    item.tipo
+                                    empleado.puesto
                                 )
-
                             ),
 
 
                             ft.DataCell(
-
                                 ft.Text(
-                                    item.estado
+                                    empleado.telefono
                                 )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(item.cantidad)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
-                                )
-
                             ),
 
 
@@ -234,8 +182,8 @@ def inventario(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
+                                            on_click=lambda e, emp=empleado:
+                                                editar_empleado(emp)
 
                                         ),
 
@@ -248,8 +196,8 @@ def inventario(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
+                                            on_click=lambda e, emp=empleado:
+                                                eliminar_empleado(emp)
 
                                         )
 
@@ -272,62 +220,57 @@ def inventario(page: ft.Page):
         except Exception as error:
 
             mostrar_mensaje(
-                f"Error al cargar inventario: {error}"
+                f"Error al cargar empleados: {error}"
             )
 
 
 
+    # =============================
     # LIMPIAR CAMPOS
+    # =============================
 
     def limpiar_campos():
 
         txt_nombre.value = ""
 
-        txt_tipo.value = ""
+        txt_app.value = ""
 
-        txt_estado.value = ""
+        txt_apm.value = ""
 
-        txt_cantidad.value = ""
+        txt_puesto.value = ""
 
-        txt_disponible.value = None 
+        txt_telefono.value = ""
 
-    # GUARDAR INVENTARIO
+    # =============================
+    # GUARDAR EMPLEADO
+    # =============================
 
-    def guardar_inventario(e):
+    def guardar_empleado(e):
 
         try:
 
-            nuevo_id = inventario_dao.obtener_ultimo_id() + 1
+            nuevo_id = empleado_dao.obtener_ultimo_id() + 1
 
 
-            disponible = True
-
-            if txt_disponible.value == "False":
-
-                disponible = False
-
-
-            nuevo_inventario = Inventario(
+            empleado = Empleados(
 
                 nuevo_id,
 
                 txt_nombre.value,
 
-                txt_tipo.value,
+                txt_app.value,
 
-                txt_estado.value,
+                txt_apm.value,
 
-                int(txt_cantidad.value),
+                txt_puesto.value,
 
-                disponible
+                txt_telefono.value
 
             )
 
 
-            inventario_dao.insertar(
-
-                nuevo_inventario
-
+            empleado_dao.insertar(
+                empleado
             )
 
 
@@ -335,51 +278,47 @@ def inventario(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_inventario()
+            cargar_empleados()
 
 
             mostrar_mensaje(
-
-                "Inventario registrado correctamente."
-
+                "Empleado registrado correctamente."
             )
 
 
         except Exception as error:
 
             mostrar_mensaje(
-
-                f"Error al guardar inventario: {error}"
-
+                f"Error al guardar empleado: {error}"
             )
 
 
 
-    # EDITAR INVENTARIO
+    # =============================
+    # EDITAR EMPLEADO
+    # =============================
 
-    def editar_inventario(item):
+    def editar_empleado(empleado):
 
-        nonlocal inventario_seleccionado
-
-
-        inventario_seleccionado = item
+        nonlocal empleado_seleccionado
 
 
-        txt_nombre.value = item.nombre
+        empleado_seleccionado = empleado
 
-        txt_tipo.value = item.tipo
 
-        txt_estado.value = item.estado
+        txt_nombre.value = empleado.nombre
 
-        txt_cantidad.value = str(item.cantidad)
+        txt_app.value = empleado.app
 
-        txt_disponible.value = str(item.disponible)
+        txt_apm.value = empleado.apm
+
+        txt_puesto.value = empleado.puesto
+
+        txt_telefono.value = empleado.telefono
 
 
         dialogo.title = ft.Text(
-
-            "Editar Inventario"
-
+            "Editar Empleado"
         )
 
 
@@ -391,7 +330,7 @@ def inventario(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=actualizar_inventario
+                on_click=actualizar_empleado
 
             ),
 
@@ -413,42 +352,33 @@ def inventario(page: ft.Page):
 
 
 
-    # ACTUALIZAR INVENTARIO
+    # =============================
+    # ACTUALIZAR EMPLEADO
+    # =============================
 
-    def actualizar_inventario(e):
+    def actualizar_empleado(e):
 
         try:
 
-            disponible = True
+            empleado_actualizado = Empleados(
 
-
-            if txt_disponible.value == "False":
-
-                disponible = False
-
-
-
-            inventario_actualizado = Inventario(
-
-                inventario_seleccionado.id_inventario,
+                empleado_seleccionado.id_empleado,
 
                 txt_nombre.value,
 
-                txt_tipo.value,
+                txt_app.value,
 
-                txt_estado.value,
+                txt_apm.value,
 
-                int(txt_cantidad.value),
+                txt_puesto.value,
 
-                disponible
+                txt_telefono.value
 
             )
 
 
-            inventario_dao.actualizar(
-
-                inventario_actualizado
-
+            empleado_dao.actualizar(
+                empleado_actualizado
             )
 
 
@@ -456,74 +386,82 @@ def inventario(page: ft.Page):
 
             limpiar_campos()
 
-            cargar_inventario()
+            cargar_empleados()
 
 
             mostrar_mensaje(
-
-                "Inventario actualizado correctamente."
-
+                "Empleado actualizado correctamente."
             )
 
 
         except Exception as error:
 
             mostrar_mensaje(
+                f"Error al actualizar empleado: {error}"
+            )
 
-                f"Error al actualizar inventario: {error}"
+    # =============================
+    # ELIMINAR EMPLEADO
+    # =============================
 
-            ) 
-
-    # ELIMINAR INVENTARIO
-
-    def eliminar_inventario(item):
+    def eliminar_empleado(empleado):
 
         try:
 
-            inventario_dao.eliminar(
-
-                item.id_inventario
-
+            empleado_dao.eliminar(
+                empleado.id_empleado
             )
 
 
-            cargar_inventario()
+            cargar_empleados()
 
 
             mostrar_mensaje(
-
-                "Inventario eliminado correctamente."
-
+                "Empleado eliminado correctamente."
             )
 
 
         except Exception as error:
 
             mostrar_mensaje(
-
-                f"Error al eliminar inventario: {error}"
-
+                f"Error al eliminar empleado: {error}"
             )
 
 
 
-    # BUSCAR INVENTARIO
+    # =============================
+    # BUSCAR EMPLEADOS
+    # =============================
 
-    def buscar_inventario(e):
+    def buscar_empleados(e):
 
         texto = txt_buscar.value.lower()
 
-
-        tabla_inventario.rows.clear()
-
-
-        for item in inventario_dao.obtener_todo():
+        tabla_empleados.rows.clear()
 
 
-            if texto in item.nombre.lower():
+        for empleado in empleado_dao.obtener_todo():
+
+            nombre_completo = (
+
+                f"{empleado.nombre} "
+                f"{empleado.app} "
+                f"{empleado.apm}"
+
+            ).lower()
 
 
-                tabla_inventario.rows.append(
+            if (
+
+                texto in nombre_completo
+
+                or texto in empleado.puesto.lower()
+
+                or texto in empleado.telefono.lower()
+
+            ):
+
+                tabla_empleados.rows.append(
 
                     ft.DataRow(
 
@@ -531,46 +469,28 @@ def inventario(page: ft.Page):
 
                             ft.DataCell(
                                 ft.Text(
-                                    str(item.id_inventario)
+                                    str(empleado.id_empleado)
                                 )
                             ),
 
 
                             ft.DataCell(
                                 ft.Text(
-                                    item.nombre
+                                    f"{empleado.nombre} {empleado.app} {empleado.apm}"
                                 )
                             ),
 
 
                             ft.DataCell(
                                 ft.Text(
-                                    item.tipo
+                                    empleado.puesto
                                 )
                             ),
 
 
                             ft.DataCell(
                                 ft.Text(
-                                    item.estado
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(item.cantidad)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
+                                    empleado.telefono
                                 )
                             ),
 
@@ -587,8 +507,8 @@ def inventario(page: ft.Page):
 
                                             tooltip="Editar",
 
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
+                                            on_click=lambda e, emp=empleado:
+                                                editar_empleado(emp)
 
                                         ),
 
@@ -601,8 +521,8 @@ def inventario(page: ft.Page):
 
                                             icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
+                                            on_click=lambda e, emp=empleado:
+                                                eliminar_empleado(emp)
 
                                         )
 
@@ -623,17 +543,17 @@ def inventario(page: ft.Page):
 
 
 
-    # NUEVO INVENTARIO
+    # =============================
+    # NUEVO EMPLEADO
+    # =============================
 
-    def nuevo_inventario(e):
+    def nuevo_empleado(e):
 
         limpiar_campos()
 
 
         dialogo.title = ft.Text(
-
-            "Nuevo Inventario"
-
+            "Nuevo Empleado"
         )
 
 
@@ -654,7 +574,7 @@ def inventario(page: ft.Page):
 
                 icon=ft.Icons.SAVE,
 
-                on_click=guardar_inventario
+                on_click=guardar_empleado
 
             )
 
@@ -663,15 +583,15 @@ def inventario(page: ft.Page):
 
         page.dialog = dialogo
 
-
         dialogo.open = True
-
 
         page.update()
 
 
 
+    # =============================
     # CERRAR DIALOGO
+    # =============================
 
     def cerrar_dialogo():
 
@@ -681,7 +601,9 @@ def inventario(page: ft.Page):
 
 
 
+    # =============================
     # MENSAJES
+    # =============================
 
     def mostrar_mensaje(texto):
 
@@ -697,14 +619,16 @@ def inventario(page: ft.Page):
 
 
 
-    txt_buscar.on_change = buscar_inventario
+    txt_buscar.on_change = buscar_empleados
 
 
-    cargar_inventario()
+    cargar_empleados()
 
 
 
+    # =============================
     # INTERFAZ FINAL
+    # =============================
 
     return ft.Container(
 
@@ -722,7 +646,7 @@ def inventario(page: ft.Page):
 
                         ft.Text(
 
-                            "Gestión de Inventario",
+                            "Gestión de Empleados",
 
                             size=28,
 
@@ -740,11 +664,11 @@ def inventario(page: ft.Page):
 
                         ft.ElevatedButton(
 
-                            "Nuevo Inventario",
+                            "Nuevo Empleado",
 
                             icon=ft.Icons.ADD,
 
-                            on_click=nuevo_inventario
+                            on_click=nuevo_empleado
 
                         )
 
@@ -760,7 +684,7 @@ def inventario(page: ft.Page):
 
                     expand=True,
 
-                    content=tabla_inventario
+                    content=tabla_empleados
 
                 )
 
@@ -770,5 +694,4 @@ def inventario(page: ft.Page):
 
         )
 
-    ) 
-
+    )

@@ -641,7 +641,7 @@ def main():
             break
         else:
             print("Opción no válida")
-   
+
 
 if __name__ == "__main__":
     modo = input("Elige modo (ui/consola): ").strip().lower()

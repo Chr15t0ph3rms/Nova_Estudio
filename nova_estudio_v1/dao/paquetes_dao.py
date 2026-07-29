@@ -72,29 +72,29 @@ class PaquetesDAO:
 
     # DELETE
     def eliminar(self,id):
-       conexion = Conexion.obtener_conexion()
-       cursor = conexion.cursor()
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
 
-       cursor.execute("DELETE FROM paquete WHERE id_paquetes = %s",(id,))
+        cursor.execute("DELETE FROM paquete WHERE id_paquetes = %s",(id,))
 
-       conexion.commit()
-       cursor.close()
-       conexion.close()
+        conexion.commit()
+        cursor.close()
+        conexion.close()
 
 
     def obtener_ultimo_id(self):
-       conexion = Conexion.obtener_conexion()
-       cursor = conexion.cursor()
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
 
-       cursor.execute("SELECT MAX(id_paquetes) FROM paquete")
-       resultado = cursor.fetchone()
+        cursor.execute("SELECT MAX(id_paquetes) FROM paquete")
+        resultado = cursor.fetchone()
 
-       cursor.close()
-       conexion.close()
+        cursor.close()
+        conexion.close()
 
-       if resultado[0] is None:
-           return 0
-       return resultado[0] 
+        if resultado[0] is None:
+            return 0
+        return resultado[0] 
 
     # INSERT
     def insertar(self, paquete):
@@ -143,28 +143,28 @@ class PaquetesDAO:
 
     # DELETE
     def eliminar(self,id):
-       conexion = Conexion.obtener_conexion()
-       cursor = conexion.cursor()
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
 
-       cursor.execute("DELETE FROM paquete WHERE id_paquetes = %s",(id,))
+        cursor.execute("DELETE FROM paquete WHERE id_paquetes = %s",(id,))
 
-       conexion.commit()
-       cursor.close()
-       conexion.close()
+        conexion.commit()
+        cursor.close()
+        conexion.close()
 
 
     def obtener_ultimo_id(self):
-       conexion = Conexion.obtener_conexion()
-       cursor = conexion.cursor()
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
 
-       cursor.execute("SELECT MAX(id_paquetes) FROM paquete")
-       resultado = cursor.fetchone()
+        cursor.execute("SELECT MAX(id_paquetes) FROM paquete")
+        resultado = cursor.fetchone()
 
-       cursor.close()
-       conexion.close()
+        cursor.close()
+        conexion.close()
 
-       if resultado[0] is None:
-           return 0
-       return resultado[0] 
+        if resultado[0] is None:
+            return 0
+        return resultado[0] 
 
 
