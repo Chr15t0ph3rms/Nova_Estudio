@@ -1,25 +1,41 @@
 import flet as ft
 
 
-def sidebar(on_change=None):
 
-    def item(icono, texto):
+def sidebar(on_change):
+
+
+    def enviar_opcion(texto):
+
+        print("Botón presionado:", texto)
+
+        if on_change:
+
+            on_change(texto)
+
+
+
+    def boton(icono, texto, color=ft.Colors.WHITE):
 
         return ft.Container(
 
-            border_radius=10,
-
             padding=10,
 
+            border_radius=10,
+
             ink=True,
+
 
             content=ft.Row(
 
                 [
 
                     ft.Icon(
+
                         icono,
-                        color=ft.Colors.WHITE
+
+                        color=color
+
                     ),
 
 
@@ -27,9 +43,7 @@ def sidebar(on_change=None):
 
                         texto,
 
-                        color=ft.Colors.WHITE,
-
-                        size=15
+                        color=color
 
                     )
 
@@ -40,9 +54,10 @@ def sidebar(on_change=None):
             ),
 
 
-            on_click=lambda e: on_change(texto) if on_change else None
+            on_click=lambda e: enviar_opcion(texto)
 
         )
+
 
 
     return ft.Container(
@@ -58,27 +73,15 @@ def sidebar(on_change=None):
 
             [
 
-                ft.Image(
-
-                    src="assets/logo.png",
-
-                    width=120,
-
-                    height=120
-
-                ),
-
-
-
                 ft.Text(
 
                     "DJ STAFF NOVA",
 
-                    size=22,
+                    size=25,
 
-                    weight=ft.FontWeight.BOLD,
+                    color=ft.Colors.WHITE,
 
-                    color=ft.Colors.WHITE
+                    weight=ft.FontWeight.BOLD
 
                 ),
 
@@ -88,75 +91,110 @@ def sidebar(on_change=None):
 
 
 
-                item(
+                boton(
+
                     ft.Icons.DASHBOARD,
+
                     "Dashboard"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.PEOPLE,
+
                     "Clientes"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.BADGE,
+
                     "Empleados"
+
                 ),
 
 
-                item(
-                    ft.Icons.LIBRARY_MUSIC,
-                    "DJs"
-                ),
 
+                boton(
 
-                item(
                     ft.Icons.EVENT,
+
                     "Eventos"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.INVENTORY,
+
                     "Inventario"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.CELEBRATION,
+
                     "Paquetes"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.DESCRIPTION,
+
                     "Contratos"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.PAYMENTS,
+
                     "Pagos"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.INSERT_CHART,
+
                     "Reportes"
+
                 ),
 
 
-                item(
+
+                boton(
+
                     ft.Icons.BUSINESS,
+
                     "Agencia"
+
                 ),
 
 
 
                 ft.Container(
+
                     expand=True
+
                 ),
 
 
@@ -165,12 +203,19 @@ def sidebar(on_change=None):
 
 
 
-                item(
+                boton(
+
                     ft.Icons.LOGOUT,
-                    "Cerrar sesión"
+
+                    "Cerrar sesión",
+
+                    ft.Colors.RED
+
                 )
 
+
             ],
+
 
             expand=True
 

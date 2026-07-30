@@ -1,6 +1,7 @@
 import flet as ft
 
-from Nova_Estudio.nova_estudio_v1.ui.inicio_sesion_admin import inicio_sesion_u
+from ui.inicio_sesion_admin import inicio_sesion_admin
+from ui.inicio_sesion_usuario import inicio_sesion_usuario
 from ui.admin.dashboard_admin import dashboard_admin
 
 
@@ -21,8 +22,9 @@ def main(page: ft.Page):
     )
 
 
+    # ==========================
     # ABRIR DASHBOARD ADMIN
-
+    # ==========================
 
     def abrir_dashboard():
 
@@ -32,11 +34,13 @@ def main(page: ft.Page):
 
 
 
-    # LOGIN ADMIN
+    # ==========================
+    # ENTRAR ADMINISTRADOR
+    # ==========================
 
     def entrar_admin(e):
 
-        contenido.content = inicio_sesion_u(
+        contenido.content = inicio_sesion_admin(
             page,
             abrir_dashboard
         )
@@ -45,23 +49,23 @@ def main(page: ft.Page):
 
 
 
-    # LOGIN USUARIO
+    # ==========================
+    # ENTRAR USUARIO
+    # ==========================
 
     def entrar_usuario(e):
 
-        page.snack_bar = ft.SnackBar(
-            ft.Text(
-                "Módulo usuario próximamente"
-            )
+        contenido.content = inicio_sesion_usuario(
+            page
         )
-
-        page.snack_bar.open = True
 
         page.update()
 
 
 
+    # ==========================
     # PANTALLA PRINCIPAL
+    # ==========================
 
     contenido.content = ft.Container(
 
@@ -72,44 +76,25 @@ def main(page: ft.Page):
 
         content=ft.Column(
 
-            alignment=ft.MainAxisAlignment.CENTER,
-
-            horizontal_alignment=ft.CrossAxisAlignment.CENTER,
-
-
-            controls=[
-
+            [
 
                 ft.Text(
-
                     "DJ Staff Nova Studio",
-
                     size=40,
-
                     weight=ft.FontWeight.BOLD,
-
                     color=ft.Colors.WHITE
-
                 ),
-
 
 
                 ft.Text(
-
                     "Tu música, tu experiencia inolvidable",
-
                     size=18,
-
                     color=ft.Colors.GREY
-
                 ),
-
 
 
                 ft.Container(
-
                     height=30
-
                 ),
 
 
@@ -124,14 +109,13 @@ def main(page: ft.Page):
                     controls=[
 
 
-                        
-                        # TARJETA USUARIO
-                        
+                        # =================
+                        # USUARIO
+                        # =================
 
                         ft.Container(
 
                             width=250,
-
                             height=300,
 
                             bgcolor=ft.Colors.GREY_900,
@@ -152,41 +136,25 @@ def main(page: ft.Page):
 
 
                                     ft.Icon(
-
                                         ft.Icons.PERSON,
-
                                         size=60,
-
                                         color=ft.Colors.WHITE
-
                                     ),
 
 
-
                                     ft.Text(
-
                                         "Usuario",
-
                                         size=24,
-
                                         weight=ft.FontWeight.BOLD,
-
                                         color=ft.Colors.WHITE
-
                                     ),
-
 
 
                                     ft.Text(
-
                                         "Accede para solicitar eventos,\nver DJs y gestionar contrataciones",
-
                                         color=ft.Colors.WHITE70,
-
                                         text_align=ft.TextAlign.CENTER
-
                                     ),
-
 
 
                                     ft.ElevatedButton(
@@ -209,14 +177,13 @@ def main(page: ft.Page):
 
 
 
-                        
-                        # TARJETA ADMIN
-                        
+                        # =================
+                        # ADMINISTRADOR
+                        # =================
 
                         ft.Container(
 
                             width=250,
-
                             height=300,
 
                             bgcolor=ft.Colors.GREY_900,
@@ -247,7 +214,6 @@ def main(page: ft.Page):
                                     ),
 
 
-
                                     ft.Text(
 
                                         "Administrador",
@@ -261,17 +227,13 @@ def main(page: ft.Page):
                                     ),
 
 
-
                                     ft.Text(
 
-                                        "Accede al panel de administrador\npara gestionar la agencia",
+                                        "Gestiona la agencia",
 
-                                        color=ft.Colors.WHITE70,
-
-                                        text_align=ft.TextAlign.CENTER
+                                        color=ft.Colors.WHITE70
 
                                     ),
-
 
 
                                     ft.ElevatedButton(
@@ -296,7 +258,11 @@ def main(page: ft.Page):
 
                 )
 
-            ]
+            ],
+
+            alignment=ft.MainAxisAlignment.CENTER,
+
+            horizontal_alignment=ft.CrossAxisAlignment.CENTER
 
         )
 

@@ -1,71 +1,48 @@
 import flet as ft
 
 
-def inicio_sesion_u(regresar):
+def inicio_sesion_admin(page, abrir_dashboard):
 
 
-    email_field = ft.TextField(
-
-        label="Correo electrónico",
-
-        width=300,
-
+    correo = ft.TextField(
+        hint_text="Correo electrónico",
+        width=380,
+        height=55,
         bgcolor=ft.Colors.WHITE,
-
         color=ft.Colors.BLACK
-
     )
 
 
-    password_field = ft.TextField(
-
-        label="Contraseña",
-
-        password=True,
-
-        can_reveal_password=True,
-
-        width=300,
-
+    contraseña = ft.TextField(
+        hint_text="Contraseña",
+        width=380,
+        height=55,
         bgcolor=ft.Colors.WHITE,
-
-        color=ft.Colors.BLACK
-
+        color=ft.Colors.BLACK,
+        password=True,
+        can_reveal_password=True
     )
 
 
 
     def login(e):
 
-        email = email_field.value
+        if correo.value == "chrisp@gmail.com" and contraseña.value == "Christopher":
 
-        password = password_field.value
-
-
-
-        if email == "chrisp@gmail.com" and password == "Christopher":
-
-
-            regresar()
-
+            abrir_dashboard()
 
 
         else:
 
-
-            dialog = ft.AlertDialog(
+            page.dialog = ft.AlertDialog(
 
                 title=ft.Text(
-
                     "Correo o contraseña incorrectos"
-
                 )
 
             )
 
-
-            dialog.open = True
-
+            page.dialog.open = True
             page.update()
 
 
@@ -76,6 +53,8 @@ def inicio_sesion_u(regresar):
 
         bgcolor=ft.Colors.BLACK,
 
+        alignment=ft.Alignment(0, 0),
+
 
         content=ft.Column(
 
@@ -83,9 +62,9 @@ def inicio_sesion_u(regresar):
 
                 ft.Text(
 
-                    "INICIO SESIÓN",
+                    "INICIO SESIÓN ADMINISTRADOR",
 
-                    size=30,
+                    size=32,
 
                     weight=ft.FontWeight.BOLD,
 
@@ -95,16 +74,30 @@ def inicio_sesion_u(regresar):
 
 
 
-                email_field,
+                ft.Text(
+
+                    "Accede al panel de administración",
+
+                    size=16,
+
+                    color=ft.Colors.GREY
+
+                ),
 
 
-                password_field,
+
+                correo,
+
+
+                contraseña,
 
 
 
                 ft.ElevatedButton(
 
-                    "Iniciar sesión",
+                    "Ingresar",
+
+                    width=180,
 
                     bgcolor=ft.Colors.GREY_700,
 

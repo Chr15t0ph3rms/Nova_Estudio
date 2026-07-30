@@ -1,6 +1,6 @@
 import flet as ft
 
-def registro_admin_view(page: ft.Page):
+def registro_usuario_view(page: ft.Page):
     return ft.Container(
         expand=True,
         content=ft.Column(
