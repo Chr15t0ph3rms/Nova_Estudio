@@ -4,61 +4,52 @@ from dao.dj_dao import DjDAO
 from modelos.dj import Dj
 
 
+
 def djs(page: ft.Page):
 
-    dj_dao = DjDAO()
 
-    dj_seleccionado = None
+    dao = DjDAO()
+
+    dj_actual = None
 
 
+
+    # ==========================
     # CAMPOS DEL FORMULARIO
+    # ==========================
 
-    txt_nombre = ft.TextField(
 
+    nombre = ft.TextField(
         label="Nombre",
-
         width=250
-
     )
 
 
-    txt_app = ft.TextField(
-
-        label="Apellido paterno",
-
+    app = ft.TextField(
+        label="Apellido Paterno",
         width=250
-
     )
 
 
-    txt_apm = ft.TextField(
-
-        label="Apellido materno",
-
+    apm = ft.TextField(
+        label="Apellido Materno",
         width=250
-
     )
 
 
-    txt_telefono = ft.TextField(
-
+    telefono = ft.TextField(
         label="Teléfono",
-
         width=250
-
     )
 
 
-    txt_especialidad = ft.TextField(
-
+    especialidad = ft.TextField(
         label="Especialidad",
-
         width=250
-
     )
 
 
-    txt_disponibilidad = ft.Dropdown(
+    disponibilidad = ft.Dropdown(
 
         label="Disponibilidad",
 
@@ -66,56 +57,85 @@ def djs(page: ft.Page):
 
         options=[
 
-            ft.dropdown.Option("True"),
+            ft.dropdown.Option(
+                "Disponible"
+            ),
 
-            ft.dropdown.Option("False")
+            ft.dropdown.Option(
+                "No disponible"
+            )
 
         ]
 
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar DJ",
+    formulario = ft.Container(
 
-        prefix_icon=ft.Icons.SEARCH,
+        visible=False,
 
-        expand=True
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
 
     )
 
 
 
+    # ==========================
     # TABLA DJs
+    # ==========================
 
-    tabla_djs = ft.DataTable(
+
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=35,
+
+        horizontal_margin=30,
+
 
         columns=[
+
 
             ft.DataColumn(
                 ft.Text("ID")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Nombre")
             ),
 
+
             ft.DataColumn(
-                ft.Text("Apellido")
+                ft.Text("Apellido P.")
             ),
+
+
+            ft.DataColumn(
+                ft.Text("Apellido M.")
+            ),
+
 
             ft.DataColumn(
                 ft.Text("Teléfono")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Especialidad")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Disponible")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Acciones")
@@ -123,613 +143,561 @@ def djs(page: ft.Page):
 
         ],
 
+
         rows=[]
 
     ) 
 
-    # DIALOGO DJ
 
-    dialogo = ft.AlertDialog(
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        modal=True,
+    def limpiar():
 
-        title=ft.Text(
-            "Nuevo DJ"
-        ),
+        nombre.value = ""
 
-        content=ft.Column(
+        app.value = ""
 
-            [
+        apm.value = ""
 
-                txt_nombre,
+        telefono.value = ""
 
-                txt_app,
+        especialidad.value = ""
 
-                txt_apm,
-
-                txt_telefono,
-
-                txt_especialidad,
-
-                txt_disponibilidad
-
-            ],
-
-            tight=True
-
-        )
-
-    )
+        disponibilidad.value = None
 
 
 
-    # CARGAR DJs
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-    def cargar_djs():
+    def cargar():
 
-        tabla_djs.rows.clear()
-
-
-        try:
-
-            lista_djs = dj_dao.obtener_todo()
+        tabla.rows.clear()
 
 
-            for dj in lista_djs:
+        lista_djs = dao.obtener_todo()
 
 
-                tabla_djs.rows.append(
 
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(dj.id_dj)
-                                )
-
-                            ),
+        for dj in lista_djs:
 
 
-                            ft.DataCell(
+            tabla.rows.append(
 
-                                ft.Text(
-                                    dj.nombre
-                                )
+                ft.DataRow(
 
-                            ),
+                    cells=[
 
 
-                            ft.DataCell(
+                        ft.DataCell(
 
-                                ft.Text(
-                                    dj.app + " " + dj.apm
-                                )
+                            ft.Text(
 
-                            ),
+                                str(dj.id_dj)
 
+                            )
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    dj.telefono
-                                )
-
-                            ),
+                        ),
 
 
-                            ft.DataCell(
 
-                                ft.Text(
-                                    dj.especialidad
-                                )
+                        ft.DataCell(
 
-                            ),
+                            ft.Text(
 
+                                dj.nombre
 
-                            ft.DataCell(
+                            )
 
-                                ft.Text(
-
-                                    "Disponible"
-                                    if dj.disponibilidad
-                                    else "No disponible"
-
-                                )
-
-                            ),
+                        ),
 
 
-                            ft.DataCell(
 
-                                ft.Row(
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                dj.app
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                dj.apm
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                dj.telefono
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                dj.especialidad
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                "Disponible"
+
+                                if dj.disponibilidad
+
+                                else "No disponible"
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
 
                                     [
+
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.EDIT,
 
-                                            tooltip="Editar",
+                                            icon_color=ft.Colors.BLUE_400,
 
-                                            on_click=lambda e, d=dj:
-                                                editar_dj(d)
+                                            tooltip="Editar DJ",
+
+                                            on_click=lambda e, d=dj: editar(d)
 
                                         ),
+
 
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar",
+                                            icon_color=ft.Colors.RED_400,
 
-                                            icon_color=ft.Colors.RED,
+                                            tooltip="Eliminar DJ",
 
-                                            on_click=lambda e, d=dj:
-                                                eliminar_dj(d)
+                                            on_click=lambda e, d=dj: eliminar(d)
 
                                         )
 
-                                    ]
+
+                                    ],
+
+
+                                    spacing=8
+
 
                                 )
 
                             )
 
-                        ]
+                        )
 
-                    )
+                    ]
+
+                )
+
+            )
+
+
+        page.update()
+
+
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+
+        formulario.content = ft.Column(
+
+            [
+
+
+                ft.Text(
+
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        nombre,
+
+                        app
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        apm,
+
+                        telefono
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        especialidad,
+
+                        disponibilidad
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+
+                    ]
 
                 )
 
 
-            page.update()
+            ]
+
+        )
 
 
-        except Exception as error:
+        formulario.visible = True
 
-            mostrar_mensaje(
 
-                f"Error al cargar DJs: {error}"
-
-            )
+        page.update()
 
 
 
-    # LIMPIAR CAMPOS
 
-    def limpiar_campos():
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        txt_nombre.value = ""
-
-        txt_app.value = ""
-
-        txt_apm.value = ""
-
-        txt_telefono.value = ""
-
-        txt_especialidad.value = ""
-
-        txt_disponibilidad.value = None 
+    def cerrar_formulario(e=None):
 
 
+        formulario.visible = False
+
+
+        limpiar()
+
+
+        page.update()
+
+
+
+
+    # ==========================
+    # NUEVO DJ
+    # ==========================
+
+    def nuevo_dj(e):
+
+
+        nonlocal dj_actual
+
+
+        dj_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nuevo DJ"
+
+        )
+
+
+
+
+    # ==========================
     # GUARDAR DJ
+    # ==========================
 
-    def guardar_dj(e):
+    def guardar(e):
+
 
         try:
 
-            nuevo_id = dj_dao.obtener_ultimo_id() + 1
+
+            nuevo = Dj(
+
+                id_dj=dao.obtener_ultimo_id()+1,
 
 
-            disponibilidad = True
-
-            if txt_disponibilidad.value == "False":
-
-                disponibilidad = False
+                nombre=nombre.value,
 
 
-
-            nuevo_dj = Dj(
-
-                nuevo_id,
-
-                txt_nombre.value,
-
-                txt_app.value,
-
-                txt_apm.value,
-
-                txt_telefono.value,
-
-                txt_especialidad.value,
-
-                disponibilidad
-
-            )
+                app=app.value,
 
 
-            dj_dao.insertar(
+                apm=apm.value,
 
-                nuevo_dj
+
+                telefono=telefono.value,
+
+
+                especialidad=especialidad.value,
+
+
+                disponibilidad=True
+
+                if disponibilidad.value == "Disponible"
+
+                else False
 
             )
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            dao.insertar(nuevo)
 
-            cargar_djs()
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "DJ registrado correctamente."
+                "DJ agregado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al guardar DJ: {error}"
+                f"Error: {error}"
 
-            )
+            ) 
 
-
-
+    # ==========================
     # EDITAR DJ
+    # ==========================
 
-    def editar_dj(dj):
+    def editar(dj):
 
-        nonlocal dj_seleccionado
-
-
-        dj_seleccionado = dj
+        nonlocal dj_actual
 
 
-        txt_nombre.value = dj.nombre
-
-        txt_app.value = dj.app
-
-        txt_apm.value = dj.apm
-
-        txt_telefono.value = dj.telefono
-
-        txt_especialidad.value = dj.especialidad
-
-        txt_disponibilidad.value = str(dj.disponibilidad)
+        dj_actual = dj
 
 
 
-        dialogo.title = ft.Text(
+        nombre.value = dj.nombre
+
+        app.value = dj.app
+
+        apm.value = dj.apm
+
+        telefono.value = dj.telefono
+
+        especialidad.value = dj.especialidad
+
+
+        disponibilidad.value = (
+
+            "Disponible"
+
+            if dj.disponibilidad
+
+            else "No disponible"
+
+        )
+
+
+
+        mostrar_formulario(
 
             "Editar DJ"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_dj
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
 
-        dialogo.open = True
 
         page.update()
 
 
 
+
+    # ==========================
     # ACTUALIZAR DJ
+    # ==========================
 
-    def actualizar_dj(e):
+    def actualizar(e):
 
         try:
 
-            disponibilidad = True
+
+            dj_actual.nombre = nombre.value
 
 
-            if txt_disponibilidad.value == "False":
-
-                disponibilidad = False
+            dj_actual.app = app.value
 
 
-
-            dj_actualizado = Dj(
-
-                dj_seleccionado.id_dj,
-
-                txt_nombre.value,
-
-                txt_app.value,
-
-                txt_apm.value,
-
-                txt_telefono.value,
-
-                txt_especialidad.value,
-
-                disponibilidad
-
-            )
+            dj_actual.apm = apm.value
 
 
-            dj_dao.actualizar(
+            dj_actual.telefono = telefono.value
 
-                dj_actualizado
+
+            dj_actual.especialidad = especialidad.value
+
+
+            dj_actual.disponibilidad = (
+
+                True
+
+                if disponibilidad.value == "Disponible"
+
+                else False
 
             )
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            dao.actualizar(
 
-            cargar_djs()
+                dj_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "DJ actualizado correctamente."
+                "DJ actualizado correctamente"
 
             )
+
 
 
         except Exception as error:
 
-            mostrar_mensaje(
-
-                f"Error al actualizar DJ: {error}"
-
-            ) 
-
-    # ELIMINAR DJ
-
-    def eliminar_dj(dj):
-
-        try:
-
-            dj_dao.eliminar(
-
-                dj.id_dj
-
-            )
-
-
-            cargar_djs()
-
 
             mostrar_mensaje(
 
-                "DJ eliminado correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar DJ: {error}"
+                f"Error al actualizar: {error}"
 
             )
 
 
 
-    # BUSCAR DJ
 
-    def buscar_djs(e):
 
-        texto = txt_buscar.value.lower()
-
-
-        tabla_djs.rows.clear()
-
-
-        for dj in dj_dao.obtener_todo():
-
-
-            if texto in dj.nombre.lower() or texto in dj.especialidad.lower():
-
-
-                tabla_djs.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(dj.id_dj)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    dj.nombre
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    dj.app + " " + dj.apm
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    dj.telefono
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    dj.especialidad
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-
-                                    "Disponible"
-                                    if dj.disponibilidad
-                                    else "No disponible"
-
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, d=dj:
-                                                editar_dj(d)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, d=dj:
-                                                eliminar_dj(d)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # NUEVO DJ
-
-    def nuevo_dj(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nuevo DJ"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
-
-
-            ft.ElevatedButton(
-
-                "Guardar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=guardar_dj
-
-            )
-
-        ]
-
-
-        page.dialog = dialogo
-
-
-        dialogo.open = True
-
-
-        page.update()
-
-
-
-    # CERRAR DIALOGO
-
-
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
+    # ==========================
     # MENSAJES
+    # ==========================
 
     def mostrar_mensaje(texto):
+
 
         page.snack_bar = ft.SnackBar(
 
@@ -737,20 +705,160 @@ def djs(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_djs
 
 
-    cargar_djs()
+    # ==========================
+    # ELIMINAR DJ
+    # ==========================
+
+    def eliminar(dj):
+
+
+        def aceptar(e):
+
+
+            dao.eliminar(
+
+                dj.id_dj
+
+            )
 
 
 
+            dialogo_eliminar.open = False
+
+
+            page.update()
+
+
+
+            cargar()
+
+
+
+            mostrar_mensaje(
+
+                "DJ eliminado correctamente"
+
+            )
+
+
+
+
+        def cancelar(e):
+
+
+            dialogo_eliminar.open = False
+
+
+            page.update()
+
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar DJ"
+
+            ),
+
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este DJ?"
+
+            ),
+
+
+
+            actions=[
+
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+
+            ]
+
+        )
+
+
+
+        page.dialog = dialogo_eliminar
+
+
+        dialogo_eliminar.open = True
+
+
+        page.update()
+
+
+
+
+
+    # ==========================
+    # BOTÓN NUEVO DJ
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo DJ",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_dj
+
+    )
+
+
+
+
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
+    # ==========================
 
     return ft.Container(
 
@@ -758,23 +866,29 @@ def djs(page: ft.Page):
 
         padding=20,
 
+
         content=ft.Column(
 
             [
+
 
                 ft.Row(
 
                     [
 
+
                         ft.Text(
 
                             "Gestión de DJs",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -784,35 +898,58 @@ def djs(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo DJ",
+                        boton_nuevo
 
-                            icon=ft.Icons.ADD,
 
-                            on_click=nuevo_dj
-
-                        )
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_djs
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
+
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

@@ -4,27 +4,32 @@ from dao.agencia_dao import AgenciaDAO
 from modelos.agencia import Agencia
 
 
+
 def agencia(page: ft.Page):
 
-    agencia_dao = AgenciaDAO()
 
-    agencia_seleccionada = None
+    dao = AgenciaDAO()
 
 
-    # =============================
-    # CAMPOS DEL FORMULARIO
-    # =============================
+    agencia_actual = None
 
-    txt_agencia_nombre = ft.TextField(
 
-        label="Nombre de la agencia",
+
+    # ==========================
+    # CAMPOS
+    # ==========================
+
+
+    agencia_nombre = ft.TextField(
+
+        label="Nombre de agencia",
 
         width=250
 
     )
 
 
-    txt_nombre = ft.TextField(
+    nombre = ft.TextField(
 
         label="Nombre responsable",
 
@@ -33,7 +38,7 @@ def agencia(page: ft.Page):
     )
 
 
-    txt_app = ft.TextField(
+    app = ft.TextField(
 
         label="Apellido paterno",
 
@@ -42,7 +47,7 @@ def agencia(page: ft.Page):
     )
 
 
-    txt_apm = ft.TextField(
+    apm = ft.TextField(
 
         label="Apellido materno",
 
@@ -51,7 +56,7 @@ def agencia(page: ft.Page):
     )
 
 
-    txt_telefono = ft.TextField(
+    telefono = ft.TextField(
 
         label="Teléfono",
 
@@ -60,7 +65,7 @@ def agencia(page: ft.Page):
     )
 
 
-    txt_correo = ft.TextField(
+    correo = ft.TextField(
 
         label="Correo",
 
@@ -69,623 +74,712 @@ def agencia(page: ft.Page):
     )
 
 
-    txt_empleados = ft.TextField(
+    empleados = ft.TextField(
 
-        label="Empleados",
+        label="Cantidad empleados",
 
         width=250
 
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar agencia",
+    formulario = ft.Container(
 
-        prefix_icon=ft.Icons.SEARCH,
+        visible=False,
 
-        expand=True
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
 
     )
 
 
 
-    # =============================
-    # TABLA AGENCIA
-    # =============================
+    # ==========================
+    # TABLA
+    # ==========================
 
-    tabla_agencia = ft.DataTable(
+
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=35,
+
+        horizontal_margin=30,
+
 
         columns=[
+
 
             ft.DataColumn(
                 ft.Text("ID")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Agencia")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Responsable")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Teléfono")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Correo")
             ),
 
+
+            ft.DataColumn(
+                ft.Text("Empleados")
+            ),
+
+
             ft.DataColumn(
                 ft.Text("Acciones")
             )
 
+
         ],
+
 
         rows=[]
 
     ) 
 
-    # =============================
-    # DIALOGO AGENCIA
-    # =============================
 
-    dialogo = ft.AlertDialog(
+    # ==========================
+    # LIMPIAR CAMPOS
+    # ==========================
 
-        modal=True,
+    def limpiar():
 
-        title=ft.Text(
-            "Nueva Agencia"
-        ),
+        agencia_nombre.value = ""
 
-        content=ft.Column(
+        nombre.value = ""
 
-            [
+        app.value = ""
 
-                txt_agencia_nombre,
+        apm.value = ""
 
-                txt_nombre,
+        telefono.value = ""
 
-                txt_app,
+        correo.value = ""
 
-                txt_apm,
+        empleados.value = ""
 
-                txt_telefono,
 
-                txt_correo,
 
-                txt_empleados
 
-            ],
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-            tight=True
+    def cargar():
 
-        )
 
-    )
+        tabla.rows.clear()
 
 
+        lista = dao.obtener_todo()
 
-    # =============================
-    # CARGAR AGENCIA
-    # =============================
 
-    def cargar_agencia():
 
-        tabla_agencia.rows.clear()
+        for item in lista:
 
-        try:
 
-            lista_agencias = agencia_dao.obtener_todo()
+            tabla.rows.append(
 
+                ft.DataRow(
 
-            for item in lista_agencias:
+                    cells=[
 
-                tabla_agencia.rows.append(
 
-                    ft.DataRow(
+                        ft.DataCell(
 
-                        cells=[
+                            ft.Text(
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(item.id_agencia)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.agencia_nombre
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.nombre + " " + item.app
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.telefono
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.correo
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, a=item:
-                                                editar_agencia(a)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, a=item:
-                                                eliminar_agencia(a)
-
-                                        )
-
-                                    ]
-
-                                )
+                                str(item.id_agencia)
 
                             )
 
-                        ]
+                        ),
 
-                    )
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.agencia_nombre
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.nombre + " " + item.app
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.telefono
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.correo
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(item.empleados)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Row(
+
+                                [
+
+                                    ft.IconButton(
+
+                                        icon=ft.Icons.EDIT,
+
+                                        icon_color=ft.Colors.BLUE_400,
+
+                                        tooltip="Editar agencia",
+
+                                        on_click=lambda e, a=item: editar(a)
+
+                                    ),
+
+
+
+                                    ft.IconButton(
+
+                                        icon=ft.Icons.DELETE,
+
+                                        icon_color=ft.Colors.RED_400,
+
+                                        tooltip="Eliminar agencia",
+
+                                        on_click=lambda e, a=item: eliminar(a)
+
+                                    )
+
+
+                                ],
+
+                                spacing=8
+
+                            )
+
+                        )
+
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update()
+
+
+
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+
+        formulario.content = ft.Column(
+
+            [
+
+
+                ft.Text(
+
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        agencia_nombre,
+
+                        nombre
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        app,
+
+                        apm
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        telefono,
+
+                        correo
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        empleados
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+
+                    ]
 
                 )
 
 
-            page.update()
+            ]
+
+        )
 
 
-        except Exception as error:
+        formulario.visible = True
 
-            mostrar_mensaje(
 
-                f"Error al cargar agencia: {error}"
-
-            )
+        page.update()
 
 
 
-    # =============================
-    # LIMPIAR CAMPOS
-    # =============================
 
-    def limpiar_campos():
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        txt_agencia_nombre.value = ""
+    def cerrar_formulario(e=None):
 
-        txt_nombre.value = ""
 
-        txt_app.value = ""
+        formulario.visible = False
 
-        txt_apm.value = ""
 
-        txt_telefono.value = ""
+        limpiar()
 
-        txt_correo.value = ""
 
-        txt_empleados.value = "" 
+        page.update()
 
-    # =============================
+
+
+
+    # ==========================
+    # NUEVA AGENCIA
+    # ==========================
+
+    def nueva_agencia(e):
+
+
+        nonlocal agencia_actual
+
+
+        agencia_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nueva Agencia"
+
+        )
+
+
+
+
+    # ==========================
     # GUARDAR AGENCIA
-    # =============================
+    # ==========================
 
-    def guardar_agencia(e):
+    def guardar(e):
+
 
         try:
 
-            nuevo_id = agencia_dao.obtener_ultimo_id() + 1
+
+            nueva = Agencia(
+
+                id_agencia=dao.obtener_ultimo_id()+1,
 
 
-            nueva_agencia = Agencia(
-
-                nuevo_id,
-
-                txt_agencia_nombre.value,
-
-                txt_nombre.value,
-
-                txt_app.value,
-
-                txt_apm.value,
-
-                txt_telefono.value,
-
-                txt_correo.value,
-
-                txt_empleados.value
-
-            )
+                agencia_nombre=agencia_nombre.value,
 
 
-            agencia_dao.insertar(
+                nombre=nombre.value,
 
-                nueva_agencia
+
+                app=app.value,
+
+
+                apm=apm.value,
+
+
+                telefono=telefono.value,
+
+
+                correo=correo.value,
+
+
+                empleados=int(empleados.value)
 
             )
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            dao.insertar(nueva)
 
-            cargar_agencia()
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Agencia registrada correctamente."
+                "Agencia registrada correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al guardar agencia: {error}"
+                f"Error: {error}"
 
-            )
+            ) 
 
 
-
-    # =============================
+    # ==========================
     # EDITAR AGENCIA
-    # =============================
+    # ==========================
 
-    def editar_agencia(item):
+    def editar(item):
 
-        nonlocal agencia_seleccionada
-
-
-        agencia_seleccionada = item
+        nonlocal agencia_actual
 
 
-        txt_agencia_nombre.value = item.agencia_nombre
-
-        txt_nombre.value = item.nombre
-
-        txt_app.value = item.app
-
-        txt_apm.value = item.apm
-
-        txt_telefono.value = item.telefono
-
-        txt_correo.value = item.correo
-
-        txt_empleados.value = str(item.empleados)
+        agencia_actual = item
 
 
-        dialogo.title = ft.Text(
+
+        agencia_nombre.value = item.agencia_nombre
+
+        nombre.value = item.nombre
+
+        app.value = item.app
+
+        apm.value = item.apm
+
+        telefono.value = item.telefono
+
+        correo.value = item.correo
+
+        empleados.value = str(item.empleados)
+
+
+
+        mostrar_formulario(
 
             "Editar Agencia"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_agencia
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
 
-        dialogo.open = True
 
         page.update()
 
 
 
-    # =============================
-    # ACTUALIZAR AGENCIA
-    # =============================
 
-    def actualizar_agencia(e):
+    # ==========================
+    # ACTUALIZAR AGENCIA
+    # ==========================
+
+    def actualizar(e):
+
 
         try:
 
-            agencia_actualizada = Agencia(
 
-                agencia_seleccionada.id_agencia,
+            agencia_actual.agencia_nombre = agencia_nombre.value
 
-                txt_agencia_nombre.value,
 
-                txt_nombre.value,
+            agencia_actual.nombre = nombre.value
 
-                txt_app.value,
 
-                txt_apm.value,
+            agencia_actual.app = app.value
 
-                txt_telefono.value,
 
-                txt_correo.value,
+            agencia_actual.apm = apm.value
 
-                txt_empleados.value
+
+            agencia_actual.telefono = telefono.value
+
+
+            agencia_actual.correo = correo.value
+
+
+            agencia_actual.empleados = int(empleados.value)
+
+
+
+            dao.actualizar(
+
+                agencia_actual
 
             )
 
 
-            agencia_dao.actualizar(
 
-                agencia_actualizada
-
-            )
+            cerrar_formulario()
 
 
-            cerrar_dialogo()
+            cargar()
 
-            limpiar_campos()
-
-            cargar_agencia()
 
 
             mostrar_mensaje(
 
-                "Agencia actualizada correctamente."
+                "Agencia actualizada correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al actualizar agencia: {error}"
+                f"Error al actualizar: {error}"
 
-            ) 
+            )
 
-    # =============================
+
+
+
+
+    # ==========================
     # ELIMINAR AGENCIA
-    # =============================
+    # ==========================
 
-    def eliminar_agencia(item):
+    def eliminar(item):
 
-        try:
 
-            agencia_dao.eliminar(
+        def aceptar(e):
+
+
+            dao.eliminar(
 
                 item.id_agencia
 
             )
 
 
-            cargar_agencia()
+
+            dialogo.open = False
+
+
+            page.update()
+
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Agencia eliminada correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar agencia: {error}"
+                "Agencia eliminada correctamente"
 
             )
 
 
 
-    # =============================
-    # BUSCAR AGENCIA
-    # =============================
 
-    def buscar_agencia(e):
+        def cancelar(e):
 
-        texto = txt_buscar.value.lower()
 
+            dialogo.open = False
 
-        tabla_agencia.rows.clear()
 
+            page.update()
 
-        for item in agencia_dao.obtener_todo():
 
 
-            if texto in item.agencia_nombre.lower() or texto in item.correo.lower():
 
+        dialogo = ft.AlertDialog(
 
-                tabla_agencia.rows.append(
+            modal=True,
 
-                    ft.DataRow(
 
-                        cells=[
+            title=ft.Text(
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(item.id_agencia)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.agencia_nombre
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.nombre + " " + item.app
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.telefono
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.correo
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, a=item:
-                                                editar_agencia(a)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, a=item:
-                                                eliminar_agencia(a)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # =============================
-    # NUEVA AGENCIA
-    # =============================
-
-    def nueva_agencia(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nueva Agencia"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
+                "Eliminar Agencia"
 
             ),
 
 
-            ft.ElevatedButton(
 
-                "Guardar",
+            content=ft.Text(
 
-                icon=ft.Icons.SAVE,
+                "¿Seguro que deseas eliminar esta agencia?"
 
-                on_click=guardar_agencia
+            ),
 
-            )
 
-        ]
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+
+            ]
+
+        )
+
 
 
         page.dialog = dialogo
@@ -698,23 +792,13 @@ def agencia(page: ft.Page):
 
 
 
-    # =============================
-    # CERRAR DIALOGO
-    # =============================
 
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
-    # =============================
+    # ==========================
     # MENSAJES
-    # =============================
+    # ==========================
 
     def mostrar_mensaje(texto):
+
 
         page.snack_bar = ft.SnackBar(
 
@@ -722,28 +806,51 @@ def agencia(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_agencia
+
+    # ==========================
+    # BOTON NUEVA AGENCIA
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nueva Agencia",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nueva_agencia
+
+    )
 
 
-    cargar_agencia()
+
+
+    # ==========================
+    # CARGA INICIAL
+    # ==========================
+
+    cargar()
 
 
 
-    # =============================
+
+    # ==========================
     # INTERFAZ FINAL
-    # =============================
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -753,15 +860,19 @@ def agencia(page: ft.Page):
 
                     [
 
+
                         ft.Text(
 
                             "Gestión de Agencia",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -771,35 +882,57 @@ def agencia(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nueva Agencia",
+                        boton_nuevo
 
-                            icon=ft.Icons.ADD,
-
-                            on_click=nueva_agencia
-
-                        )
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_agencia
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
+
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

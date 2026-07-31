@@ -3,30 +3,31 @@ import flet as ft
 from database.conexion import Conexion
 
 
+
 def reportes(page: ft.Page):
 
 
-    # TARJETAS DE INFORMACIÓN
-
-    card_clientes = ft.Card()
-    card_empleados = ft.Card()
-    card_djs = ft.Card()
-    card_eventos = ft.Card()
-    card_contratos = ft.Card()
-    card_pagos = ft.Card()
-    card_ingresos = ft.Card()
-
-
-    # FUNCIÓN PARA CREAR TARJETAS
+    # ==========================
+    # CREAR TARJETAS
+    # ==========================
 
     def crear_card(titulo, valor, icono):
+
         return ft.Container(
-            width=200,
-            height=120,
+
+            width=220,
+
+            height=140,
+
             bgcolor=ft.Colors.GREY_900,
+
             border_radius=15,
+
             padding=15,
+
+
             content=ft.Column(
+
                 [
 
                     ft.Icon(
@@ -44,7 +45,7 @@ def reportes(page: ft.Page):
 
                         titulo,
 
-                        color=ft.Colors.WHITE,
+                        color=ft.Colors.GREY_300,
 
                         size=16
 
@@ -57,30 +58,41 @@ def reportes(page: ft.Page):
 
                         color=ft.Colors.WHITE,
 
-                        size=25,
+                        size=28,
 
                         weight=ft.FontWeight.BOLD
 
                     )
 
-                ]
+                ],
+
+
+                spacing=5
 
             )
 
-        ) 
+        )
 
-    # OBTENER DATOS DE REPORTES
+
+
+    # ==========================
+    # OBTENER DATOS
+    # ==========================
 
     def obtener_datos():
 
-        conexion = Conexion.obtener_conexion()
 
-        cursor = conexion.cursor()
+        conexion = None
 
 
         try:
 
-            # Total clientes
+
+            conexion = Conexion.obtener_conexion()
+
+            cursor = conexion.cursor()
+
+
 
             cursor.execute(
                 "SELECT COUNT(*) FROM cliente"
@@ -90,8 +102,6 @@ def reportes(page: ft.Page):
 
 
 
-            # Total empleados
-
             cursor.execute(
                 "SELECT COUNT(*) FROM empleados"
             )
@@ -99,8 +109,6 @@ def reportes(page: ft.Page):
             empleados = cursor.fetchone()[0]
 
 
-
-            # Total DJs
 
             cursor.execute(
                 "SELECT COUNT(*) FROM dj"
@@ -110,8 +118,6 @@ def reportes(page: ft.Page):
 
 
 
-            # Total eventos
-
             cursor.execute(
                 "SELECT COUNT(*) FROM evento"
             )
@@ -119,8 +125,6 @@ def reportes(page: ft.Page):
             eventos = cursor.fetchone()[0]
 
 
-
-            # Total contratos
 
             cursor.execute(
                 "SELECT COUNT(*) FROM contrato"
@@ -130,8 +134,6 @@ def reportes(page: ft.Page):
 
 
 
-            # Total pagos
-
             cursor.execute(
                 "SELECT COUNT(*) FROM pago"
             )
@@ -140,13 +142,15 @@ def reportes(page: ft.Page):
 
 
 
-            # Total ingresos
-
             cursor.execute(
                 "SELECT COALESCE(SUM(monto),0) FROM pago"
             )
 
             ingresos = cursor.fetchone()[0]
+
+
+
+            cursor.close()
 
 
 
@@ -169,10 +173,12 @@ def reportes(page: ft.Page):
             )
 
 
+
         except Exception as error:
 
+
             print(
-                "Error en reportes:",
+                "Error cargando reportes:",
                 error
             )
 
@@ -196,17 +202,26 @@ def reportes(page: ft.Page):
             )
 
 
+
         finally:
 
-            cursor.close()
 
-            conexion.close() 
+            if conexion:
 
-    # CARGAR INFORMACIÓN
+                conexion.close()
+
+
+
+    # ==========================
+    # CARGAR REPORTES
+    # ==========================
+
 
     def cargar_reportes():
 
+
         datos = obtener_datos()
+
 
 
         clientes = datos[0]
@@ -227,6 +242,8 @@ def reportes(page: ft.Page):
 
         contenido_reportes.controls = [
 
+
+
             ft.Row(
 
                 [
@@ -238,6 +255,7 @@ def reportes(page: ft.Page):
                     ),
 
 
+
                     crear_card(
                         "Empleados",
                         empleados,
@@ -245,11 +263,13 @@ def reportes(page: ft.Page):
                     ),
 
 
+
                     crear_card(
                         "DJs",
                         djs,
                         ft.Icons.MUSIC_NOTE
                     ),
+
 
 
                     crear_card(
@@ -260,9 +280,14 @@ def reportes(page: ft.Page):
 
                 ],
 
-                spacing=20
+
+                spacing=20,
+
+                alignment=ft.MainAxisAlignment.START
 
             ),
+
+
 
 
             ft.Container(
@@ -270,6 +295,9 @@ def reportes(page: ft.Page):
                 height=25
 
             ),
+
+
+
 
 
             ft.Row(
@@ -283,6 +311,7 @@ def reportes(page: ft.Page):
                     ),
 
 
+
                     crear_card(
                         "Pagos",
                         pagos,
@@ -290,24 +319,39 @@ def reportes(page: ft.Page):
                     ),
 
 
+
                     crear_card(
                         "Ingresos",
-                        "$ " + str(ingresos),
+
+                        f"$ {float(ingresos):.2f}",
+
                         ft.Icons.ATTACH_MONEY
+
                     )
+
 
                 ],
 
-                spacing=20
+
+                spacing=20,
+
+                alignment=ft.MainAxisAlignment.START
 
             )
+
 
         ]
 
 
-        page.update() 
 
-    # CONTENEDOR DE REPORTES
+        page.update()
+
+
+
+    # ==========================
+    # CONTENEDOR
+    # ==========================
+
 
     contenido_reportes = ft.Column(
 
@@ -317,9 +361,8 @@ def reportes(page: ft.Page):
 
 
 
-    # INTERFAZ FINAL
-
     cargar_reportes()
+
 
 
     return ft.Container(
@@ -327,6 +370,7 @@ def reportes(page: ft.Page):
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -345,12 +389,16 @@ def reportes(page: ft.Page):
                 ),
 
 
+
                 ft.Divider(),
+
 
 
                 contenido_reportes
 
+
             ],
+
 
             expand=True
 

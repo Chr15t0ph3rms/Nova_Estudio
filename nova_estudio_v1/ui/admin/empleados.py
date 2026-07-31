@@ -6,604 +6,611 @@ from modelos.empleados import Empleados
 
 def empleados(page: ft.Page):
 
-    empleado_dao = EmpleadosDAO()
+    dao = EmpleadosDAO()
 
-    empleado_seleccionado = None
+    empleado_actual = None
 
 
-    # =============================
+    # ==========================
     # CAMPOS DEL FORMULARIO
-    # =============================
+    # ==========================
 
-    txt_nombre = ft.TextField(
+    nombre = ft.TextField(
         label="Nombre",
         width=250
     )
 
 
-    txt_app = ft.TextField(
+    app = ft.TextField(
         label="Apellido Paterno",
         width=250
     )
 
 
-    txt_apm = ft.TextField(
+    apm = ft.TextField(
         label="Apellido Materno",
         width=250
     )
 
 
-    txt_puesto = ft.TextField(
+    puesto = ft.TextField(
         label="Puesto",
         width=250
     )
 
 
-    txt_telefono = ft.TextField(
+    telefono = ft.TextField(
         label="Teléfono",
         width=250
     )
 
 
-    txt_buscar = ft.TextField(
-        label="Buscar empleado",
-        prefix_icon=ft.Icons.SEARCH,
-        expand=True
+
+    formulario = ft.Container(
+
+        visible=False,
+
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
+
     )
 
 
-    # =============================
-    # TABLA EMPLEADOS
-    # =============================
 
-    tabla_empleados = ft.DataTable(
+    # ==========================
+    # TABLA EMPLEADOS
+    # ==========================
+
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
+
 
             ft.DataColumn(
                 ft.Text("ID")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Nombre")
             ),
+
+
+            ft.DataColumn(
+                ft.Text("Apellido P.")
+            ),
+
+
+            ft.DataColumn(
+                ft.Text("Apellido M.")
+            ),
+
 
             ft.DataColumn(
                 ft.Text("Puesto")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Teléfono")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Acciones")
             )
 
+
         ],
+
 
         rows=[]
 
     )
 
-    # =============================
-    # DIALOGO EMPLEADO
-    # =============================
 
-    dialogo = ft.AlertDialog(
 
-        modal=True,
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        title=ft.Text(
-            "Nuevo Empleado"
-        ),
+    def limpiar():
 
-        content=ft.Column(
+        nombre.value = ""
+
+        app.value = ""
+
+        apm.value = ""
+
+        puesto.value = ""
+
+        telefono.value = ""
+
+
+
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
+
+    def cargar():
+
+        tabla.rows.clear()
+
+
+        empleados_lista = dao.obtener_todo()
+
+
+
+        for empleado in empleados_lista:
+
+
+            tabla.rows.append(
+
+                ft.DataRow(
+
+                    cells=[
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(empleado.id_empleado)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                empleado.nombre
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                empleado.app
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                empleado.apm
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                empleado.puesto
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                empleado.telefono
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
+
+                                    [
+
+
+                                        ft.IconButton(
+
+                                            icon=ft.Icons.EDIT,
+
+                                            icon_color=ft.Colors.BLUE_400,
+
+                                            tooltip="Editar empleado",
+
+                                            on_click=lambda e, emp=empleado: editar(emp)
+
+                                        ),
+
+
+
+                                        ft.IconButton(
+
+                                            icon=ft.Icons.DELETE,
+
+                                            icon_color=ft.Colors.RED_400,
+
+                                            tooltip="Eliminar empleado",
+
+                                            on_click=lambda e, emp=empleado: eliminar(emp)
+
+                                        )
+
+
+                                    ],
+
+
+                                    spacing=8
+
+
+                                )
+
+
+                            )
+
+                        )
+
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update() 
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+        formulario.content = ft.Column(
 
             [
 
-                txt_nombre,
+                ft.Text(
 
-                txt_app,
+                    titulo,
 
-                txt_apm,
+                    size=25,
 
-                txt_puesto,
+                    weight=ft.FontWeight.BOLD,
 
-                txt_telefono
+                    color=ft.Colors.WHITE
 
-            ],
-
-            tight=True
-
-        )
-
-    )
+                ),
 
 
-    # =============================
-    # CARGAR EMPLEADOS
-    # =============================
 
-    def cargar_empleados():
+                ft.Row(
 
-        tabla_empleados.rows.clear()
+                    [
 
-        try:
+                        nombre,
 
-            lista_empleados = empleado_dao.obtener_todo()
+                        app
 
+                    ]
 
-            for empleado in lista_empleados:
-
-                tabla_empleados.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(empleado.id_empleado)
-                                )
-                            ),
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    f"{empleado.nombre} {empleado.app} {empleado.apm}"
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        apm,
+
+                        puesto
+
+                    ]
+
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    empleado.puesto
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        telefono
+
+                    ]
+
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    empleado.telefono
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
 
 
-                            ft.DataCell(
 
-                                ft.Row(
+                        ft.TextButton(
 
-                                    [
+                            "Cancelar",
 
-                                        ft.IconButton(
+                            on_click=cerrar_formulario
 
-                                            icon=ft.Icons.EDIT,
+                        )
 
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, emp=empleado:
-                                                editar_empleado(emp)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, emp=empleado:
-                                                eliminar_empleado(emp)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
+                    ]
 
                 )
 
 
-            page.update()
+            ]
 
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al cargar empleados: {error}"
-            )
-
-
-
-    # =============================
-    # LIMPIAR CAMPOS
-    # =============================
-
-    def limpiar_campos():
-
-        txt_nombre.value = ""
-
-        txt_app.value = ""
-
-        txt_apm.value = ""
-
-        txt_puesto.value = ""
-
-        txt_telefono.value = ""
-
-    # =============================
-    # GUARDAR EMPLEADO
-    # =============================
-
-    def guardar_empleado(e):
-
-        try:
-
-            nuevo_id = empleado_dao.obtener_ultimo_id() + 1
-
-
-            empleado = Empleados(
-
-                nuevo_id,
-
-                txt_nombre.value,
-
-                txt_app.value,
-
-                txt_apm.value,
-
-                txt_puesto.value,
-
-                txt_telefono.value
-
-            )
-
-
-            empleado_dao.insertar(
-                empleado
-            )
-
-
-            cerrar_dialogo()
-
-            limpiar_campos()
-
-            cargar_empleados()
-
-
-            mostrar_mensaje(
-                "Empleado registrado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al guardar empleado: {error}"
-            )
-
-
-
-    # =============================
-    # EDITAR EMPLEADO
-    # =============================
-
-    def editar_empleado(empleado):
-
-        nonlocal empleado_seleccionado
-
-
-        empleado_seleccionado = empleado
-
-
-        txt_nombre.value = empleado.nombre
-
-        txt_app.value = empleado.app
-
-        txt_apm.value = empleado.apm
-
-        txt_puesto.value = empleado.puesto
-
-        txt_telefono.value = empleado.telefono
-
-
-        dialogo.title = ft.Text(
-            "Editar Empleado"
         )
 
 
-        dialogo.actions = [
-
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_empleado
-
-            ),
-
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
-
-
-        dialogo.open = True
+        formulario.visible = True
 
         page.update()
 
 
 
-    # =============================
-    # ACTUALIZAR EMPLEADO
-    # =============================
 
-    def actualizar_empleado(e):
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        try:
+    def cerrar_formulario(e=None):
 
-            empleado_actualizado = Empleados(
+        formulario.visible = False
 
-                empleado_seleccionado.id_empleado,
-
-                txt_nombre.value,
-
-                txt_app.value,
-
-                txt_apm.value,
-
-                txt_puesto.value,
-
-                txt_telefono.value
-
-            )
-
-
-            empleado_dao.actualizar(
-                empleado_actualizado
-            )
-
-
-            cerrar_dialogo()
-
-            limpiar_campos()
-
-            cargar_empleados()
-
-
-            mostrar_mensaje(
-                "Empleado actualizado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al actualizar empleado: {error}"
-            )
-
-    # =============================
-    # ELIMINAR EMPLEADO
-    # =============================
-
-    def eliminar_empleado(empleado):
-
-        try:
-
-            empleado_dao.eliminar(
-                empleado.id_empleado
-            )
-
-
-            cargar_empleados()
-
-
-            mostrar_mensaje(
-                "Empleado eliminado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al eliminar empleado: {error}"
-            )
-
-
-
-    # =============================
-    # BUSCAR EMPLEADOS
-    # =============================
-
-    def buscar_empleados(e):
-
-        texto = txt_buscar.value.lower()
-
-        tabla_empleados.rows.clear()
-
-
-        for empleado in empleado_dao.obtener_todo():
-
-            nombre_completo = (
-
-                f"{empleado.nombre} "
-                f"{empleado.app} "
-                f"{empleado.apm}"
-
-            ).lower()
-
-
-            if (
-
-                texto in nombre_completo
-
-                or texto in empleado.puesto.lower()
-
-                or texto in empleado.telefono.lower()
-
-            ):
-
-                tabla_empleados.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(empleado.id_empleado)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    f"{empleado.nombre} {empleado.app} {empleado.apm}"
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    empleado.puesto
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    empleado.telefono
-                                )
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, emp=empleado:
-                                                editar_empleado(emp)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, emp=empleado:
-                                                eliminar_empleado(emp)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
+        limpiar()
 
         page.update()
 
 
 
-    # =============================
+
+    # ==========================
     # NUEVO EMPLEADO
-    # =============================
+    # ==========================
 
     def nuevo_empleado(e):
 
-        limpiar_campos()
+        nonlocal empleado_actual
 
 
-        dialogo.title = ft.Text(
+        empleado_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
             "Nuevo Empleado"
+
         )
 
 
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
 
 
-            ft.ElevatedButton(
+    # ==========================
+    # GUARDAR EMPLEADO
+    # ==========================
 
-                "Guardar",
+    def guardar(e):
 
-                icon=ft.Icons.SAVE,
+        try:
 
-                on_click=guardar_empleado
+
+            nuevo = Empleados(
+
+                id_empleado=dao.obtener_ultimo_id()+1,
+
+
+                nombre=nombre.value,
+
+
+                app=app.value,
+
+
+                apm=apm.value,
+
+
+                puesto=puesto.value,
+
+
+                telefono=telefono.value
 
             )
 
-        ]
 
 
-        page.dialog = dialogo
+            dao.insertar(nuevo)
 
-        dialogo.open = True
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
+
+
+            mostrar_mensaje(
+
+                "Empleado agregado correctamente"
+
+            )
+
+
+
+        except Exception as error:
+
+
+            mostrar_mensaje(
+
+                f"Error: {error}"
+
+            )
+
+
+
+
+
+    # ==========================
+    # EDITAR EMPLEADO
+    # ==========================
+
+    def editar(empleado):
+
+        nonlocal empleado_actual
+
+
+        empleado_actual = empleado
+
+
+
+        nombre.value = empleado.nombre
+
+        app.value = empleado.app
+
+        apm.value = empleado.apm
+
+        puesto.value = empleado.puesto
+
+        telefono.value = empleado.telefono
+
+
+
+        mostrar_formulario(
+
+            "Editar Empleado"
+
+        )
+
+
+
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
+
+
+        formulario.content.controls[-1].controls[0].on_click = actualizar
+
+
 
         page.update()
 
 
 
-    # =============================
-    # CERRAR DIALOGO
-    # =============================
 
-    def cerrar_dialogo():
+    # ==========================
+    # ACTUALIZAR EMPLEADO
+    # ==========================
 
-        dialogo.open = False
+    def actualizar(e):
 
-        page.update()
-
+        try:
 
 
-    # =============================
+            empleado_actual.nombre = nombre.value
+
+
+            empleado_actual.app = app.value
+
+
+            empleado_actual.apm = apm.value
+
+
+            empleado_actual.puesto = puesto.value
+
+
+            empleado_actual.telefono = telefono.value
+
+
+
+            dao.actualizar(
+
+                empleado_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
+
+
+            mostrar_mensaje(
+
+                "Empleado actualizado correctamente"
+
+            )
+
+
+
+        except Exception as error:
+
+
+            mostrar_mensaje(
+
+                f"Error al actualizar: {error}"
+
+            )
+
+
+
+
+    # ==========================
     # MENSAJES
-    # =============================
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -613,28 +620,144 @@ def empleados(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
+
+        page.update() 
+
+    # ==========================
+    # ELIMINAR EMPLEADO
+    # ==========================
+
+    def eliminar(empleado):
+
+
+        def aceptar(e):
+
+            dao.eliminar(
+
+                empleado.id_empleado
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Empleado eliminado correctamente"
+
+            )
+
+
+
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar empleado"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este empleado?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_empleados
 
 
-    cargar_empleados()
+    # ==========================
+    # BOTÓN NUEVO EMPLEADO
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Empleado",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_empleado
+
+    )
 
 
 
-    # =============================
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
-    # =============================
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -648,11 +771,14 @@ def empleados(page: ft.Page):
 
                             "Gestión de Empleados",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -662,35 +788,55 @@ def empleados(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Empleado",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_empleado
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_empleados
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

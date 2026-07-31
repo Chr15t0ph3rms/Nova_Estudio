@@ -4,98 +4,103 @@ from dao.pago_dao import PagoDAO
 from modelos.pago import Pago
 
 
+
 def pagos(page: ft.Page):
 
-    pago_dao = PagoDAO()
+    dao = PagoDAO()
 
-    pago_seleccionado = None
+    pago_actual = None
 
 
+    # ==========================
     # CAMPOS DEL FORMULARIO
+    # ==========================
 
-    txt_id_contrato = ft.TextField(
-
+    id_contrato = ft.TextField(
         label="ID Contrato",
-
         width=250
-
     )
 
 
-    txt_fecha_pago = ft.TextField(
-
-        label="Fecha de pago",
-
+    fecha_pago = ft.TextField(
+        label="Fecha de Pago",
         width=250
-
     )
 
 
-    txt_monto = ft.TextField(
-
+    monto = ft.TextField(
         label="Monto",
-
         width=250
-
     )
 
 
-    txt_estado = ft.Dropdown(
-
-        label="Estado del pago",
-
-        width=250,
-
-        options=[
-
-            ft.dropdown.Option("Pendiente"),
-
-            ft.dropdown.Option("Pagado"),
-
-            ft.dropdown.Option("Cancelado")
-
-        ]
-
+    estado = ft.TextField(
+        label="Estado",
+        width=250
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar pago",
+    # ==========================
+    # FORMULARIO
+    # ==========================
 
-        prefix_icon=ft.Icons.SEARCH,
+    formulario = ft.Container(
 
-        expand=True
+        visible=False,
+
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15,
+
+        content=ft.Column([])
 
     )
 
 
 
+    # ==========================
     # TABLA PAGOS
+    # ==========================
 
-    tabla_pagos = ft.DataTable(
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
 
-            ft.DataColumn(
-                ft.Text("ID")
-            ),
 
             ft.DataColumn(
-                ft.Text("Contrato")
+                ft.Text("ID Pago")
             ),
 
+
             ft.DataColumn(
-                ft.Text("Fecha")
+                ft.Text("ID Contrato")
             ),
+
+
+            ft.DataColumn(
+                ft.Text("Fecha Pago")
+            ),
+
 
             ft.DataColumn(
                 ft.Text("Monto")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Estado")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Acciones")
@@ -103,112 +108,94 @@ def pagos(page: ft.Page):
 
         ],
 
+
         rows=[]
-
-    ) 
-
-
-    # DIALOGO PAGO
-
-    dialogo = ft.AlertDialog(
-
-        modal=True,
-
-        title=ft.Text(
-            "Nuevo Pago"
-        ),
-
-        content=ft.Column(
-
-            [
-
-                txt_id_contrato,
-
-                txt_fecha_pago,
-
-                txt_monto,
-
-                txt_estado
-
-            ],
-
-            tight=True
-
-        )
 
     )
 
 
 
-    # CARGAR PAGOS
+    # ==========================
+    # LIMPIAR CAMPOS
+    # ==========================
 
-    def cargar_pagos():
+    def limpiar():
 
-        tabla_pagos.rows.clear()
+        id_contrato.value = ""
 
+        fecha_pago.value = ""
 
-        try:
+        monto.value = ""
 
-            lista_pagos = pago_dao.obtener_todo()
-
-
-            for pago in lista_pagos:
-
-
-                tabla_pagos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(pago.id_pago)
-                                )
-
-                            ),
+        estado.value = ""
 
 
-                            ft.DataCell(
 
-                                ft.Text(
-                                    str(pago.id_contrato)
-                                )
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-                            ),
+    def cargar():
 
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(pago.fecha_pago)
-                                )
-
-                            ),
+        tabla.rows.clear()
 
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    "$ " + str(pago.monto)
-                                )
-
-                            ),
+        lista_pagos = dao.obtener_todo()
 
 
-                            ft.DataCell(
 
-                                ft.Text(
-                                    pago.estado
-                                )
-
-                            ),
+        for pago in lista_pagos:
 
 
-                            ft.DataCell(
+            tabla.rows.append(
 
-                                ft.Row(
+                ft.DataRow(
+
+                    cells=[
+
+
+                        ft.DataCell(
+                            ft.Text(
+                                str(pago.id_pago)
+                            )
+                        ),
+
+
+                        ft.DataCell(
+                            ft.Text(
+                                str(pago.id_contrato)
+                            )
+                        ),
+
+
+                        ft.DataCell(
+                            ft.Text(
+                                str(pago.fecha_pago)
+                            )
+                        ),
+
+
+                        ft.DataCell(
+                            ft.Text(
+                                str(pago.monto)
+                            )
+                        ),
+
+
+                        ft.DataCell(
+                            ft.Text(
+                                pago.estado
+                            )
+                        ),
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+                                content=ft.Row(
 
                                     [
 
@@ -216,10 +203,11 @@ def pagos(page: ft.Page):
 
                                             icon=ft.Icons.EDIT,
 
-                                            tooltip="Editar",
+                                            icon_color=ft.Colors.BLUE_400,
 
-                                            on_click=lambda e, p=pago:
-                                                editar_pago(p)
+                                            tooltip="Editar pago",
+
+                                            on_click=lambda e, p=pago: editar(p)
 
                                         ),
 
@@ -228,417 +216,372 @@ def pagos(page: ft.Page):
 
                                             icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar",
+                                            icon_color=ft.Colors.RED_400,
 
-                                            icon_color=ft.Colors.RED,
+                                            tooltip="Eliminar pago",
 
-                                            on_click=lambda e, p=pago:
-                                                eliminar_pago(p)
+                                            on_click=lambda e, p=pago: eliminar(p)
 
                                         )
 
-                                    ]
+                                    ],
+
+                                    spacing=8
 
                                 )
 
                             )
 
-                        ]
+                        )
 
-                    )
+                    ]
 
                 )
 
-
-            page.update()
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al cargar pagos: {error}"
-
             )
 
 
+        page.update() 
 
-    # LIMPIAR CAMPOS
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
 
-    def limpiar_campos():
+    def mostrar_formulario(titulo):
 
-        txt_id_contrato.value = ""
+        formulario.content = ft.Column(
 
-        txt_fecha_pago.value = ""
+            [
 
-        txt_monto.value = ""
+                ft.Text(
 
-        txt_estado.value = None 
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
 
 
+                ft.Row(
+
+                    [
+
+                        id_contrato,
+
+                        fecha_pago
+
+                    ]
+
+                ),
+
+
+                ft.Row(
+
+                    [
+
+                        monto,
+
+                        estado
+
+                    ]
+
+                ),
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+                    ]
+
+                )
+
+            ]
+
+        )
+
+
+        formulario.visible = True
+
+        page.update()
+
+
+
+
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
+
+    def cerrar_formulario(e=None):
+
+        formulario.visible = False
+
+        limpiar()
+
+        page.update()
+
+
+
+
+    # ==========================
+    # NUEVO PAGO
+    # ==========================
+
+    def nuevo_pago(e):
+
+        nonlocal pago_actual
+
+
+        pago_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nuevo Pago"
+
+        )
+
+
+
+
+    # ==========================
     # GUARDAR PAGO
+    # ==========================
 
-    def guardar_pago(e):
+    def guardar(e):
 
         try:
 
-            nuevo_id = pago_dao.obtener_ultimo_id() + 1
+
+            nuevo = Pago(
+
+                id_pago=dao.obtener_ultimo_id()+1,
 
 
-            nuevo_pago = Pago(
+                id_contrato=int(
 
-                nuevo_id,
+                    id_contrato.value
 
-                int(txt_id_contrato.value),
+                    if id_contrato.value
 
-                txt_fecha_pago.value,
+                    else 0
 
-                float(txt_monto.value),
+                ),
 
-                txt_estado.value
+
+                fecha_pago=fecha_pago.value,
+
+
+                monto=float(
+
+                    monto.value
+
+                    if monto.value
+
+                    else 0
+
+                ),
+
+
+                estado=estado.value
 
             )
 
 
-            pago_dao.insertar(
 
-                nuevo_pago
-
-            )
+            dao.insertar(nuevo)
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            cerrar_formulario()
 
-            cargar_pagos()
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Pago registrado correctamente."
+                "Pago agregado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
+            print("ERROR GUARDAR PAGO:", error)
+
+
             mostrar_mensaje(
 
-                f"Error al guardar pago: {error}"
+                f"Error: {error}"
 
             )
 
 
 
+
+    # ==========================
     # EDITAR PAGO
+    # ==========================
 
-    def editar_pago(pago):
+    def editar(pago):
 
-        nonlocal pago_seleccionado
-
-
-        pago_seleccionado = pago
+        nonlocal pago_actual
 
 
-        txt_id_contrato.value = str(pago.id_contrato)
-
-        txt_fecha_pago.value = str(pago.fecha_pago)
-
-        txt_monto.value = str(pago.monto)
-
-        txt_estado.value = pago.estado
+        pago_actual = pago
 
 
 
-        dialogo.title = ft.Text(
+        id_contrato.value = str(
+
+            pago.id_contrato
+
+        )
+
+
+        fecha_pago.value = str(
+
+            pago.fecha_pago
+
+        )
+
+
+        monto.value = str(
+
+            pago.monto
+
+        )
+
+
+        estado.value = pago.estado
+
+
+
+        mostrar_formulario(
 
             "Editar Pago"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_pago
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
-
-
-        dialogo.open = True
 
         page.update()
 
 
 
-    # ACTUALIZAR PAGO
 
-    def actualizar_pago(e):
+    # ==========================
+    # ACTUALIZAR PAGO
+    # ==========================
+
+    def actualizar(e):
 
         try:
 
-            pago_actualizado = Pago(
 
-                pago_seleccionado.id_pago,
+            pago_actual.id_contrato = int(
 
-                int(txt_id_contrato.value),
+                id_contrato.value
 
-                txt_fecha_pago.value,
+                if id_contrato.value
 
-                float(txt_monto.value),
-
-                txt_estado.value
+                else 0
 
             )
 
 
-            pago_dao.actualizar(
+            pago_actual.fecha_pago = fecha_pago.value
 
-                pago_actualizado
+
+            pago_actual.monto = float(
+
+                monto.value
+
+                if monto.value
+
+                else 0
 
             )
 
 
-            cerrar_dialogo()
+            pago_actual.estado = estado.value
 
-            limpiar_campos()
 
-            cargar_pagos()
+
+            dao.actualizar(
+
+                pago_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Pago actualizado correctamente."
+                "Pago actualizado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
+            print("ERROR ACTUALIZAR PAGO:", error)
+
+
             mostrar_mensaje(
 
-                f"Error al actualizar pago: {error}"
+                f"Error al actualizar: {error}"
 
             ) 
 
-    # ELIMINAR PAGO
-
-    def eliminar_pago(pago):
-
-        try:
-
-            pago_dao.eliminar(
-
-                pago.id_pago
-
-            )
-
-
-            cargar_pagos()
-
-
-            mostrar_mensaje(
-
-                "Pago eliminado correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar pago: {error}"
-
-            )
-
-
-
-    # BUSCAR PAGO
-
-    def buscar_pagos(e):
-
-        texto = txt_buscar.value.lower()
-
-
-        tabla_pagos.rows.clear()
-
-
-        for pago in pago_dao.obtener_todo():
-
-
-            if (
-                texto in str(pago.id_pago).lower()
-                or texto in str(pago.id_contrato).lower()
-                or texto in pago.estado.lower()
-            ):
-
-
-                tabla_pagos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(pago.id_pago)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(pago.id_contrato)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(pago.fecha_pago)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    "$ " + str(pago.monto)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    pago.estado
-                                )
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, p=pago:
-                                                editar_pago(p)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, p=pago:
-                                                eliminar_pago(p)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # NUEVO PAGO
-
-    def nuevo_pago(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nuevo Pago"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
-
-
-            ft.ElevatedButton(
-
-                "Guardar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=guardar_pago
-
-            )
-
-        ]
-
-
-        page.dialog = dialogo
-
-
-        dialogo.open = True
-
-
-        page.update()
-
-
-
-    # CERRAR DIALOGO
-
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
+    # ==========================
     # MENSAJES
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -648,26 +591,147 @@ def pagos(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_pagos
+
+    # ==========================
+    # ELIMINAR PAGO
+    # ==========================
+
+    def eliminar(pago):
 
 
-    cargar_pagos()
+        def aceptar(e):
+
+            dao.eliminar(
+
+                pago.id_pago
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Pago eliminado correctamente"
+
+            )
 
 
 
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar pago"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este pago?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
+
+        page.update()
+
+
+
+
+    # ==========================
+    # BOTÓN NUEVO PAGO
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Pago",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_pago
+
+    )
+
+
+
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -681,11 +745,14 @@ def pagos(page: ft.Page):
 
                             "Gestión de Pagos",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -695,35 +762,55 @@ def pagos(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Pago",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_pago
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_pagos
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

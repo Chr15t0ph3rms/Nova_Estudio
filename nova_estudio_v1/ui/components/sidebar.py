@@ -19,11 +19,16 @@ def sidebar(on_change):
 
         return ft.Container(
 
-            padding=10,
+            height=38,
+
+            padding=6,
 
             border_radius=10,
 
             ink=True,
+
+
+            on_click=lambda e: enviar_opcion(texto),
 
 
             content=ft.Row(
@@ -34,54 +39,147 @@ def sidebar(on_change):
 
                         icono,
 
-                        color=color
+                        color=color,
+
+                        size=20
 
                     ),
+
 
 
                     ft.Text(
 
                         texto,
 
-                        color=color
+                        color=color,
+
+                        size=14,
+
+                        weight=ft.FontWeight.W_500
 
                     )
 
                 ],
 
-                spacing=15
+                spacing=10
 
-            ),
-
-
-            on_click=lambda e: enviar_opcion(texto)
+            )
 
         )
 
 
 
+    menu = ft.Column(
+
+        [
+
+            boton(
+                ft.Icons.DASHBOARD,
+                "Dashboard"
+            ),
+
+
+            boton(
+                ft.Icons.PEOPLE,
+                "Clientes"
+            ),
+
+
+            boton(
+                ft.Icons.MUSIC_NOTE,
+                "DJs"
+            ),
+
+
+            boton(
+                ft.Icons.BADGE,
+                "Empleados"
+            ),
+
+
+            boton(
+                ft.Icons.EVENT,
+                "Eventos"
+            ),
+
+
+            boton(
+                ft.Icons.INVENTORY,
+                "Inventario"
+            ),
+
+
+            boton(
+                ft.Icons.CELEBRATION,
+                "Paquetes"
+            ),
+
+
+            boton(
+                ft.Icons.DESCRIPTION,
+                "Contratos"
+            ),
+
+
+            boton(
+                ft.Icons.PAYMENTS,
+                "Pagos"
+            ),
+
+
+            boton(
+                ft.Icons.INSERT_CHART,
+                "Reportes"
+            ),
+
+
+            boton(
+                ft.Icons.BUSINESS,
+                "Agencia"
+            )
+
+
+        ],
+
+
+        spacing=2
+
+    )
+
+
+
     return ft.Container(
 
-        width=250,
+        width=240,
 
         bgcolor=ft.Colors.GREY_900,
 
-        padding=20,
+        padding=12,
 
 
         content=ft.Column(
 
             [
 
-                ft.Text(
 
-                    "DJ STAFF NOVA",
+                # ======================
+                # LOGO PEQUEÑO
+                # ======================
 
-                    size=25,
+                ft.Container(
 
-                    color=ft.Colors.WHITE,
+                    height=80,
 
-                    weight=ft.FontWeight.BOLD
+
+                    content=ft.Image(
+
+                        src="logo_nova.png",
+
+                        width=120,
+
+                        height=70,
+
+                    )
 
                 ),
 
@@ -91,105 +189,11 @@ def sidebar(on_change):
 
 
 
-                boton(
-
-                    ft.Icons.DASHBOARD,
-
-                    "Dashboard"
-
-                ),
+                menu,
 
 
 
-                boton(
-
-                    ft.Icons.PEOPLE,
-
-                    "Clientes"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.BADGE,
-
-                    "Empleados"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.EVENT,
-
-                    "Eventos"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.INVENTORY,
-
-                    "Inventario"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.CELEBRATION,
-
-                    "Paquetes"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.DESCRIPTION,
-
-                    "Contratos"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.PAYMENTS,
-
-                    "Pagos"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.INSERT_CHART,
-
-                    "Reportes"
-
-                ),
-
-
-
-                boton(
-
-                    ft.Icons.BUSINESS,
-
-                    "Agencia"
-
-                ),
-
-
+                # EMPUJA CERRAR SESIÓN ABAJO
 
                 ft.Container(
 

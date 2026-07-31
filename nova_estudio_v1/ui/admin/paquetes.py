@@ -4,34 +4,47 @@ from dao.paquetes_dao import PaquetesDAO
 from modelos.paquetes import Paquetes
 
 
+
 def paquetes(page: ft.Page):
 
-    paquete_dao = PaquetesDAO()
+    dao = PaquetesDAO()
 
-    paquete_seleccionado = None
+    paquete_actual = None
 
 
+
+    # ==========================
     # CAMPOS DEL FORMULARIO
+    # ==========================
 
-    txt_nombre = ft.TextField(
-        label="Nombre del paquete",
+    nombre = ft.TextField(
+
+        label="Nombre del Paquete",
+
         width=250
+
     )
 
 
-    txt_tipo_paquete = ft.TextField(
-        label="Tipo de paquete",
+    tipo_paquete = ft.TextField(
+
+        label="Tipo de Paquete",
+
         width=250
+
     )
 
 
-    txt_costo = ft.TextField(
+    costo = ft.TextField(
+
         label="Costo",
+
         width=250
+
     )
 
 
-    txt_descripcion = ft.TextField(
+    descripcion = ft.TextField(
 
         label="Descripción",
 
@@ -42,587 +55,574 @@ def paquetes(page: ft.Page):
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar paquete",
+    formulario = ft.Container(
 
-        prefix_icon=ft.Icons.SEARCH,
+        visible=False,
 
-        expand=True
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
 
     )
 
 
 
+    # ==========================
     # TABLA PAQUETES
+    # ==========================
 
-    tabla_paquetes = ft.DataTable(
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
 
+
             ft.DataColumn(
+
                 ft.Text("ID")
+
             ),
 
+
+
             ft.DataColumn(
+
                 ft.Text("Nombre")
+
             ),
 
-            ft.DataColumn(
-                ft.Text("Tipo")
-            ),
+
 
             ft.DataColumn(
+
+                ft.Text("Tipo Paquete")
+
+            ),
+
+
+
+            ft.DataColumn(
+
                 ft.Text("Costo")
+
             ),
 
+
+
             ft.DataColumn(
+
                 ft.Text("Descripción")
+
             ),
 
+
+
             ft.DataColumn(
+
                 ft.Text("Acciones")
+
             )
+
 
         ],
 
+
         rows=[]
-
-    ) 
-
-    # DIALOGO PAQUETE
-
-    dialogo = ft.AlertDialog(
-
-        modal=True,
-
-        title=ft.Text(
-            "Nuevo Paquete"
-        ),
-
-        content=ft.Column(
-
-            [
-
-                txt_nombre,
-
-                txt_tipo_paquete,
-
-                txt_costo,
-
-                txt_descripcion
-
-            ],
-
-            tight=True
-
-        )
 
     )
 
 
 
-    # CARGAR PAQUETES
 
-    def cargar_paquetes():
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        tabla_paquetes.rows.clear()
+    def limpiar():
 
-        try:
+        nombre.value = ""
 
-            lista_paquetes = paquete_dao.obtener_todo()
+        tipo_paquete.value = ""
 
+        costo.value = ""
 
-            for paquete in lista_paquetes:
-
-                tabla_paquetes.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(paquete.id_paquetes)
-                                )
-
-                            ),
+        descripcion.value = ""
 
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.nombre
-                                )
-
-                            ),
 
 
-                            ft.DataCell(
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-                                ft.Text(
-                                    paquete.tipo_paquete
-                                )
+    def cargar():
 
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(paquete.costo)
-                                )
-
-                            ),
+        tabla.rows.clear()
 
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.descripcion
-                                )
-
-                            ),
+        paquetes_lista = dao.obtener_todo()
 
 
-                            ft.DataCell(
 
-                                ft.Row(
+        for paquete in paquetes_lista:
+
+
+            tabla.rows.append(
+
+                ft.DataRow(
+
+                    cells=[
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(paquete.id_paquetes)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                paquete.nombre
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                paquete.tipo_paquete
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(paquete.costo)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                paquete.descripcion
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
 
                                     [
+
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.EDIT,
 
-                                            tooltip="Editar",
+                                            icon_color=ft.Colors.BLUE_400,
 
-                                            on_click=lambda e, p=paquete:
-                                                editar_paquete(p)
+                                            tooltip="Editar paquete",
+
+                                            on_click=lambda e, p=paquete: editar(p)
 
                                         ),
+
 
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar",
+                                            icon_color=ft.Colors.RED_400,
 
-                                            icon_color=ft.Colors.RED,
+                                            tooltip="Eliminar paquete",
 
-                                            on_click=lambda e, p=paquete:
-                                                eliminar_paquete(p)
+                                            on_click=lambda e, p=paquete: eliminar(p)
 
                                         )
 
-                                    ]
+
+                                    ],
+
+                                    spacing=8
 
                                 )
 
                             )
 
-                        ]
+                        )
 
-                    )
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update() 
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+        formulario.content = ft.Column(
+
+            [
+
+                ft.Text(
+
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        nombre,
+
+                        tipo_paquete
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        costo
+
+                    ]
+
+                ),
+
+
+
+                descripcion,
+
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+                    ]
 
                 )
 
 
-            page.update()
+            ]
+
+        )
 
 
-        except Exception as error:
+        formulario.visible = True
 
-            mostrar_mensaje(
-
-                f"Error al cargar paquetes: {error}"
-
-            )
+        page.update()
 
 
 
-    # LIMPIAR CAMPOS
 
-    def limpiar_campos():
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        txt_nombre.value = ""
+    def cerrar_formulario(e=None):
 
-        txt_tipo_paquete.value = ""
+        formulario.visible = False
 
-        txt_costo.value = ""
+        limpiar()
 
-        txt_descripcion.value = "" 
+        page.update()
 
+
+
+
+    # ==========================
+    # NUEVO PAQUETE
+    # ==========================
+
+    def nuevo_paquete(e):
+
+        nonlocal paquete_actual
+
+
+        paquete_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nuevo Paquete"
+
+        )
+
+
+
+
+    # ==========================
     # GUARDAR PAQUETE
+    # ==========================
 
-    def guardar_paquete(e):
+    def guardar(e):
 
         try:
 
-            nuevo_id = paquete_dao.obtener_ultimo_id() + 1
+
+            nuevo = Paquetes(
+
+                id_paquetes=dao.obtener_ultimo_id()+1,
 
 
-            paquete = Paquetes(
+                nombre=nombre.value,
 
-                nuevo_id,
 
-                txt_nombre.value,
+                tipo_paquete=tipo_paquete.value,
 
-                txt_tipo_paquete.value,
 
-                txt_costo.value,
+                costo=float(
 
-                txt_descripcion.value
+                    costo.value
+
+                    if costo.value
+
+                    else 0
+
+                ),
+
+
+                descripcion=descripcion.value
 
             )
 
 
-            paquete_dao.insertar(
 
-                paquete
-
-            )
+            dao.insertar(nuevo)
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            cerrar_formulario()
 
-            cargar_paquetes()
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Paquete registrado correctamente."
+                "Paquete agregado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al guardar paquete: {error}"
+                f"Error: {error}"
 
             )
 
 
 
+
+
+    # ==========================
     # EDITAR PAQUETE
+    # ==========================
 
-    def editar_paquete(paquete):
+    def editar(paquete):
 
-        nonlocal paquete_seleccionado
-
-
-        paquete_seleccionado = paquete
+        nonlocal paquete_actual
 
 
-        txt_nombre.value = paquete.nombre
-
-        txt_tipo_paquete.value = paquete.tipo_paquete
-
-        txt_costo.value = str(paquete.costo)
-
-        txt_descripcion.value = paquete.descripcion
+        paquete_actual = paquete
 
 
-        dialogo.title = ft.Text(
+
+        nombre.value = paquete.nombre
+
+
+        tipo_paquete.value = paquete.tipo_paquete
+
+
+        costo.value = str(
+
+            paquete.costo
+
+        )
+
+
+        descripcion.value = paquete.descripcion
+
+
+
+        mostrar_formulario(
 
             "Editar Paquete"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_paquete
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
 
-        dialogo.open = True
 
         page.update()
 
 
 
+
+    # ==========================
     # ACTUALIZAR PAQUETE
+    # ==========================
 
-    def actualizar_paquete(e):
+    def actualizar(e):
 
         try:
 
-            paquete_actualizado = Paquetes(
 
-                paquete_seleccionado.id_paquetes,
-
-                txt_nombre.value,
-
-                txt_tipo_paquete.value,
-
-                txt_costo.value,
-
-                txt_descripcion.value
-
-            )
+            paquete_actual.nombre = nombre.value
 
 
-            paquete_dao.actualizar(
+            paquete_actual.tipo_paquete = tipo_paquete.value
 
-                paquete_actualizado
+
+            paquete_actual.costo = float(
+
+                costo.value
+
+                if costo.value
+
+                else 0
 
             )
 
 
-            cerrar_dialogo()
+            paquete_actual.descripcion = descripcion.value
 
-            limpiar_campos()
 
-            cargar_paquetes()
+
+            dao.actualizar(
+
+                paquete_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Paquete actualizado correctamente."
+                "Paquete actualizado correctamente"
 
             )
+
 
 
         except Exception as error:
 
-            mostrar_mensaje(
-
-                f"Error al actualizar paquete: {error}"
-
-            ) 
-
-    # ELIMINAR PAQUETE
-
-    def eliminar_paquete(paquete):
-
-        try:
-
-            paquete_dao.eliminar(
-
-                paquete.id_paquetes
-
-            )
-
-
-            cargar_paquetes()
-
 
             mostrar_mensaje(
 
-                "Paquete eliminado correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar paquete: {error}"
+                f"Error al actualizar: {error}"
 
             )
 
 
 
-    # BUSCAR PAQUETES
 
-    def buscar_paquetes(e):
-
-        texto = txt_buscar.value.lower()
-
-
-        tabla_paquetes.rows.clear()
-
-
-        for paquete in paquete_dao.obtener_todo():
-
-
-            if texto in paquete.nombre.lower():
-
-
-                tabla_paquetes.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(paquete.id_paquetes)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.nombre
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.tipo_paquete
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(paquete.costo)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    paquete.descripcion
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, p=paquete:
-                                                editar_paquete(p)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, p=paquete:
-                                                eliminar_paquete(p)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # NUEVO PAQUETE
-
-    def nuevo_paquete(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nuevo Paquete"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
-
-
-            ft.ElevatedButton(
-
-                "Guardar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=guardar_paquete
-
-            )
-
-        ]
-
-
-        page.dialog = dialogo
-
-
-        dialogo.open = True
-
-
-        page.update()
-
-
-
-    # CERRAR DIALOGOS
-
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
+    # ==========================
     # MENSAJES
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -632,26 +632,144 @@ def paquetes(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
+
+        page.update() 
+
+    # ==========================
+    # ELIMINAR PAQUETE
+    # ==========================
+
+    def eliminar(paquete):
+
+
+        def aceptar(e):
+
+            dao.eliminar(
+
+                paquete.id_paquetes
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Paquete eliminado correctamente"
+
+            )
+
+
+
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar paquete"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este paquete?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_paquetes
 
 
-    cargar_paquetes()
+    # ==========================
+    # BOTÓN NUEVO PAQUETE
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Paquete",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_paquete
+
+    )
 
 
 
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -665,11 +783,14 @@ def paquetes(page: ft.Page):
 
                             "Gestión de Paquetes",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -679,35 +800,55 @@ def paquetes(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Paquete",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_paquete
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_paquetes
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

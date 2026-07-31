@@ -1,49 +1,112 @@
 import flet as ft
 
+from dao.usuario_dao import UsuarioDAO
+
+
 
 def inicio_sesion_admin(page, abrir_dashboard):
 
 
     correo = ft.TextField(
+
         hint_text="Correo electrónico",
+
         width=380,
+
         height=55,
+
         bgcolor=ft.Colors.WHITE,
+
         color=ft.Colors.BLACK
+
     )
+
 
 
     contraseña = ft.TextField(
+
         hint_text="Contraseña",
+
         width=380,
+
         height=55,
+
         bgcolor=ft.Colors.WHITE,
+
         color=ft.Colors.BLACK,
+
         password=True,
+
         can_reveal_password=True
+
     )
+
+
 
 
 
     def login(e):
 
-        if correo.value == "chrisp@gmail.com" and contraseña.value == "Christopher":
 
-            abrir_dashboard()
+        usuario = UsuarioDAO.login(
+
+            correo.value,
+
+            contraseña.value
+
+        )
+
+
+
+        if usuario:
+
+
+            datos_usuario = {
+
+
+                "id": usuario[0],
+
+                "nombre": usuario[1],
+
+                "apellido": usuario[2],
+
+                "correo": usuario[3],
+
+                "rol": usuario[4]
+
+
+            }
+
+
+
+            abrir_dashboard(
+
+                datos_usuario
+
+            )
+
 
 
         else:
 
+
             page.dialog = ft.AlertDialog(
 
                 title=ft.Text(
+
                     "Correo o contraseña incorrectos"
+
                 )
 
             )
 
+
             page.dialog.open = True
+
             page.update()
+
+
+
 
 
 
@@ -53,12 +116,13 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
         bgcolor=ft.Colors.BLACK,
 
-        alignment=ft.Alignment(0, 0),
+        alignment=ft.Alignment(0,0),
 
 
         content=ft.Column(
 
             [
+
 
                 ft.Text(
 

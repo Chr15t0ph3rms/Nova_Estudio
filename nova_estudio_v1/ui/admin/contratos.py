@@ -4,25 +4,29 @@ from dao.contrato_dao import ContratoDAO
 from modelos.contrato import Contrato
 
 
+
 def contratos(page: ft.Page):
 
-    contrato_dao = ContratoDAO()
+    dao = ContratoDAO()
 
-    contrato_seleccionado = None
+    contrato_actual = None
 
 
+
+    # ==========================
     # CAMPOS DEL FORMULARIO
+    # ==========================
 
-    txt_fecha_firma = ft.TextField(
+    fecha_firma = ft.TextField(
 
-        label="Fecha de firma",
+        label="Fecha de Firma",
 
         width=250
 
     )
 
 
-    txt_costo = ft.TextField(
+    costo = ft.TextField(
 
         label="Costo",
 
@@ -31,568 +35,552 @@ def contratos(page: ft.Page):
     )
 
 
-    txt_paquetes = ft.TextField(
+    paquetes = ft.TextField(
 
-        label="Paquetes",
+        label="Paquete",
 
         width=250
 
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar contrato",
+    formulario = ft.Container(
 
-        prefix_icon=ft.Icons.SEARCH,
+        visible=False,
 
-        expand=True
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
 
     )
 
 
 
+    # ==========================
     # TABLA CONTRATOS
+    # ==========================
 
-    tabla_contratos = ft.DataTable(
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
 
+
             ft.DataColumn(
+
                 ft.Text("ID")
+
             ),
 
 
+
             ft.DataColumn(
+
                 ft.Text("Fecha Firma")
+
             ),
 
 
+
             ft.DataColumn(
+
                 ft.Text("Costo")
+
             ),
 
 
+
             ft.DataColumn(
+
                 ft.Text("Paquetes")
+
             ),
 
 
+
             ft.DataColumn(
+
                 ft.Text("Acciones")
+
             )
+
 
         ],
 
+
         rows=[]
-
-    ) 
-
-    # DIALOGO CONTRATO
-
-    dialogo = ft.AlertDialog(
-
-        modal=True,
-
-        title=ft.Text(
-            "Nuevo Contrato"
-        ),
-
-        content=ft.Column(
-
-            [
-
-                txt_fecha_firma,
-
-                txt_costo,
-
-                txt_paquetes
-
-            ],
-
-            tight=True
-
-        )
 
     )
 
 
 
-    # CARGAR CONTRATOS
 
-    def cargar_contratos():
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        tabla_contratos.rows.clear()
+    def limpiar():
 
-        try:
+        fecha_firma.value = ""
 
-            lista_contratos = contrato_dao.obtener_todo()
+        costo.value = ""
 
-
-            for contrato in lista_contratos:
-
-                tabla_contratos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(contrato.id_contrato)
-                                )
-
-                            ),
+        paquetes.value = ""
 
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(contrato.fecha_firma)
-                                )
-
-                            ),
 
 
-                            ft.DataCell(
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-                                ft.Text(
-                                    str(contrato.costo)
-                                )
+    def cargar():
 
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    contrato.paquetes
-                                )
-
-                            ),
+        tabla.rows.clear()
 
 
-                            ft.DataCell(
+        contratos_lista = dao.obtener_todo()
 
-                                ft.Row(
+
+
+        for contrato in contratos_lista:
+
+
+            tabla.rows.append(
+
+                ft.DataRow(
+
+                    cells=[
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(contrato.id_contrato)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(contrato.fecha_firma)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(contrato.costo)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                contrato.paquetes
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
 
                                     [
+
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.EDIT,
 
-                                            tooltip="Editar",
+                                            icon_color=ft.Colors.BLUE_400,
 
-                                            on_click=lambda e, c=contrato:
-                                                editar_contrato(c)
+                                            tooltip="Editar contrato",
+
+                                            on_click=lambda e, c=contrato: editar(c)
 
                                         ),
+
 
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar",
+                                            icon_color=ft.Colors.RED_400,
 
-                                            icon_color=ft.Colors.RED,
+                                            tooltip="Eliminar contrato",
 
-                                            on_click=lambda e, c=contrato:
-                                                eliminar_contrato(c)
+                                            on_click=lambda e, c=contrato: eliminar(c)
 
                                         )
 
-                                    ]
+
+                                    ],
+
+                                    spacing=8
 
                                 )
 
                             )
 
-                        ]
+                        )
 
-                    )
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update() 
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+        formulario.content = ft.Column(
+
+            [
+
+                ft.Text(
+
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        fecha_firma,
+
+                        costo
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        paquetes
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+                    ]
 
                 )
 
 
-            page.update()
+            ]
+
+        )
 
 
-        except Exception as error:
+        formulario.visible = True
 
-            mostrar_mensaje(
-
-                f"Error al cargar contratos: {error}"
-
-            )
+        page.update()
 
 
 
-    # LIMPIAR CAMPOS
 
-    def limpiar_campos():
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        txt_fecha_firma.value = ""
+    def cerrar_formulario(e=None):
 
-        txt_costo.value = ""
+        formulario.visible = False
 
-        txt_paquetes.value = "" 
+        limpiar()
 
-    # GUARDAR CONTRATOS
-    def guardar_contrato(e):
+        page.update()
+
+
+
+
+    # ==========================
+    # NUEVO CONTRATO
+    # ==========================
+
+    def nuevo_contrato(e):
+
+        nonlocal contrato_actual
+
+
+        contrato_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nuevo Contrato"
+
+        )
+
+
+
+
+    # ==========================
+    # GUARDAR CONTRATO
+    # ==========================
+
+    def guardar(e):
 
         try:
 
-            nuevo_id = contrato_dao.obtener_ultimo_id() + 1
+
+            nuevo = Contrato(
+
+                id_contrato=dao.obtener_ultimo_id()+1,
 
 
-            contrato = Contrato(
+                fecha_firma=fecha_firma.value,
 
-                nuevo_id,
 
-                txt_fecha_firma.value,
+                costo=float(
 
-                txt_costo.value,
+                    costo.value
 
-                txt_paquetes.value
+                    if costo.value
+
+                    else 0
+
+                ),
+
+
+                paquetes=paquetes.value
 
             )
 
 
-            contrato_dao.insertar(
 
-                contrato
-
-            )
+            dao.insertar(nuevo)
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            cerrar_formulario()
 
-            cargar_contratos()
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Contrato registrado correctamente."
+                "Contrato agregado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al guardar contrato: {error}"
+                f"Error: {error}"
 
             )
 
 
 
+
+
+    # ==========================
     # EDITAR CONTRATO
+    # ==========================
 
-    def editar_contrato(contrato):
+    def editar(contrato):
 
-        nonlocal contrato_seleccionado
-
-
-        contrato_seleccionado = contrato
+        nonlocal contrato_actual
 
 
-        txt_fecha_firma.value = contrato.fecha_firma
-
-        txt_costo.value = str(contrato.costo)
-
-        txt_paquetes.value = contrato.paquetes
+        contrato_actual = contrato
 
 
-        dialogo.title = ft.Text(
+
+        fecha_firma.value = str(
+
+            contrato.fecha_firma
+
+        )
+
+
+        costo.value = str(
+
+            contrato.costo
+
+        )
+
+
+        paquetes.value = contrato.paquetes
+
+
+
+        mostrar_formulario(
 
             "Editar Contrato"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_contrato
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
 
-        dialogo.open = True
 
         page.update()
 
 
 
+
+    # ==========================
     # ACTUALIZAR CONTRATO
+    # ==========================
 
-    def actualizar_contrato(e):
+    def actualizar(e):
 
         try:
 
-            contrato_actualizado = Contrato(
 
-                contrato_seleccionado.id_contrato,
-
-                txt_fecha_firma.value,
-
-                txt_costo.value,
-
-                txt_paquetes.value
-
-            )
+            contrato_actual.fecha_firma = fecha_firma.value
 
 
-            contrato_dao.actualizar(
+            contrato_actual.costo = float(
 
-                contrato_actualizado
+                costo.value
+
+                if costo.value
+
+                else 0
 
             )
 
 
-            cerrar_dialogo()
+            contrato_actual.paquetes = paquetes.value
 
-            limpiar_campos()
 
-            cargar_contratos()
+
+            dao.actualizar(
+
+                contrato_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Contrato actualizado correctamente."
+                "Contrato actualizado correctamente"
 
             )
+
 
 
         except Exception as error:
 
-            mostrar_mensaje(
-
-                f"Error al actualizar contrato: {error}"
-
-            ) 
-
-    # ELIMINAR CONTRATOS
-
-    def eliminar_contrato(contrato):
-
-        try:
-
-            contrato_dao.eliminar(
-
-                contrato.id_contrato
-
-            )
-
-
-            cargar_contratos()
-
 
             mostrar_mensaje(
 
-                "Contrato eliminado correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar contrato: {error}"
+                f"Error al actualizar: {error}"
 
             )
 
 
 
-    # BUSCAR CONTRATOS
 
-    def buscar_contratos(e):
-
-        texto = txt_buscar.value.lower()
-
-
-        tabla_contratos.rows.clear()
-
-
-        for contrato in contrato_dao.obtener_todo():
-
-
-            if texto in str(contrato.id_contrato).lower() or texto in str(contrato.paquetes).lower():
-
-
-                tabla_contratos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(contrato.id_contrato)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(contrato.fecha_firma)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(contrato.costo)
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    contrato.paquetes
-                                )
-
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, c=contrato:
-                                                editar_contrato(c)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, c=contrato:
-                                                eliminar_contrato(c)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # NUEVO CONTRATOS
-
-    def nuevo_contrato(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nuevo Contrato"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
-
-
-            ft.ElevatedButton(
-
-                "Guardar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=guardar_contrato
-
-            )
-
-        ]
-
-
-        page.dialog = dialogo
-
-
-        dialogo.open = True
-
-
-        page.update()
-
-
-
-
-    # CERRAR DIALOGOS
-
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
+    # ==========================
     # MENSAJES
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -602,26 +590,144 @@ def contratos(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
+
+        page.update() 
+
+    # ==========================
+    # ELIMINAR CONTRATO
+    # ==========================
+
+    def eliminar(contrato):
+
+
+        def aceptar(e):
+
+            dao.eliminar(
+
+                contrato.id_contrato
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Contrato eliminado correctamente"
+
+            )
+
+
+
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar contrato"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este contrato?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_contratos
 
 
-    cargar_contratos()
+    # ==========================
+    # BOTÓN NUEVO CONTRATO
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Contrato",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_contrato
+
+    )
 
 
 
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -635,11 +741,14 @@ def contratos(page: ft.Page):
 
                             "Gestión de Contratos",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -649,35 +758,55 @@ def contratos(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Contrato",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_contrato
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_contratos
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

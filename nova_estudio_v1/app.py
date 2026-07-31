@@ -1,5 +1,6 @@
 import flet as ft
 
+
 from ui.inicio_sesion_admin import inicio_sesion_admin
 from ui.inicio_sesion_usuario import inicio_sesion_usuario
 from ui.registro_usuario import registro_usuario_view
@@ -9,17 +10,24 @@ from ui.admin.dashboard_admin import dashboard_admin
 
 def main(page: ft.Page):
 
+
+    # ==========================
+    # CONFIGURACIÓN
+    # ==========================
+
     page.title = "DJ Staff Nova Studio"
 
     page.bgcolor = ft.Colors.BLACK
 
-    page.window_width = 900
-    page.window_height = 600
+    page.window_width = 1200
+
+    page.window_height = 700
 
 
     contenido = ft.Container(
         expand=True
     )
+
 
 
     # ==========================
@@ -38,25 +46,32 @@ def main(page: ft.Page):
     # ABRIR DASHBOARD ADMIN
     # ==========================
 
-    def abrir_dashboard():
+    def abrir_dashboard(usuario):
+
 
         contenido.content = dashboard_admin(
 
             page,
 
-            volver_inicio
+            volver_inicio,
+
+            usuario
 
         )
+
 
         page.update()
 
 
 
+
+
     # ==========================
-    # ENTRAR ADMIN
+    # LOGIN ADMIN
     # ==========================
 
     def entrar_admin(e):
+
 
         contenido.content = inicio_sesion_admin(
 
@@ -66,15 +81,19 @@ def main(page: ft.Page):
 
         )
 
+
         page.update()
 
 
 
+
+
     # ==========================
-    # ENTRAR USUARIO
+    # LOGIN USUARIO
     # ==========================
 
     def entrar_usuario(e):
+
 
         contenido.content = inicio_sesion_usuario(
 
@@ -84,7 +103,10 @@ def main(page: ft.Page):
 
         )
 
+
         page.update()
+
+
 
 
 
@@ -94,9 +116,17 @@ def main(page: ft.Page):
 
     def abrir_registro():
 
-        contenido.content = registro_usuario_view(page)
+
+        contenido.content = registro_usuario_view(
+
+            page
+
+        )
+
 
         page.update()
+
+
 
 
 
@@ -106,16 +136,35 @@ def main(page: ft.Page):
 
     def pantalla_inicio():
 
+
         return ft.Container(
 
+
             expand=True,
+
 
             bgcolor=ft.Colors.BLACK,
 
 
             content=ft.Column(
 
+
                 [
+
+
+
+                    ft.Image(
+
+                        src="logo_nova.png",
+
+                        width=160,
+
+                        height=120
+
+                    ),
+
+
+
 
                     ft.Text(
 
@@ -130,6 +179,8 @@ def main(page: ft.Page):
                     ),
 
 
+
+
                     ft.Text(
 
                         "Tu música, tu experiencia inolvidable",
@@ -141,7 +192,10 @@ def main(page: ft.Page):
                     ),
 
 
+
+
                     ft.Container(height=30),
+
 
 
 
@@ -149,26 +203,36 @@ def main(page: ft.Page):
 
                         [
 
-                            # ==================
+
+
+                            # ======================
                             # USUARIO
-                            # ==================
+                            # ======================
+
 
                             ft.Container(
 
-                                width=250,
+
+                                width=280,
 
                                 height=300,
 
+
                                 bgcolor=ft.Colors.GREY_900,
+
 
                                 border_radius=15,
 
+
                                 padding=20,
+
 
 
                                 content=ft.Column(
 
                                     [
+
+
 
                                         ft.Icon(
 
@@ -179,6 +243,8 @@ def main(page: ft.Page):
                                             color=ft.Colors.WHITE
 
                                         ),
+
+
 
 
                                         ft.Text(
@@ -194,17 +260,20 @@ def main(page: ft.Page):
                                         ),
 
 
+
+
                                         ft.Text(
 
                                             "Solicita eventos\n"
-                                            "consulta DJs\n"
-                                            "contrataciones",
+                                            "Consulta DJs\n"
+                                            "Realiza contrataciones",
 
                                             color=ft.Colors.WHITE70,
 
                                             text_align=ft.TextAlign.CENTER
 
                                         ),
+
 
 
 
@@ -216,12 +285,14 @@ def main(page: ft.Page):
 
                                         )
 
+
                                     ],
 
 
-                                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                    alignment=ft.MainAxisAlignment.CENTER,
 
-                                    alignment=ft.MainAxisAlignment.CENTER
+
+                                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
 
                                 )
 
@@ -229,26 +300,37 @@ def main(page: ft.Page):
 
 
 
-                            # ==================
-                            # ADMIN
-                            # ==================
+
+
+                            # ======================
+                            # ADMINISTRADOR
+                            # ======================
+
 
                             ft.Container(
 
-                                width=250,
+
+                                width=280,
+
 
                                 height=300,
 
+
                                 bgcolor=ft.Colors.GREY_900,
+
 
                                 border_radius=15,
 
+
                                 padding=20,
+
 
 
                                 content=ft.Column(
 
                                     [
+
+
 
                                         ft.Icon(
 
@@ -259,6 +341,8 @@ def main(page: ft.Page):
                                             color=ft.Colors.WHITE
 
                                         ),
+
+
 
 
                                         ft.Text(
@@ -274,13 +358,16 @@ def main(page: ft.Page):
                                         ),
 
 
+
+
                                         ft.Text(
 
-                                            "Gestiona la agencia",
+                                            "Gestiona toda la agencia",
 
                                             color=ft.Colors.WHITE70
 
                                         ),
+
 
 
 
@@ -292,38 +379,58 @@ def main(page: ft.Page):
 
                                         )
 
+
+
                                     ],
 
 
-                                    horizontal_alignment=ft.CrossAxisAlignment.CENTER,
+                                    alignment=ft.MainAxisAlignment.CENTER,
 
-                                    alignment=ft.MainAxisAlignment.CENTER
+
+                                    horizontal_alignment=ft.CrossAxisAlignment.CENTER
+
 
                                 )
 
+
                             )
+
+
 
                         ],
 
 
+
                         alignment=ft.MainAxisAlignment.CENTER,
 
-                        spacing=40
+
+                        spacing=50
+
 
                     )
+
+
 
                 ],
 
 
+
                 alignment=ft.MainAxisAlignment.CENTER,
+
 
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
 
+
             )
+
 
         )
 
 
+
+
+
+    # INICIO
 
     contenido.content = pantalla_inicio()
 
@@ -332,8 +439,19 @@ def main(page: ft.Page):
 
 
 
+
+# ==========================
+# EJECUTAR
+# ==========================
+
+
 if __name__ == "__main__":
 
+
     ft.app(
-        target=main
+
+        target=main,
+
+        assets_dir="assets"
+
     )

@@ -4,645 +4,742 @@ from dao.eventos_dao import EventosDAO
 from modelos.eventos import Eventos
 
 
+
 def eventos(page: ft.Page):
 
-    evento_dao = EventosDAO()
+    dao = EventosDAO()
 
-    evento_seleccionado = None
+    evento_actual = None
 
 
-    # =============================
+
+    # ==========================
     # CAMPOS DEL FORMULARIO
-    # =============================
+    # ==========================
 
-    txt_nombre = ft.TextField(
-        label="Nombre del evento",
+    nombre = ft.TextField(
+        label="Nombre del Evento",
         width=250
     )
 
 
-    txt_fecha = ft.TextField(
+    fecha = ft.TextField(
         label="Fecha",
         width=250
     )
 
 
-    txt_hora = ft.TextField(
+    hora = ft.TextField(
         label="Hora",
         width=250
     )
 
 
-    txt_calle = ft.TextField(
+    calle = ft.TextField(
         label="Calle",
         width=250
     )
 
 
-    txt_colonia = ft.TextField(
+    colonia = ft.TextField(
         label="Colonia",
         width=250
     )
 
 
-    txt_numero_exterior = ft.TextField(
+    numero_exterior = ft.TextField(
         label="Número Exterior",
         width=250
     )
 
 
-    txt_costo = ft.TextField(
+    costo = ft.TextField(
         label="Costo",
         width=250
     )
 
 
-    txt_buscar = ft.TextField(
-        label="Buscar evento",
-        prefix_icon=ft.Icons.SEARCH,
-        expand=True
+
+    formulario = ft.Container(
+
+        visible=False,
+
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
+
     )
 
 
 
-    # =============================
+    # ==========================
     # TABLA EVENTOS
-    # =============================
+    # ==========================
 
-    tabla_eventos = ft.DataTable(
+    tabla = ft.DataTable(
+
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
+
 
             ft.DataColumn(
                 ft.Text("ID")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Nombre")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Fecha")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Hora")
             ),
+
+
+            ft.DataColumn(
+                ft.Text("Calle")
+            ),
+
+
+            ft.DataColumn(
+                ft.Text("Colonia")
+            ),
+
+
+            ft.DataColumn(
+                ft.Text("Número")
+            ),
+
 
             ft.DataColumn(
                 ft.Text("Costo")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Acciones")
             )
 
+
         ],
+
 
         rows=[]
 
     )
 
-    # =============================
-    # DIALOGO EVENTO
-    # =============================
 
-    dialogo = ft.AlertDialog(
 
-        modal=True,
 
-        title=ft.Text(
-            "Nuevo Evento"
-        ),
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        content=ft.Column(
+    def limpiar():
+
+        nombre.value = ""
+
+        fecha.value = ""
+
+        hora.value = ""
+
+        calle.value = ""
+
+        colonia.value = ""
+
+        numero_exterior.value = ""
+
+        costo.value = ""
+
+
+
+
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
+
+    def cargar():
+
+        tabla.rows.clear()
+
+
+        eventos_lista = dao.obtener_todo()
+
+
+
+        for evento in eventos_lista:
+
+
+            tabla.rows.append(
+
+                ft.DataRow(
+
+                    cells=[
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(evento.id_evento)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                evento.nombre
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(evento.fecha)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(evento.hora)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                evento.calle
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                evento.colonia
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(evento.numero_exterior)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(evento.costo)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
+
+                                    [
+
+
+                                        ft.IconButton(
+
+                                            icon=ft.Icons.EDIT,
+
+                                            icon_color=ft.Colors.BLUE_400,
+
+                                            tooltip="Editar evento",
+
+                                            on_click=lambda e, ev=evento: editar(ev)
+
+                                        ),
+
+
+
+                                        ft.IconButton(
+
+                                            icon=ft.Icons.DELETE,
+
+                                            icon_color=ft.Colors.RED_400,
+
+                                            tooltip="Eliminar evento",
+
+                                            on_click=lambda e, ev=evento: eliminar(ev)
+
+                                        )
+
+
+                                    ],
+
+                                    spacing=8
+
+                                )
+
+                            )
+
+                        )
+
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update() 
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+        formulario.content = ft.Column(
 
             [
 
-                txt_nombre,
+                ft.Text(
 
-                txt_fecha,
+                    titulo,
 
-                txt_hora,
+                    size=25,
 
-                txt_calle,
+                    weight=ft.FontWeight.BOLD,
 
-                txt_colonia,
+                    color=ft.Colors.WHITE
 
-                txt_numero_exterior,
-
-                txt_costo
-
-            ],
-
-            tight=True
-
-        )
-
-    )
+                ),
 
 
-    # =============================
-    # CARGAR EVENTOS
-    # =============================
 
-    def cargar_eventos():
+                ft.Row(
 
-        tabla_eventos.rows.clear()
+                    [
 
-        try:
+                        nombre,
 
-            lista_eventos = evento_dao.obtener_todo()
+                        fecha
 
+                    ]
 
-            for evento in lista_eventos:
-
-                tabla_eventos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.id_evento)
-                                )
-                            ),
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    evento.nombre
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        hora,
+
+                        calle
+
+                    ]
+
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.fecha)
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        colonia,
+
+                        numero_exterior
+
+                    ]
+
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.hora)
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        costo
+
+                    ]
+
+                ),
 
 
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.costo)
-                                )
-                            ),
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
 
 
-                            ft.DataCell(
 
-                                ft.Row(
+                        ft.TextButton(
 
-                                    [
+                            "Cancelar",
 
-                                        ft.IconButton(
+                            on_click=cerrar_formulario
 
-                                            icon=ft.Icons.EDIT,
+                        )
 
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, ev=evento:
-                                                editar_evento(ev)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, ev=evento:
-                                                eliminar_evento(ev)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
+                    ]
 
                 )
 
 
-            page.update()
+            ]
 
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al cargar eventos: {error}"
-            )
-
-
-
-    # =============================
-    # LIMPIAR CAMPOS
-    # =============================
-
-    def limpiar_campos():
-
-        txt_nombre.value = ""
-
-        txt_fecha.value = ""
-
-        txt_hora.value = ""
-
-        txt_calle.value = ""
-
-        txt_colonia.value = ""
-
-        txt_numero_exterior.value = ""
-
-        txt_costo.value = ""
-
-    # =============================
-    # GUARDAR EVENTO
-    # =============================
-
-    def guardar_evento(e):
-
-        try:
-
-            nuevo_id = evento_dao.obtener_ultimo_id() + 1
-
-
-            evento = Eventos(
-
-                nuevo_id,
-
-                txt_nombre.value,
-
-                txt_fecha.value,
-
-                txt_hora.value,
-
-                txt_calle.value,
-
-                txt_colonia.value,
-
-                txt_numero_exterior.value,
-
-                txt_costo.value
-
-            )
-
-
-            evento_dao.insertar(
-                evento
-            )
-
-
-            cerrar_dialogo()
-
-            limpiar_campos()
-
-            cargar_eventos()
-
-
-            mostrar_mensaje(
-                "Evento registrado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al guardar evento: {error}"
-            )
-
-
-
-    # =============================
-    # EDITAR EVENTO
-    # =============================
-
-    def editar_evento(evento):
-
-        nonlocal evento_seleccionado
-
-
-        evento_seleccionado = evento
-
-
-        txt_nombre.value = evento.nombre
-
-        txt_fecha.value = evento.fecha
-
-        txt_hora.value = evento.hora
-
-        txt_calle.value = evento.calle
-
-        txt_colonia.value = evento.colonia
-
-        txt_numero_exterior.value = evento.numero_exterior
-
-        txt_costo.value = evento.costo
-
-
-        dialogo.title = ft.Text(
-            "Editar Evento"
         )
 
 
-        dialogo.actions = [
-
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_evento
-
-            ),
-
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
-
-
-        dialogo.open = True
+        formulario.visible = True
 
         page.update()
 
 
 
-    # =============================
-    # ACTUALIZAR EVENTO
-    # =============================
 
-    def actualizar_evento(e):
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        try:
+    def cerrar_formulario(e=None):
 
-            evento_actualizado = Eventos(
+        formulario.visible = False
 
-                evento_seleccionado.id_evento,
-
-                txt_nombre.value,
-
-                txt_fecha.value,
-
-                txt_hora.value,
-
-                txt_calle.value,
-
-                txt_colonia.value,
-
-                txt_numero_exterior.value,
-
-                txt_costo.value
-
-            )
-
-
-            evento_dao.actualizar(
-
-                evento_actualizado
-
-            )
-
-
-            cerrar_dialogo()
-
-            limpiar_campos()
-
-            cargar_eventos()
-
-
-            mostrar_mensaje(
-                "Evento actualizado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al actualizar evento: {error}"
-            )
-
-    # =============================
-    # ELIMINAR EVENTO
-    # =============================
-
-    def eliminar_evento(evento):
-
-        try:
-
-            evento_dao.eliminar(
-                evento.id_evento
-            )
-
-
-            cargar_eventos()
-
-
-            mostrar_mensaje(
-                "Evento eliminado correctamente."
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-                f"Error al eliminar evento: {error}"
-            )
-
-
-
-    # =============================
-    # BUSCAR EVENTOS
-    # =============================
-
-    def buscar_eventos(e):
-
-        texto = txt_buscar.value.lower()
-
-        tabla_eventos.rows.clear()
-
-
-        for evento in evento_dao.obtener_todo():
-
-            nombre_evento = evento.nombre.lower()
-
-
-            if texto in nombre_evento:
-
-                tabla_eventos.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.id_evento)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    evento.nombre
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.fecha)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.hora)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(evento.costo)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, ev=evento:
-                                                editar_evento(ev)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, ev=evento:
-                                                eliminar_evento(ev)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
+        limpiar()
 
         page.update()
 
 
 
-    # =============================
+
+    # ==========================
     # NUEVO EVENTO
-    # =============================
+    # ==========================
 
     def nuevo_evento(e):
 
-        limpiar_campos()
+        nonlocal evento_actual
 
 
-        dialogo.title = ft.Text(
+        evento_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
             "Nuevo Evento"
+
         )
 
 
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
 
 
-            ft.ElevatedButton(
+    # ==========================
+    # GUARDAR EVENTO
+    # ==========================
 
-                "Guardar",
+    def guardar(e):
 
-                icon=ft.Icons.SAVE,
+        try:
 
-                on_click=guardar_evento
+
+            nuevo = Eventos(
+
+                id_evento=dao.obtener_ultimo_id()+1,
+
+
+                nombre=nombre.value,
+
+
+                fecha=fecha.value,
+
+
+                hora=hora.value,
+
+
+                calle=calle.value,
+
+
+                colonia=colonia.value,
+
+
+                numero_exterior=int(
+
+                    numero_exterior.value
+
+                    if numero_exterior.value
+
+                    else 0
+
+                ),
+
+
+                costo=float(
+
+                    costo.value
+
+                    if costo.value
+
+                    else 0
+
+                )
 
             )
 
-        ]
 
 
-        page.dialog = dialogo
+            dao.insertar(nuevo)
 
-        dialogo.open = True
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
+
+
+            mostrar_mensaje(
+
+                "Evento agregado correctamente"
+
+            )
+
+
+
+        except Exception as error:
+
+
+            mostrar_mensaje(
+
+                f"Error: {error}"
+
+            )
+
+
+
+
+
+    # ==========================
+    # EDITAR EVENTO
+    # ==========================
+
+    def editar(evento):
+
+        nonlocal evento_actual
+
+
+        evento_actual = evento
+
+
+
+        nombre.value = evento.nombre
+
+
+        fecha.value = str(evento.fecha)
+
+
+        hora.value = str(evento.hora)
+
+
+        calle.value = evento.calle
+
+
+        colonia.value = evento.colonia
+
+
+        numero_exterior.value = str(
+
+            evento.numero_exterior
+
+        )
+
+
+        costo.value = str(
+
+            evento.costo
+
+        )
+
+
+
+        mostrar_formulario(
+
+            "Editar Evento"
+
+        )
+
+
+
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
+
+
+        formulario.content.controls[-1].controls[0].on_click = actualizar
+
+
 
         page.update()
 
 
 
-    # =============================
-    # CERRAR DIALOGO
-    # =============================
 
-    def cerrar_dialogo():
+    # ==========================
+    # ACTUALIZAR EVENTO
+    # ==========================
 
-        dialogo.open = False
+    def actualizar(e):
 
-        page.update()
-
+        try:
 
 
-    # =============================
+            evento_actual.nombre = nombre.value
+
+
+            evento_actual.fecha = fecha.value
+
+
+            evento_actual.hora = hora.value
+
+
+            evento_actual.calle = calle.value
+
+
+            evento_actual.colonia = colonia.value
+
+
+
+            evento_actual.numero_exterior = int(
+
+                numero_exterior.value
+
+                if numero_exterior.value
+
+                else 0
+
+            )
+
+
+
+            evento_actual.costo = float(
+
+                costo.value
+
+                if costo.value
+
+                else 0
+
+            )
+
+
+
+            dao.actualizar(
+
+                evento_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
+
+
+            mostrar_mensaje(
+
+                "Evento actualizado correctamente"
+
+            )
+
+
+
+        except Exception as error:
+
+
+            mostrar_mensaje(
+
+                f"Error al actualizar: {error}"
+
+            )
+
+
+
+
+    # ==========================
     # MENSAJES
-    # =============================
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -652,28 +749,144 @@ def eventos(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
+
+        page.update() 
+
+    # ==========================
+    # ELIMINAR EVENTO
+    # ==========================
+
+    def eliminar(evento):
+
+
+        def aceptar(e):
+
+            dao.eliminar(
+
+                evento.id_evento
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Evento eliminado correctamente"
+
+            )
+
+
+
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar evento"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este evento?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_eventos
 
 
-    cargar_eventos()
+    # ==========================
+    # BOTÓN NUEVO EVENTO
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Evento",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_evento
+
+    )
 
 
 
-    # =============================
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
-    # =============================
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -687,11 +900,14 @@ def eventos(page: ft.Page):
 
                             "Gestión de Eventos",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -701,35 +917,55 @@ def eventos(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Evento",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_evento
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_eventos
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 

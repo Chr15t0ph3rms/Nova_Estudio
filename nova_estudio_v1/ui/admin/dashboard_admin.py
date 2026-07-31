@@ -1,6 +1,9 @@
 import flet as ft
 
 
+from dao.dashboard_dao import DashboardDAO
+
+
 from ui.components.sidebar import sidebar
 from ui.components.navbar import navbar
 from ui.components.cards import card
@@ -12,11 +15,14 @@ from ui.admin.eventos import eventos
 from ui.admin.inventario import inventario
 from ui.admin.paquetes import paquetes
 from ui.admin.contratos import contratos
+from ui.admin.pagos import pagos
+from ui.admin.djs import djs
+from ui.admin.reportes import reportes
 from ui.admin.agencia import agencia
 
 
 
-def dashboard_admin(page: ft.Page, cerrar_sesion):
+def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
     contenido = ft.Container(
@@ -31,47 +37,68 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
     def mostrar_dashboard():
 
+
+        datos = DashboardDAO.obtener_estadisticas()
+
+
+
         contenido.content = ft.Column(
 
             [
 
-                navbar("Administrador"),
+
+                # NAVBAR DINAMICO
+
+                navbar(
+                    page,
+                    usuario
+                ),
 
 
-                ft.Container(height=20),
+
+                ft.Container(
+                    height=20
+                ),
 
 
+
+                # CARDS
 
                 ft.Row(
 
                     [
 
+
                         card(
                             "Clientes",
-                            0,
+                            datos["clientes"],
                             ft.Icons.PEOPLE
                         ),
 
 
+
                         card(
                             "Eventos",
-                            0,
+                            datos["eventos"],
                             ft.Icons.EVENT
                         ),
 
 
+
                         card(
                             "Empleados",
-                            0,
+                            datos["empleados"],
                             ft.Icons.BADGE
                         ),
 
 
+
                         card(
                             "Inventario",
-                            0,
+                            datos["inventario"],
                             ft.Icons.INVENTORY
                         )
+
 
                     ],
 
@@ -81,8 +108,14 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
 
 
-                ft.Container(height=25),
+                ft.Container(
+                    height=25
+                ),
 
+
+
+
+                # PANEL PRINCIPAL
 
 
                 ft.Container(
@@ -93,18 +126,19 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
                     border_radius=15,
 
-                    padding=20,
+                    padding=25,
 
 
                     content=ft.Column(
 
                         [
 
+
                             ft.Text(
 
                                 "Bienvenido al Panel de Administración",
 
-                                size=25,
+                                size=26,
 
                                 weight=ft.FontWeight.BOLD,
 
@@ -113,32 +147,88 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
                             ),
 
 
+
                             ft.Divider(),
+
 
 
                             ft.Text(
 
                                 "Desde este panel podrás administrar:",
 
+                                size=17,
+
                                 color=ft.Colors.WHITE
 
                             ),
 
 
-                            ft.Text("• Clientes", color=ft.Colors.WHITE),
-                            ft.Text("• Empleados", color=ft.Colors.WHITE),
-                            ft.Text("• DJs", color=ft.Colors.WHITE),
-                            ft.Text("• Eventos", color=ft.Colors.WHITE),
-                            ft.Text("• Inventario", color=ft.Colors.WHITE),
-                            ft.Text("• Paquetes", color=ft.Colors.WHITE),
-                            ft.Text("• Contratos", color=ft.Colors.WHITE),
-                            ft.Text("• Reportes", color=ft.Colors.WHITE)
+
+                            ft.Text(
+                                "• Clientes",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Empleados",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• DJs",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Eventos",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Inventario",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Paquetes",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Contratos",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Pagos",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Reportes",
+                                color=ft.Colors.WHITE
+                            ),
+
+
+                            ft.Text(
+                                "• Agencia",
+                                color=ft.Colors.WHITE
+                            )
 
                         ]
 
                     )
 
                 )
+
 
             ],
 
@@ -152,12 +242,14 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
 
 
+
     # ==========================
-    # CERRAR SESIÓN
+    # CONFIRMAR CIERRE
     # ==========================
 
 
-    def mostrar_confirmacion():
+    def confirmar_cierre():
+
 
 
         def aceptar(e):
@@ -169,6 +261,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
         def cancelar(e):
 
             mostrar_dashboard()
+
 
 
 
@@ -187,6 +280,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
                 [
 
+
                     ft.Text(
 
                         "Cerrar sesión",
@@ -200,6 +294,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
                     ),
 
 
+
                     ft.Text(
 
                         "¿Seguro que deseas salir?",
@@ -211,9 +306,11 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
                     ),
 
 
+
                     ft.Row(
 
                         [
+
 
                             ft.ElevatedButton(
 
@@ -224,6 +321,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
                             ),
 
 
+
                             ft.ElevatedButton(
 
                                 "Aceptar",
@@ -232,24 +330,32 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
                             )
 
+
                         ],
+
 
                         alignment=ft.MainAxisAlignment.CENTER
 
                     )
 
+
                 ],
+
 
                 alignment=ft.MainAxisAlignment.CENTER,
 
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
 
+
             )
+
 
         )
 
 
         page.update()
+
+
 
 
 
@@ -262,80 +368,73 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
     def cambiar_pantalla(opcion):
 
 
+        pantallas = {
+
+
+            "Clientes": clientes,
+
+            "Empleados": empleados,
+
+            "DJs": djs,
+
+            "Eventos": eventos,
+
+            "Inventario": inventario,
+
+            "Paquetes": paquetes,
+
+            "Contratos": contratos,
+
+            "Pagos": pagos,
+
+            "Reportes": reportes,
+
+            "Agencia": agencia
+
+        }
+
+
+
+
         if opcion == "Dashboard":
 
             mostrar_dashboard()
 
-
-
-        elif opcion == "Clientes":
-
-            contenido.content = clientes(page)
-
-            page.update()
+            return
 
 
 
-        elif opcion == "Empleados":
 
-            contenido.content = empleados(page)
+        if opcion == "Cerrar sesión":
 
-            page.update()
+            confirmar_cierre()
+
+            return
 
 
 
-        elif opcion == "Eventos":
 
-            contenido.content = eventos(page)
+        if opcion in pantallas:
+
+
+            contenido.content = pantallas[opcion](page)
 
             page.update()
 
 
 
-        elif opcion == "Inventario":
-
-            contenido.content = inventario(page)
-
-            page.update()
 
 
-
-        elif opcion == "Paquetes":
-
-            contenido.content = paquetes(page)
-
-            page.update()
-
-
-
-        elif opcion == "Contratos":
-
-            contenido.content = contratos(page)
-
-            page.update()
-
-
-
-        elif opcion == "Agencia":
-
-            contenido.content = agencia(page)
-
-            page.update()
-
-
-
-        elif opcion == "Cerrar sesión":
-
-            mostrar_confirmacion()
-
-
-
+    # CARGAR AL INICIO
 
     mostrar_dashboard()
 
 
 
+
+
     return ft.Container(
+
 
         expand=True,
 
@@ -344,15 +443,19 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
         padding=15,
 
 
+
         content=ft.Row(
 
             [
+
+
 
                 sidebar(
 
                     cambiar_pantalla
 
                 ),
+
 
 
 
@@ -364,6 +467,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
 
 
+
                 ft.Container(
 
                     expand=True,
@@ -372,10 +476,13 @@ def dashboard_admin(page: ft.Page, cerrar_sesion):
 
                 )
 
+
             ],
+
 
             expand=True
 
         )
+
 
     )

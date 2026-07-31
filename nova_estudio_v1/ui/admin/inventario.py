@@ -4,40 +4,44 @@ from dao.inventario_dao import InventarioDAO
 from modelos.inventario import Inventario
 
 
+
 def inventario(page: ft.Page):
 
-    inventario_dao = InventarioDAO()
+    dao = InventarioDAO()
 
-    inventario_seleccionado = None
+    inventario_actual = None
 
 
+
+    # ==========================
     # CAMPOS DEL FORMULARIO
+    # ==========================
 
-    txt_nombre = ft.TextField(
-        label="Nombre del equipo",
+    nombre = ft.TextField(
+        label="Nombre",
         width=250
     )
 
 
-    txt_tipo = ft.TextField(
+    tipo = ft.TextField(
         label="Tipo",
         width=250
     )
 
 
-    txt_estado = ft.TextField(
+    estado = ft.TextField(
         label="Estado",
         width=250
     )
 
 
-    txt_cantidad = ft.TextField(
+    cantidad = ft.TextField(
         label="Cantidad",
         width=250
     )
 
 
-    txt_disponible = ft.Dropdown(
+    disponible = ft.Dropdown(
 
         label="Disponible",
 
@@ -58,630 +62,619 @@ def inventario(page: ft.Page):
     )
 
 
-    txt_buscar = ft.TextField(
 
-        label="Buscar inventario",
+    formulario = ft.Container(
 
-        prefix_icon=ft.Icons.SEARCH,
+        visible=False,
 
-        expand=True
+        bgcolor=ft.Colors.GREY_900,
+
+        padding=20,
+
+        border_radius=15
 
     )
 
 
 
+    # ==========================
     # TABLA INVENTARIO
+    # ==========================
 
+    tabla = ft.DataTable(
 
-    tabla_inventario = ft.DataTable(
+        expand=True,
+
+        column_spacing=45,
+
+        horizontal_margin=30,
+
 
         columns=[
+
 
             ft.DataColumn(
                 ft.Text("ID")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Nombre")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Tipo")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Estado")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Cantidad")
             ),
 
+
             ft.DataColumn(
                 ft.Text("Disponible")
             ),
+
 
             ft.DataColumn(
                 ft.Text("Acciones")
             )
 
+
         ],
+
 
         rows=[]
 
     )
 
-    # DIALOGO INVENTARIO
 
-    dialogo = ft.AlertDialog(
 
-        modal=True,
+    # ==========================
+    # LIMPIAR
+    # ==========================
 
-        title=ft.Text(
-            "Nuevo Inventario"
-        ),
+    def limpiar():
 
-        content=ft.Column(
+        nombre.value = ""
 
-            [
+        tipo.value = ""
 
-                txt_nombre,
+        estado.value = ""
 
-                txt_tipo,
+        cantidad.value = ""
 
-                txt_estado,
-
-                txt_cantidad,
-
-                txt_disponible
-
-            ],
-
-            tight=True
-
-        )
-
-    )
+        disponible.value = None
 
 
 
-    # CARGAR INVENTARIO
 
-    def cargar_inventario():
+    # ==========================
+    # CARGAR TABLA
+    # ==========================
 
-        tabla_inventario.rows.clear()
+    def cargar():
 
-        try:
-
-            lista_inventario = inventario_dao.obtener_todo()
-
-
-            for item in lista_inventario:
-
-                tabla_inventario.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-
-                                ft.Text(
-                                    str(item.id_inventario)
-                                )
-
-                            ),
+        tabla.rows.clear()
 
 
-                            ft.DataCell(
-
-                                ft.Text(
-                                    item.nombre
-                                )
-
-                            ),
+        inventarios_lista = dao.obtener_todo()
 
 
-                            ft.DataCell(
 
-                                ft.Text(
-                                    item.tipo
-                                )
-
-                            ),
+        for item in inventarios_lista:
 
 
-                            ft.DataCell(
+            tabla.rows.append(
 
-                                ft.Text(
-                                    item.estado
-                                )
+                ft.DataRow(
 
-                            ),
+                    cells=[
 
 
-                            ft.DataCell(
+                        ft.DataCell(
 
-                                ft.Text(
-                                    str(item.cantidad)
-                                )
+                            ft.Text(
 
-                            ),
+                                str(item.id_inventario)
 
+                            )
 
-                            ft.DataCell(
-
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
-                                )
-
-                            ),
+                        ),
 
 
-                            ft.DataCell(
 
-                                ft.Row(
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.nombre
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.tipo
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                item.estado
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                str(item.cantidad)
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Text(
+
+                                "Disponible"
+                                if item.disponible
+                                else
+                                "No disponible"
+
+                            )
+
+                        ),
+
+
+
+                        ft.DataCell(
+
+                            ft.Container(
+
+                                width=130,
+
+
+                                content=ft.Row(
 
                                     [
+
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.EDIT,
 
-                                            tooltip="Editar",
+                                            icon_color=ft.Colors.BLUE_400,
 
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
+                                            tooltip="Editar inventario",
+
+                                            on_click=lambda e, inv=item: editar(inv)
 
                                         ),
+
 
 
                                         ft.IconButton(
 
                                             icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar",
+                                            icon_color=ft.Colors.RED_400,
 
-                                            icon_color=ft.Colors.RED,
+                                            tooltip="Eliminar inventario",
 
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
+                                            on_click=lambda e, inv=item: eliminar(inv)
 
                                         )
 
-                                    ]
+
+                                    ],
+
+                                    spacing=8
 
                                 )
 
                             )
 
-                        ]
+                        )
 
-                    )
+
+                    ]
+
+                )
+
+            )
+
+
+        page.update() 
+
+    # ==========================
+    # MOSTRAR FORMULARIO
+    # ==========================
+
+    def mostrar_formulario(titulo):
+
+        formulario.content = ft.Column(
+
+            [
+
+                ft.Text(
+
+                    titulo,
+
+                    size=25,
+
+                    weight=ft.FontWeight.BOLD,
+
+                    color=ft.Colors.WHITE
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        nombre,
+
+                        tipo
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        estado,
+
+                        cantidad
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        disponible
+
+                    ]
+
+                ),
+
+
+
+                ft.Row(
+
+                    [
+
+                        ft.ElevatedButton(
+
+                            "Guardar",
+
+                            icon=ft.Icons.SAVE,
+
+                            on_click=guardar
+
+                        ),
+
+
+
+                        ft.TextButton(
+
+                            "Cancelar",
+
+                            on_click=cerrar_formulario
+
+                        )
+
+                    ]
 
                 )
 
 
-            page.update()
+            ]
+
+        )
 
 
-        except Exception as error:
+        formulario.visible = True
 
-            mostrar_mensaje(
-                f"Error al cargar inventario: {error}"
-            )
+        page.update()
 
 
 
-    # LIMPIAR CAMPOS
 
-    def limpiar_campos():
+    # ==========================
+    # CERRAR FORMULARIO
+    # ==========================
 
-        txt_nombre.value = ""
+    def cerrar_formulario(e=None):
 
-        txt_tipo.value = ""
+        formulario.visible = False
 
-        txt_estado.value = ""
+        limpiar()
 
-        txt_cantidad.value = ""
+        page.update()
 
-        txt_disponible.value = None 
 
+
+
+    # ==========================
+    # NUEVO INVENTARIO
+    # ==========================
+
+    def nuevo_inventario(e):
+
+        nonlocal inventario_actual
+
+
+        inventario_actual = None
+
+
+        limpiar()
+
+
+        mostrar_formulario(
+
+            "Nuevo Inventario"
+
+        )
+
+
+
+
+    # ==========================
     # GUARDAR INVENTARIO
+    # ==========================
 
-    def guardar_inventario(e):
+    def guardar(e):
 
         try:
 
-            nuevo_id = inventario_dao.obtener_ultimo_id() + 1
+
+            nuevo = Inventario(
+
+                id_inventario=dao.obtener_ultimo_id()+1,
 
 
-            disponible = True
-
-            if txt_disponible.value == "False":
-
-                disponible = False
+                nombre=nombre.value,
 
 
-            nuevo_inventario = Inventario(
+                tipo=tipo.value,
 
-                nuevo_id,
 
-                txt_nombre.value,
+                estado=estado.value,
 
-                txt_tipo.value,
 
-                txt_estado.value,
+                cantidad=int(
 
-                int(txt_cantidad.value),
+                    cantidad.value
 
-                disponible
+                    if cantidad.value
+
+                    else 0
+
+                ),
+
+
+                disponible=True
+
+                if disponible.value == "True"
+
+                else False
 
             )
 
 
-            inventario_dao.insertar(
 
-                nuevo_inventario
-
-            )
+            dao.insertar(nuevo)
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            cerrar_formulario()
 
-            cargar_inventario()
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Inventario registrado correctamente."
+                "Inventario agregado correctamente"
 
             )
+
 
 
         except Exception as error:
 
+
             mostrar_mensaje(
 
-                f"Error al guardar inventario: {error}"
+                f"Error: {error}"
 
             )
 
 
 
+
+
+    # ==========================
     # EDITAR INVENTARIO
+    # ==========================
 
-    def editar_inventario(item):
+    def editar(item):
 
-        nonlocal inventario_seleccionado
-
-
-        inventario_seleccionado = item
+        nonlocal inventario_actual
 
 
-        txt_nombre.value = item.nombre
-
-        txt_tipo.value = item.tipo
-
-        txt_estado.value = item.estado
-
-        txt_cantidad.value = str(item.cantidad)
-
-        txt_disponible.value = str(item.disponible)
+        inventario_actual = item
 
 
-        dialogo.title = ft.Text(
+
+        nombre.value = item.nombre
+
+
+        tipo.value = item.tipo
+
+
+        estado.value = item.estado
+
+
+        cantidad.value = str(
+
+            item.cantidad
+
+        )
+
+
+        disponible.value = (
+
+            "True"
+
+            if item.disponible
+
+            else
+
+            "False"
+
+        )
+
+
+
+        mostrar_formulario(
 
             "Editar Inventario"
 
         )
 
 
-        dialogo.actions = [
 
-            ft.ElevatedButton(
-
-                "Actualizar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=actualizar_inventario
-
-            ),
+        formulario.content.controls[-1].controls[0].text = "Actualizar"
 
 
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            )
-
-        ]
+        formulario.content.controls[-1].controls[0].on_click = actualizar
 
 
-        dialogo.open = True
 
         page.update()
 
 
 
+
+    # ==========================
     # ACTUALIZAR INVENTARIO
+    # ==========================
 
-    def actualizar_inventario(e):
+    def actualizar(e):
 
         try:
 
-            disponible = True
+
+            inventario_actual.nombre = nombre.value
 
 
-            if txt_disponible.value == "False":
-
-                disponible = False
+            inventario_actual.tipo = tipo.value
 
 
+            inventario_actual.estado = estado.value
 
-            inventario_actualizado = Inventario(
 
-                inventario_seleccionado.id_inventario,
+            inventario_actual.cantidad = int(
 
-                txt_nombre.value,
+                cantidad.value
 
-                txt_tipo.value,
+                if cantidad.value
 
-                txt_estado.value,
-
-                int(txt_cantidad.value),
-
-                disponible
+                else 0
 
             )
 
 
-            inventario_dao.actualizar(
+            inventario_actual.disponible = (
 
-                inventario_actualizado
+                True
+
+                if disponible.value == "True"
+
+                else False
 
             )
 
 
-            cerrar_dialogo()
 
-            limpiar_campos()
+            dao.actualizar(
 
-            cargar_inventario()
+                inventario_actual
+
+            )
+
+
+
+            cerrar_formulario()
+
+
+            cargar()
+
 
 
             mostrar_mensaje(
 
-                "Inventario actualizado correctamente."
+                "Inventario actualizado correctamente"
 
             )
+
 
 
         except Exception as error:
 
-            mostrar_mensaje(
-
-                f"Error al actualizar inventario: {error}"
-
-            ) 
-
-    # ELIMINAR INVENTARIO
-
-    def eliminar_inventario(item):
-
-        try:
-
-            inventario_dao.eliminar(
-
-                item.id_inventario
-
-            )
-
-
-            cargar_inventario()
-
 
             mostrar_mensaje(
 
-                "Inventario eliminado correctamente."
-
-            )
-
-
-        except Exception as error:
-
-            mostrar_mensaje(
-
-                f"Error al eliminar inventario: {error}"
+                f"Error al actualizar: {error}"
 
             )
 
 
 
-    # BUSCAR INVENTARIO
 
-    def buscar_inventario(e):
-
-        texto = txt_buscar.value.lower()
-
-
-        tabla_inventario.rows.clear()
-
-
-        for item in inventario_dao.obtener_todo():
-
-
-            if texto in item.nombre.lower():
-
-
-                tabla_inventario.rows.append(
-
-                    ft.DataRow(
-
-                        cells=[
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(item.id_inventario)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    item.nombre
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    item.tipo
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    item.estado
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-                                    str(item.cantidad)
-                                )
-                            ),
-
-
-                            ft.DataCell(
-                                ft.Text(
-
-                                    "Disponible"
-                                    if item.disponible
-                                    else "No disponible"
-
-                                )
-                            ),
-
-
-                            ft.DataCell(
-
-                                ft.Row(
-
-                                    [
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.EDIT,
-
-                                            tooltip="Editar",
-
-                                            on_click=lambda e, inv=item:
-                                                editar_inventario(inv)
-
-                                        ),
-
-
-                                        ft.IconButton(
-
-                                            icon=ft.Icons.DELETE,
-
-                                            tooltip="Eliminar",
-
-                                            icon_color=ft.Colors.RED,
-
-                                            on_click=lambda e, inv=item:
-                                                eliminar_inventario(inv)
-
-                                        )
-
-                                    ]
-
-                                )
-
-                            )
-
-                        ]
-
-                    )
-
-                )
-
-
-        page.update()
-
-
-
-    # NUEVO INVENTARIO
-
-    def nuevo_inventario(e):
-
-        limpiar_campos()
-
-
-        dialogo.title = ft.Text(
-
-            "Nuevo Inventario"
-
-        )
-
-
-        dialogo.actions = [
-
-            ft.TextButton(
-
-                "Cancelar",
-
-                on_click=lambda e: cerrar_dialogo()
-
-            ),
-
-
-            ft.ElevatedButton(
-
-                "Guardar",
-
-                icon=ft.Icons.SAVE,
-
-                on_click=guardar_inventario
-
-            )
-
-        ]
-
-
-        page.dialog = dialogo
-
-
-        dialogo.open = True
-
-
-        page.update()
-
-
-
-    # CERRAR DIALOGO
-
-    def cerrar_dialogo():
-
-        dialogo.open = False
-
-        page.update()
-
-
-
+    # ==========================
     # MENSAJES
+    # ==========================
 
     def mostrar_mensaje(texto):
 
@@ -691,26 +684,144 @@ def inventario(page: ft.Page):
 
         )
 
+
         page.snack_bar.open = True
+
+
+        page.update() 
+
+    # ==========================
+    # ELIMINAR INVENTARIO
+    # ==========================
+
+    def eliminar(item):
+
+
+        def aceptar(e):
+
+            dao.eliminar(
+
+                item.id_inventario
+
+            )
+
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+            cargar()
+
+
+            mostrar_mensaje(
+
+                "Inventario eliminado correctamente"
+
+            )
+
+
+
+        def cancelar(e):
+
+            dialogo_eliminar.open = False
+
+            page.update()
+
+
+
+        dialogo_eliminar = ft.AlertDialog(
+
+            modal=True,
+
+
+            title=ft.Text(
+
+                "Eliminar inventario"
+
+            ),
+
+
+            content=ft.Text(
+
+                "¿Seguro que deseas eliminar este elemento?"
+
+            ),
+
+
+            actions=[
+
+
+                ft.TextButton(
+
+                    "Cancelar",
+
+                    on_click=cancelar
+
+                ),
+
+
+                ft.ElevatedButton(
+
+                    "Aceptar",
+
+                    icon=ft.Icons.DELETE,
+
+                    on_click=aceptar
+
+                )
+
+            ]
+
+        )
+
+
+        page.dialog = dialogo_eliminar
+
+        dialogo_eliminar.open = True
 
         page.update()
 
 
 
-    txt_buscar.on_change = buscar_inventario
 
 
-    cargar_inventario()
+    # ==========================
+    # BOTÓN NUEVO INVENTARIO
+    # ==========================
+
+    boton_nuevo = ft.ElevatedButton(
+
+        "Nuevo Inventario",
+
+        icon=ft.Icons.ADD,
+
+        on_click=nuevo_inventario
+
+    )
 
 
 
+
+    # ==========================
+    # CARGAR DATOS INICIALES
+    # ==========================
+
+    cargar()
+
+
+
+
+    # ==========================
     # INTERFAZ FINAL
+    # ==========================
 
     return ft.Container(
 
         expand=True,
 
         padding=20,
+
 
         content=ft.Column(
 
@@ -724,11 +835,14 @@ def inventario(page: ft.Page):
 
                             "Gestión de Inventario",
 
-                            size=28,
+                            size=30,
 
-                            weight=ft.FontWeight.BOLD
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
 
                         ),
+
 
 
                         ft.Container(
@@ -738,37 +852,56 @@ def inventario(page: ft.Page):
                         ),
 
 
-                        ft.ElevatedButton(
 
-                            "Nuevo Inventario",
-
-                            icon=ft.Icons.ADD,
-
-                            on_click=nuevo_inventario
-
-                        )
+                        boton_nuevo
 
                     ]
 
                 ),
 
 
-                txt_buscar,
+
+                ft.Divider(),
+
+
+
+                formulario,
+
 
 
                 ft.Container(
 
-                    expand=True,
+                    height=0
 
-                    content=tabla_inventario
+                ),
+
+
+
+                ft.Container(
+
+                    padding=0,
+
+                    content=ft.Column(
+
+                        [
+
+                            tabla
+
+                        ],
+
+                        spacing=0
+
+                    )
 
                 )
 
             ],
 
-            expand=True
+
+            expand=True,
+
+            spacing=0
 
         )
 
-    ) 
-
+    )
