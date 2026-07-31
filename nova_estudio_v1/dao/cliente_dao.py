@@ -129,3 +129,7 @@ class ClienteDAO:
             return 0
 
         return resultado[0]
+
+    # Método alias para compatibilidad con llamadas que usan el nombre singular
+    def obtener_todo(self):
+        return self.obtener_todos()
