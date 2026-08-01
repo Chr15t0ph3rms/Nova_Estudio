@@ -626,35 +626,57 @@ def empleados(page: ft.Page):
 
         page.update() 
 
-    # ==========================
+
     # ELIMINAR EMPLEADO
-    # ==========================
 
     def eliminar(empleado):
+
+        print(
+            "BOTON ELIMINAR EMPLEADO:",
+            empleado.id_empleado
+        )
 
 
         def aceptar(e):
 
-            dao.eliminar(
+            try:
 
-                empleado.id_empleado
-
-            )
-
-
-            dialogo_eliminar.open = False
-
-            page.update()
+                print(
+                    "ELIMINANDO EMPLEADO:",
+                    empleado.id_empleado
+                )
 
 
-            cargar()
+                dao.eliminar(
+                    empleado.id_empleado
+                )
 
 
-            mostrar_mensaje(
+                dialogo_eliminar.open = False
 
-                "Empleado eliminado correctamente"
+                page.update()
 
-            )
+
+                cargar()
+
+
+                mostrar_mensaje(
+                    "Empleado eliminado correctamente"
+                )
+
+
+            except Exception as error:
+
+
+                print(
+                    "ERROR AL ELIMINAR EMPLEADO:",
+                    error
+                )
+
+
+                mostrar_mensaje(
+                    f"Error al eliminar: {error}"
+                )
 
 
 
@@ -672,16 +694,12 @@ def empleados(page: ft.Page):
 
 
             title=ft.Text(
-
                 "Eliminar empleado"
-
             ),
 
 
             content=ft.Text(
-
-                "¿Seguro que deseas eliminar este empleado?"
-
+                f"¿Seguro que deseas eliminar a {empleado.nombre}?"
             ),
 
 
@@ -697,9 +715,10 @@ def empleados(page: ft.Page):
                 ),
 
 
-                ft.ElevatedButton(
 
-                    "Aceptar",
+                ft.TextButton(
+
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -712,7 +731,7 @@ def empleados(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
 
         dialogo_eliminar.open = True
 

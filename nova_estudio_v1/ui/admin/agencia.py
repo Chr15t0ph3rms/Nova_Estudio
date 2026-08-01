@@ -495,56 +495,42 @@ def agencia(page: ft.Page):
         )
 
 
-
-
     # ==========================
     # GUARDAR AGENCIA
     # ==========================
 
     def guardar(e):
 
-
         try:
-
 
             nueva = Agencia(
 
-                id_agencia=dao.obtener_ultimo_id()+1,
-
+                id_agencia=dao.obtener_ultimo_id() + 1,
 
                 agencia_nombre=agencia_nombre.value,
 
-
                 nombre=nombre.value,
-
 
                 app=app.value,
 
-
                 apm=apm.value,
-
 
                 telefono=telefono.value,
 
-
                 correo=correo.value,
-
 
                 empleados=int(empleados.value)
 
             )
 
 
-
             dao.insertar(nueva)
-
 
 
             cerrar_formulario()
 
 
             cargar()
-
 
 
             mostrar_mensaje(
@@ -554,15 +540,23 @@ def agencia(page: ft.Page):
             )
 
 
-
         except Exception as error:
+
+
+            print(
+
+                "ERROR AL GUARDAR AGENCIA:",
+
+                error
+
+            )
 
 
             mostrar_mensaje(
 
                 f"Error: {error}"
 
-            ) 
+            )
 
 
     # ==========================
@@ -573,44 +567,33 @@ def agencia(page: ft.Page):
 
         nonlocal agencia_actual
 
-
         agencia_actual = item
 
 
-
         agencia_nombre.value = item.agencia_nombre
-
         nombre.value = item.nombre
-
         app.value = item.app
-
         apm.value = item.apm
-
         telefono.value = item.telefono
-
         correo.value = item.correo
-
         empleados.value = str(item.empleados)
 
 
-
         mostrar_formulario(
-
             "Editar Agencia"
-
         )
 
 
-
-        formulario.content.controls[-1].controls[0].text = "Actualizar"
-
-
-        formulario.content.controls[-1].controls[0].on_click = actualizar
+        boton = formulario.content.controls[-1].controls[0]
 
 
+        boton.text = "Guardar"
+
+        boton.icon = ft.Icons.SAVE
+
+        boton.on_click = actualizar
 
         page.update()
-
 
 
 
@@ -620,66 +603,46 @@ def agencia(page: ft.Page):
 
     def actualizar(e):
 
+        nonlocal agencia_actual
+
 
         try:
 
-
             agencia_actual.agencia_nombre = agencia_nombre.value
-
-
             agencia_actual.nombre = nombre.value
-
-
             agencia_actual.app = app.value
-
-
             agencia_actual.apm = apm.value
-
-
             agencia_actual.telefono = telefono.value
-
-
             agencia_actual.correo = correo.value
-
-
             agencia_actual.empleados = int(empleados.value)
 
 
-
             dao.actualizar(
-
                 agencia_actual
-
             )
-
 
 
             cerrar_formulario()
 
-
             cargar()
 
 
-
             mostrar_mensaje(
-
                 "Agencia actualizada correctamente"
-
             )
-
 
 
         except Exception as error:
 
-
-            mostrar_mensaje(
-
-                f"Error al actualizar: {error}"
-
+            print(
+                "ERROR AL ACTUALIZAR AGENCIA:",
+                error
             )
 
 
-
+            mostrar_mensaje(
+                f"Error al actualizar: {error}"
+            )
 
 
     # ==========================
@@ -688,46 +651,59 @@ def agencia(page: ft.Page):
 
     def eliminar(item):
 
+        print(
+            "BOTON ELIMINAR AGENCIA:",
+            item.id_agencia
+        )
+
 
         def aceptar(e):
 
+            try:
 
-            dao.eliminar(
-
-                item.id_agencia
-
-            )
-
-
-
-            dialogo.open = False
+                print(
+                    "ELIMINANDO AGENCIA:",
+                    item.id_agencia
+                )
 
 
-            page.update()
+                dao.eliminar(
+                    item.id_agencia
+                )
 
 
+                dialogo.open = False
 
-            cargar()
+                page.update()
 
 
+                cargar()
 
-            mostrar_mensaje(
 
-                "Agencia eliminada correctamente"
+                mostrar_mensaje(
+                    "Agencia eliminada correctamente"
+                )
 
-            )
 
+            except Exception as error:
+
+                print(
+                    "ERROR AL ELIMINAR AGENCIA:",
+                    error
+                )
+
+
+                mostrar_mensaje(
+                    f"Error al eliminar: {error}"
+                )
 
 
 
         def cancelar(e):
 
-
             dialogo.open = False
 
-
             page.update()
-
 
 
 
@@ -735,61 +711,40 @@ def agencia(page: ft.Page):
 
             modal=True,
 
-
             title=ft.Text(
-
                 "Eliminar Agencia"
-
             ),
-
 
 
             content=ft.Text(
-
-                "¿Seguro que deseas eliminar esta agencia?"
-
+                f"¿Seguro que deseas eliminar {item.agencia_nombre}?"
             ),
-
 
 
             actions=[
 
-
                 ft.TextButton(
-
                     "Cancelar",
-
                     on_click=cancelar
-
                 ),
 
 
-
-                ft.ElevatedButton(
-
-                    "Aceptar",
-
+                ft.TextButton(
+                    "Eliminar",
                     icon=ft.Icons.DELETE,
-
                     on_click=aceptar
-
                 )
-
 
             ]
 
         )
 
 
-
-        page.dialog = dialogo
-
+        page.overlay.append(dialogo)
 
         dialogo.open = True
 
-
         page.update()
-
 
 
 

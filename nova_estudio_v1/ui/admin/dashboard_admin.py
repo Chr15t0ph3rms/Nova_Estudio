@@ -6,7 +6,7 @@ from dao.dashboard_dao import DashboardDAO
 
 from ui.components.sidebar import sidebar
 from ui.components.navbar import navbar
-from ui.components.cards import card
+from ui.components.graficas import graficas_dashboard
 
 
 from ui.admin.clientes import clientes
@@ -32,13 +32,35 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
     # ==========================
-    # DASHBOARD
+    # DASHBOARD PRINCIPAL
     # ==========================
 
     def mostrar_dashboard():
 
 
-        datos = DashboardDAO.obtener_estadisticas()
+        datos_bd = DashboardDAO.obtener_estadisticas()
+
+
+
+        datos = {
+
+            "clientes": datos_bd.get("clientes", 0),
+
+            "eventos": datos_bd.get("eventos", 0),
+
+            "empleados": datos_bd.get("empleados", 0),
+
+            "inventario": datos_bd.get("inventario", 0),
+
+            "djs": datos_bd.get("djs", 0),
+
+            "contratos": datos_bd.get("contratos", 0),
+
+            "pagos": datos_bd.get("pagos", 0),
+
+            "ingresos": datos_bd.get("ingresos", 0)
+
+        }
 
 
 
@@ -46,77 +68,29 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
             [
 
-
-                # NAVBAR DINAMICO
+                # NAVBAR
 
                 navbar(
+
                     page,
+
                     usuario
+
                 ),
 
 
 
                 ft.Container(
+
                     height=20
-                ),
-
-
-
-                # CARDS
-
-                ft.Row(
-
-                    [
-
-
-                        card(
-                            "Clientes",
-                            datos["clientes"],
-                            ft.Icons.PEOPLE
-                        ),
-
-
-
-                        card(
-                            "Eventos",
-                            datos["eventos"],
-                            ft.Icons.EVENT
-                        ),
-
-
-
-                        card(
-                            "Empleados",
-                            datos["empleados"],
-                            ft.Icons.BADGE
-                        ),
-
-
-
-                        card(
-                            "Inventario",
-                            datos["inventario"],
-                            ft.Icons.INVENTORY
-                        )
-
-
-                    ],
-
-                    spacing=20
 
                 ),
 
 
 
-                ft.Container(
-                    height=25
-                ),
-
-
-
-
+                # ==========================
                 # PANEL PRINCIPAL
-
+                # ==========================
 
                 ft.Container(
 
@@ -129,108 +103,13 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
                     padding=25,
 
 
-                    content=ft.Column(
-
-                        [
-
-
-                            ft.Text(
-
-                                "Bienvenido al Panel de Administración",
-
-                                size=26,
-
-                                weight=ft.FontWeight.BOLD,
-
-                                color=ft.Colors.WHITE
-
-                            ),
-
-
-
-                            ft.Divider(),
-
-
-
-                            ft.Text(
-
-                                "Desde este panel podrás administrar:",
-
-                                size=17,
-
-                                color=ft.Colors.WHITE
-
-                            ),
-
-
-
-                            ft.Text(
-                                "• Clientes",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Empleados",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• DJs",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Eventos",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Inventario",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Paquetes",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Contratos",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Pagos",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Reportes",
-                                color=ft.Colors.WHITE
-                            ),
-
-
-                            ft.Text(
-                                "• Agencia",
-                                color=ft.Colors.WHITE
-                            )
-
-                        ]
-
-                    )
+                    content=graficas_dashboard(datos)
 
                 )
 
 
             ],
+
 
             expand=True
 
@@ -244,12 +123,10 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
     # ==========================
-    # CONFIRMAR CIERRE
+    # CERRAR SESIÓN
     # ==========================
 
-
     def confirmar_cierre():
-
 
 
         def aceptar(e):
@@ -261,6 +138,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
         def cancelar(e):
 
             mostrar_dashboard()
+
 
 
 
@@ -299,9 +177,9 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
                         "¿Seguro que deseas salir?",
 
-                        size=18,
+                        color=ft.Colors.WHITE,
 
-                        color=ft.Colors.WHITE
+                        size=18
 
                     ),
 
@@ -346,9 +224,7 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
 
-
             )
-
 
         )
 
@@ -359,11 +235,9 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
 
-
     # ==========================
-    # CAMBIO DE PANTALLAS
+    # CAMBIO DE MÓDULOS
     # ==========================
-
 
     def cambiar_pantalla(opcion):
 
@@ -392,7 +266,6 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
             "Agencia": agencia
 
         }
-
 
 
 
@@ -425,11 +298,9 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
 
-    # CARGAR AL INICIO
+    # INICIO
 
     mostrar_dashboard()
-
-
 
 
 
@@ -438,7 +309,9 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
         expand=True,
 
+
         bgcolor=ft.Colors.BLACK,
+
 
         padding=15,
 
@@ -449,7 +322,6 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
             [
 
 
-
                 sidebar(
 
                     cambiar_pantalla
@@ -458,13 +330,11 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
 
 
-
                 ft.VerticalDivider(
 
                     width=1
 
                 ),
-
 
 
 
@@ -483,6 +353,5 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
             expand=True
 
         )
-
 
     )

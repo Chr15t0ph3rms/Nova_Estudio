@@ -12,7 +12,7 @@ def clientes(page: ft.Page):
 
 
     # ==========================
-    # CAMPOS DEL FORMULARIO
+    # CAMPOS
     # ==========================
 
     nombre = ft.TextField(
@@ -56,6 +56,7 @@ def clientes(page: ft.Page):
     )
 
 
+
     formulario = ft.Container(
 
         visible=False,
@@ -71,62 +72,34 @@ def clientes(page: ft.Page):
 
 
     # ==========================
-    # TABLA MEJORADA
+    # TABLA
     # ==========================
 
     tabla = ft.DataTable(
 
-        expand=True,
-
-        column_spacing=45,
-
-        horizontal_margin=30,
-
-
         columns=[
 
-            ft.DataColumn(
-                ft.Text("ID")
-            ),
+            ft.DataColumn(ft.Text("ID")),
 
-            ft.DataColumn(
-                ft.Text("Nombre")
-            ),
+            ft.DataColumn(ft.Text("Nombre")),
 
-            ft.DataColumn(
-                ft.Text("Apellido P.")
-            ),
+            ft.DataColumn(ft.Text("Apellido P.")),
 
-            ft.DataColumn(
-                ft.Text("Apellido M.")
-            ),
+            ft.DataColumn(ft.Text("Apellido M.")),
 
-            ft.DataColumn(
-                ft.Text("Teléfono")
-            ),
+            ft.DataColumn(ft.Text("Teléfono")),
 
-            ft.DataColumn(
-                ft.Text("Correo")
-            ),
+            ft.DataColumn(ft.Text("Correo")),
 
-            ft.DataColumn(
-                ft.Text("Calle")
-            ),
+            ft.DataColumn(ft.Text("Calle")),
 
-            ft.DataColumn(
-                ft.Text("Número")
-            ),
+            ft.DataColumn(ft.Text("Número")),
 
-            ft.DataColumn(
-                ft.Text("Colonia")
-            ),
+            ft.DataColumn(ft.Text("Colonia")),
 
-            ft.DataColumn(
-                ft.Text("Acciones")
-            )
+            ft.DataColumn(ft.Text("Acciones"))
 
         ],
-
 
         rows=[]
 
@@ -135,7 +108,7 @@ def clientes(page: ft.Page):
 
 
     # ==========================
-    # LIMPIAR
+    # LIMPIAR CAMPOS
     # ==========================
 
     def limpiar():
@@ -159,7 +132,7 @@ def clientes(page: ft.Page):
 
 
     # ==========================
-    # CARGAR TABLA
+    # CARGAR DATOS
     # ==========================
 
     def cargar():
@@ -167,10 +140,10 @@ def clientes(page: ft.Page):
         tabla.rows.clear()
 
 
-        clientes_lista = dao.obtener_todos()
+        lista = dao.obtener_todos()
 
 
-        for cliente in clientes_lista:
+        for cliente in lista:
 
 
             tabla.rows.append(
@@ -179,115 +152,90 @@ def clientes(page: ft.Page):
 
                     cells=[
 
+
                         ft.DataCell(
-                            ft.Text(
-                                str(cliente.id_cliente)
-                            )
+                            ft.Text(str(cliente.id_cliente))
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.nombre
-                            )
+                            ft.Text(cliente.nombre)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.app
-                            )
+                            ft.Text(cliente.app)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.apm
-                            )
+                            ft.Text(cliente.apm)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.telefono
-                            )
+                            ft.Text(cliente.telefono)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.correo
-                            )
+                            ft.Text(cliente.correo)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.calle
-                            )
+                            ft.Text(cliente.calle)
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                str(cliente.numero_exterior)
-                            )
+                            ft.Text(str(cliente.numero_exterior))
                         ),
 
 
                         ft.DataCell(
-                            ft.Text(
-                                cliente.colonia
-                            )
+                            ft.Text(cliente.colonia)
                         ),
+
 
 
                         ft.DataCell(
 
-                            ft.Container(
+                            ft.Row(
 
-                                width=130,
+                                [
 
-                                content=ft.Row(
+                                    ft.IconButton(
 
-                                    [
+                                        icon=ft.Icons.EDIT,
 
-                                        ft.IconButton(
+                                        icon_color=ft.Colors.BLUE,
 
-                                            icon=ft.Icons.EDIT,
+                                        on_click=lambda e,c=cliente:
+                                        editar(c)
 
-                                            icon_color=ft.Colors.BLUE_400,
-
-                                            tooltip="Editar cliente",
-
-                                            on_click=lambda e,c=cliente:
-                                            editar(c)
-
-                                        ),
+                                    ),
 
 
-                                        ft.IconButton(
 
-                                            icon=ft.Icons.DELETE,
+                                    ft.IconButton(
 
-                                            icon_color=ft.Colors.RED_400,
+                                        icon=ft.Icons.DELETE,
 
-                                            tooltip="Eliminar cliente",
+                                        icon_color=ft.Colors.RED,
 
-                                            on_click=lambda e,c=cliente:
-                                            eliminar(c)
+                                        on_click=lambda e,c=cliente:
+                                        eliminar(c)
 
-                                        )
+                                    )
 
-                                    ],
 
-                                    spacing=8
-
-                                )
+                                ]
 
                             )
 
                         )
+
 
                     ]
 
@@ -296,13 +244,16 @@ def clientes(page: ft.Page):
             )
 
 
-        page.update() 
+        page.update()
+
+
 
     # ==========================
-    # MOSTRAR FORMULARIO
+    # FORMULARIO
     # ==========================
 
     def mostrar_formulario(titulo):
+
 
         formulario.content = ft.Column(
 
@@ -322,54 +273,34 @@ def clientes(page: ft.Page):
 
 
                 ft.Row(
-
                     [
-
                         nombre,
-
                         app
-
                     ]
-
                 ),
 
 
                 ft.Row(
-
                     [
-
                         apm,
-
                         telefono
-
                     ]
-
                 ),
 
 
                 ft.Row(
-
                     [
-
                         correo,
-
                         calle
-
                     ]
-
                 ),
 
 
                 ft.Row(
-
                     [
-
                         numero_exterior,
-
                         colonia
-
                     ]
-
                 ),
 
 
@@ -411,11 +342,6 @@ def clientes(page: ft.Page):
 
 
 
-
-    # ==========================
-    # CERRAR FORMULARIO
-    # ==========================
-
     def cerrar_formulario(e=None):
 
         formulario.visible = False
@@ -426,9 +352,8 @@ def clientes(page: ft.Page):
 
 
 
-
     # ==========================
-    # NUEVO CLIENTE
+    # NUEVO
     # ==========================
 
     def nuevo_cliente(e):
@@ -437,18 +362,11 @@ def clientes(page: ft.Page):
 
         cliente_actual = None
 
-
         limpiar()
 
-
         mostrar_formulario(
-
             "Nuevo Cliente"
-
-        )
-
-
-
+        ) 
 
     # ==========================
     # GUARDAR CLIENTE
@@ -457,17 +375,6 @@ def clientes(page: ft.Page):
     def guardar(e):
 
         try:
-
-            numero = 0
-
-
-            if numero_exterior.value:
-
-                numero = int(
-                    numero_exterior.value
-                )
-
-
 
             nuevo = Cliente(
 
@@ -485,16 +392,18 @@ def clientes(page: ft.Page):
 
                 calle=calle.value,
 
-                numero_exterior=numero,
+                numero_exterior=int(
+                    numero_exterior.value
+                    if numero_exterior.value
+                    else 0
+                ),
 
                 colonia=colonia.value
 
             )
 
 
-
             dao.insertar(nuevo)
-
 
 
             cerrar_formulario()
@@ -502,25 +411,16 @@ def clientes(page: ft.Page):
             cargar()
 
 
-
             mostrar_mensaje(
-
                 "Cliente agregado correctamente"
-
             )
-
 
 
         except Exception as error:
 
-
             mostrar_mensaje(
-
                 f"Error: {error}"
-
             )
-
-
 
 
 
@@ -534,7 +434,6 @@ def clientes(page: ft.Page):
 
 
         cliente_actual = cliente
-
 
 
         nombre.value = cliente.nombre
@@ -558,19 +457,8 @@ def clientes(page: ft.Page):
 
 
         mostrar_formulario(
-
             "Editar Cliente"
-
         )
-
-
-        formulario.content.controls[-1].controls[0].text = "Actualizar"
-
-        formulario.content.controls[-1].controls[0].on_click = actualizar
-
-
-        page.update()
-
 
 
 
@@ -595,28 +483,19 @@ def clientes(page: ft.Page):
 
             cliente_actual.calle = calle.value
 
-
             cliente_actual.numero_exterior = int(
-
                 numero_exterior.value
-
                 if numero_exterior.value
-
                 else 0
-
             )
-
 
             cliente_actual.colonia = colonia.value
 
 
 
             dao.actualizar(
-
                 cliente_actual
-
             )
-
 
 
             cerrar_formulario()
@@ -624,24 +503,17 @@ def clientes(page: ft.Page):
             cargar()
 
 
-
             mostrar_mensaje(
-
                 "Cliente actualizado correctamente"
-
             )
-
 
 
         except Exception as error:
 
 
             mostrar_mensaje(
-
                 f"Error al actualizar: {error}"
-
             )
-
 
 
 
@@ -653,15 +525,14 @@ def clientes(page: ft.Page):
 
         page.snack_bar = ft.SnackBar(
 
-            ft.Text(texto)
+            content=ft.Text(texto)
 
         )
 
-
         page.snack_bar.open = True
 
+        page.update()
 
-        page.update() 
 
     # ==========================
     # ELIMINAR CLIENTE
@@ -669,56 +540,75 @@ def clientes(page: ft.Page):
 
     def eliminar(cliente):
 
-
-        def aceptar(e):
-
-            dao.eliminar(
-
-                cliente.id_cliente
-
-            )
+        print(
+            "BOTON ELIMINAR CLIENTE:",
+            cliente.id_cliente
+        )
 
 
-            dialogo_eliminar.open = False
+        def confirmar(e):
 
-            page.update()
+            try:
+
+                print(
+                    "ELIMINANDO CLIENTE:",
+                    cliente.id_cliente
+                )
 
 
-            cargar()
+                dao.eliminar(
+                    cliente.id_cliente
+                )
 
 
-            mostrar_mensaje(
+                dialogo.open = False
 
-                "Cliente eliminado correctamente"
+                page.update()
 
-            )
+
+                cargar()
+
+
+                mostrar_mensaje(
+                    "Cliente eliminado correctamente"
+                )
+
+
+            except Exception as error:
+
+
+                print(
+                    "ERROR AL ELIMINAR CLIENTE:",
+                    error
+                )
+
+
+                mostrar_mensaje(
+                    f"Error al eliminar: {error}"
+                )
 
 
 
         def cancelar(e):
 
-            dialogo_eliminar.open = False
+            dialogo.open = False
 
             page.update()
 
 
 
-        dialogo_eliminar = ft.AlertDialog(
+        dialogo = ft.AlertDialog(
 
             modal=True,
 
 
             title=ft.Text(
-
                 "Eliminar cliente"
-
             ),
 
 
             content=ft.Text(
-
-                "¿Seguro que deseas eliminar este cliente?"
-
+                f"¿Seguro que deseas eliminar a {cliente.nombre}?"
             ),
 
 
@@ -734,13 +624,14 @@ def clientes(page: ft.Page):
                 ),
 
 
-                ft.ElevatedButton(
 
-                    "Aceptar",
+                ft.TextButton(
+
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
-                    on_click=aceptar
+                    on_click=confirmar
 
                 )
 
@@ -749,18 +640,16 @@ def clientes(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo)
 
-        dialogo_eliminar.open = True
+        dialogo.open = True
 
         page.update()
 
 
 
-
-
     # ==========================
-    # BOTÓN NUEVO CLIENTE
+    # BOTÓN NUEVO
     # ==========================
 
     boton_nuevo = ft.ElevatedButton(
@@ -775,89 +664,76 @@ def clientes(page: ft.Page):
 
 
 
-
     # ==========================
-    # CARGAR DATOS INICIALES
+    # INICIO
     # ==========================
 
     cargar()
 
-# ==========================
-# INTERFAZ FINAL
-# ==========================
+
 
     return ft.Container(
 
-    expand=True,
+        expand=True,
 
-    padding=20,
-
-
-    content=ft.Column(
-
-        [
-
-            ft.Row(
-
-                [
-
-                    ft.Text(
-                        "Gestión de Clientes",
-                        size=30,
-                        weight=ft.FontWeight.BOLD,
-                        color=ft.Colors.WHITE
-                    ),
+        padding=20,
 
 
-                    ft.Container(
-                        expand=True
-                    ),
+        content=ft.Column(
 
+            [
 
-                    boton_nuevo
-
-                ]
-
-            ),
-
-
-            ft.Divider(),
-
-
-            formulario,
-
-
-            ft.Container(
-                height=0
-            ),
-
-
-            # AQUÍ VA LA TABLA
-            ft.Container(
-
-                padding=0,
-
-                content=ft.Column(
+                ft.Row(
 
                     [
 
-                        tabla
+                        ft.Text(
 
-                    ],
+                            "Gestión de Clientes",
 
-                    spacing=0
+                            size=30,
+
+                            weight=ft.FontWeight.BOLD,
+
+                            color=ft.Colors.WHITE
+
+                        ),
+
+
+                        ft.Container(
+                            expand=True
+                        ),
+
+
+                        boton_nuevo
+
+                    ]
+
+                ),
+
+
+
+                ft.Divider(),
+
+
+
+                formulario,
+
+
+
+                ft.Container(
+
+                    expand=True,
+
+                    content=tabla
 
                 )
 
-            )
+            ],
 
 
-        ],
+            expand=True
 
-        expand=True,
-
-        spacing=0
+        )
 
     )
-
-)

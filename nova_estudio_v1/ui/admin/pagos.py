@@ -597,38 +597,67 @@ def pagos(page: ft.Page):
         page.update()
 
 
-
-
     # ==========================
     # ELIMINAR PAGO
     # ==========================
 
     def eliminar(pago):
 
+        print(
+            "BOTON ELIMINAR PAGO:",
+            pago.id_pago
+        )
+
 
         def aceptar(e):
 
-            dao.eliminar(
+            try:
 
-                pago.id_pago
-
-            )
-
-
-            dialogo_eliminar.open = False
+                print(
+                    "ELIMINANDO PAGO:",
+                    pago.id_pago
+                )
 
 
-            page.update()
+                dao.eliminar(
+
+                    pago.id_pago
+
+                )
 
 
-            cargar()
+                dialogo_eliminar.open = False
+
+                page.update()
 
 
-            mostrar_mensaje(
+                cargar()
 
-                "Pago eliminado correctamente"
 
-            )
+                mostrar_mensaje(
+
+                    "Pago eliminado correctamente"
+
+                )
+
+
+
+            except Exception as error:
+
+
+                print(
+
+                    "ERROR AL ELIMINAR PAGO:",
+                    error
+
+                )
+
+
+                mostrar_mensaje(
+
+                    f"Error al eliminar: {error}"
+
+                )
 
 
 
@@ -654,7 +683,7 @@ def pagos(page: ft.Page):
 
             content=ft.Text(
 
-                "¿Seguro que deseas eliminar este pago?"
+                f"¿Seguro que deseas eliminar el pago {pago.id_pago}?"
 
             ),
 
@@ -672,9 +701,9 @@ def pagos(page: ft.Page):
 
 
 
-                ft.ElevatedButton(
+                ft.TextButton(
 
-                    "Aceptar",
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -687,11 +716,15 @@ def pagos(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
+
 
         dialogo_eliminar.open = True
 
+
         page.update()
+
+
 
 
 

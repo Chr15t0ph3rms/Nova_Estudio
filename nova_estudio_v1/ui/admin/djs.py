@@ -713,54 +713,75 @@ def djs(page: ft.Page):
 
 
 
-
-
     # ==========================
     # ELIMINAR DJ
     # ==========================
 
     def eliminar(dj):
 
+        print(
+            "BOTON ELIMINAR DJ:",
+            dj.id_dj
+        )
+
 
         def aceptar(e):
 
+            try:
 
-            dao.eliminar(
-
-                dj.id_dj
-
-            )
-
-
-
-            dialogo_eliminar.open = False
+                print(
+                    "ELIMINANDO DJ:",
+                    dj.id_dj
+                )
 
 
-            page.update()
+                dao.eliminar(
+
+                    dj.id_dj
+
+                )
+
+
+                dialogo_eliminar.open = False
+
+                page.update()
+
+
+                cargar()
+
+
+                mostrar_mensaje(
+
+                    "DJ eliminado correctamente"
+
+                )
 
 
 
-            cargar()
+            except Exception as error:
 
 
+                print(
 
-            mostrar_mensaje(
+                    "ERROR AL ELIMINAR DJ:",
+                    error
 
-                "DJ eliminado correctamente"
+                )
 
-            )
 
+                mostrar_mensaje(
+
+                    f"Error al eliminar: {error}"
+
+                )
 
 
 
         def cancelar(e):
 
-
             dialogo_eliminar.open = False
 
-
             page.update()
-
 
 
 
@@ -776,17 +797,14 @@ def djs(page: ft.Page):
             ),
 
 
-
             content=ft.Text(
 
-                "¿Seguro que deseas eliminar este DJ?"
+                f"¿Seguro que deseas eliminar a {dj.nombre}?"
 
             ),
 
 
-
             actions=[
-
 
 
                 ft.TextButton(
@@ -799,9 +817,9 @@ def djs(page: ft.Page):
 
 
 
-                ft.ElevatedButton(
+                ft.TextButton(
 
-                    "Aceptar",
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -809,20 +827,19 @@ def djs(page: ft.Page):
 
                 )
 
-
             ]
 
         )
 
 
-
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
 
 
         dialogo_eliminar.open = True
 
 
         page.update()
+
 
 
 

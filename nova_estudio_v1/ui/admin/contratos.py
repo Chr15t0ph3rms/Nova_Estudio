@@ -602,29 +602,61 @@ def contratos(page: ft.Page):
 
     def eliminar(contrato):
 
+        print(
+            "BOTON ELIMINAR CONTRATO:",
+            contrato.id_contrato
+        )
+
 
         def aceptar(e):
 
-            dao.eliminar(
+            try:
 
-                contrato.id_contrato
-
-            )
-
-
-            dialogo_eliminar.open = False
-
-            page.update()
+                print(
+                    "ELIMINANDO CONTRATO:",
+                    contrato.id_contrato
+                )
 
 
-            cargar()
+                dao.eliminar(
+
+                    contrato.id_contrato
+
+                )
 
 
-            mostrar_mensaje(
+                dialogo_eliminar.open = False
 
-                "Contrato eliminado correctamente"
+                page.update()
 
-            )
+
+                cargar()
+
+
+                mostrar_mensaje(
+
+                    "Contrato eliminado correctamente"
+
+                )
+
+
+
+            except Exception as error:
+
+
+                print(
+
+                    "ERROR AL ELIMINAR CONTRATO:",
+                    error
+
+                )
+
+
+                mostrar_mensaje(
+
+                    f"Error al eliminar: {error}"
+
+                )
 
 
 
@@ -650,7 +682,7 @@ def contratos(page: ft.Page):
 
             content=ft.Text(
 
-                "¿Seguro que deseas eliminar este contrato?"
+                f"¿Seguro que deseas eliminar el contrato {contrato.id_contrato}?"
 
             ),
 
@@ -667,9 +699,10 @@ def contratos(page: ft.Page):
                 ),
 
 
-                ft.ElevatedButton(
 
-                    "Aceptar",
+                ft.TextButton(
+
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -682,9 +715,11 @@ def contratos(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
+
 
         dialogo_eliminar.open = True
+
 
         page.update()
 

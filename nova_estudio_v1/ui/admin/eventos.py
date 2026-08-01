@@ -755,35 +755,66 @@ def eventos(page: ft.Page):
 
         page.update() 
 
-    # ==========================
+        # ==========================
     # ELIMINAR EVENTO
     # ==========================
 
     def eliminar(evento):
 
+        print(
+            "BOTON ELIMINAR EVENTO:",
+            evento.id_evento
+        )
+
 
         def aceptar(e):
 
-            dao.eliminar(
+            try:
 
-                evento.id_evento
-
-            )
-
-
-            dialogo_eliminar.open = False
-
-            page.update()
+                print(
+                    "ELIMINANDO EVENTO:",
+                    evento.id_evento
+                )
 
 
-            cargar()
+                dao.eliminar(
+
+                    evento.id_evento
+
+                )
 
 
-            mostrar_mensaje(
+                dialogo_eliminar.open = False
 
-                "Evento eliminado correctamente"
+                page.update()
 
-            )
+
+                cargar()
+
+
+                mostrar_mensaje(
+
+                    "Evento eliminado correctamente"
+
+                )
+
+
+            except Exception as error:
+
+
+                print(
+
+                    "ERROR AL ELIMINAR EVENTO:",
+                    error
+
+                )
+
+
+                mostrar_mensaje(
+
+                    f"Error al eliminar: {error}"
+
+                )
 
 
 
@@ -809,7 +840,7 @@ def eventos(page: ft.Page):
 
             content=ft.Text(
 
-                "¿Seguro que deseas eliminar este evento?"
+                f"¿Seguro que deseas eliminar el evento {evento.nombre}?"
 
             ),
 
@@ -826,9 +857,10 @@ def eventos(page: ft.Page):
                 ),
 
 
-                ft.ElevatedButton(
 
-                    "Aceptar",
+                ft.TextButton(
+
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -841,12 +873,13 @@ def eventos(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
+
 
         dialogo_eliminar.open = True
 
-        page.update()
 
+        page.update()
 
 
 

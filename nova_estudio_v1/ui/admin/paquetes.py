@@ -644,29 +644,61 @@ def paquetes(page: ft.Page):
 
     def eliminar(paquete):
 
+        print(
+            "BOTON ELIMINAR PAQUETE:",
+            paquete.id_paquetes
+        )
+
 
         def aceptar(e):
 
-            dao.eliminar(
+            try:
 
-                paquete.id_paquetes
-
-            )
-
-
-            dialogo_eliminar.open = False
-
-            page.update()
+                print(
+                    "ELIMINANDO PAQUETE:",
+                    paquete.id_paquetes
+                )
 
 
-            cargar()
+                dao.eliminar(
+
+                    paquete.id_paquetes
+
+                )
 
 
-            mostrar_mensaje(
+                dialogo_eliminar.open = False
 
-                "Paquete eliminado correctamente"
+                page.update()
 
-            )
+
+                cargar()
+
+
+                mostrar_mensaje(
+
+                    "Paquete eliminado correctamente"
+
+                )
+
+
+
+            except Exception as error:
+
+
+                print(
+
+                    "ERROR AL ELIMINAR PAQUETE:",
+                    error
+
+                )
+
+
+                mostrar_mensaje(
+
+                    f"Error al eliminar: {error}"
+
+                )
 
 
 
@@ -692,7 +724,7 @@ def paquetes(page: ft.Page):
 
             content=ft.Text(
 
-                "¿Seguro que deseas eliminar este paquete?"
+                f"¿Seguro que deseas eliminar {paquete.nombre}?"
 
             ),
 
@@ -709,9 +741,10 @@ def paquetes(page: ft.Page):
                 ),
 
 
-                ft.ElevatedButton(
 
-                    "Aceptar",
+                ft.TextButton(
+
+                    "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
@@ -724,9 +757,11 @@ def paquetes(page: ft.Page):
         )
 
 
-        page.dialog = dialogo_eliminar
+        page.overlay.append(dialogo_eliminar)
+
 
         dialogo_eliminar.open = True
+
 
         page.update()
 
