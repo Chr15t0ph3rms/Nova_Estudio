@@ -3,18 +3,11 @@ import flet as ft
 from database.conexion import Conexion
 
 
-
 def reportes(page: ft.Page):
-
-
-    # ==========================
-    # CREAR TARJETAS
-    # ==========================
+    # crear tarjetas
 
     def crear_card(titulo, valor, icono):
-
         return ft.Container(
-
             width=220,
 
             height=140,
@@ -25,35 +18,25 @@ def reportes(page: ft.Page):
 
             padding=15,
 
-
             content=ft.Column(
-
                 [
-
                     ft.Icon(
-
                         icono,
 
                         color=ft.Colors.WHITE,
 
                         size=35
-
                     ),
 
-
                     ft.Text(
-
                         titulo,
 
                         color=ft.Colors.GREY_300,
 
                         size=16
-
                     ),
 
-
                     ft.Text(
-
                         str(valor),
 
                         color=ft.Colors.WHITE,
@@ -61,38 +44,22 @@ def reportes(page: ft.Page):
                         size=28,
 
                         weight=ft.FontWeight.BOLD
-
                     )
-
                 ],
 
-
                 spacing=5
-
             )
-
         )
 
-
-
-    # ==========================
-    # OBTENER DATOS
-    # ==========================
+    # obtener datos
 
     def obtener_datos():
-
-
         conexion = None
 
-
         try:
-
-
             conexion = Conexion.obtener_conexion()
 
             cursor = conexion.cursor()
-
-
 
             cursor.execute(
                 "SELECT COUNT(*) FROM cliente"
@@ -100,15 +67,11 @@ def reportes(page: ft.Page):
 
             clientes = cursor.fetchone()[0]
 
-
-
             cursor.execute(
                 "SELECT COUNT(*) FROM empleados"
             )
 
             empleados = cursor.fetchone()[0]
-
-
 
             cursor.execute(
                 "SELECT COUNT(*) FROM dj"
@@ -116,15 +79,11 @@ def reportes(page: ft.Page):
 
             djs = cursor.fetchone()[0]
 
-
-
             cursor.execute(
                 "SELECT COUNT(*) FROM evento"
             )
 
             eventos = cursor.fetchone()[0]
-
-
 
             cursor.execute(
                 "SELECT COUNT(*) FROM contrato"
@@ -132,15 +91,11 @@ def reportes(page: ft.Page):
 
             contratos = cursor.fetchone()[0]
 
-
-
             cursor.execute(
                 "SELECT COUNT(*) FROM pago"
             )
 
             pagos = cursor.fetchone()[0]
-
-
 
             cursor.execute(
                 "SELECT COALESCE(SUM(monto),0) FROM pago"
@@ -148,14 +103,9 @@ def reportes(page: ft.Page):
 
             ingresos = cursor.fetchone()[0]
 
-
-
             cursor.close()
 
-
-
             return (
-
                 clientes,
 
                 empleados,
@@ -169,22 +119,15 @@ def reportes(page: ft.Page):
                 pagos,
 
                 ingresos
-
             )
 
-
-
         except Exception as error:
-
-
             print(
                 "Error cargando reportes:",
                 error
             )
 
-
             return (
-
                 0,
 
                 0,
@@ -198,31 +141,16 @@ def reportes(page: ft.Page):
                 0,
 
                 0
-
             )
 
-
-
         finally:
-
-
             if conexion:
-
                 conexion.close()
 
-
-
-    # ==========================
-    # CARGAR REPORTES
-    # ==========================
-
+    # cargar reportes
 
     def cargar_reportes():
-
-
         datos = obtener_datos()
-
-
 
         clientes = datos[0]
 
@@ -238,23 +166,14 @@ def reportes(page: ft.Page):
 
         ingresos = datos[6]
 
-
-
         contenido_reportes.controls = [
-
-
-
             ft.Row(
-
                 [
-
                     crear_card(
                         "Clientes",
                         clientes,
                         ft.Icons.PEOPLE
                     ),
-
-
 
                     crear_card(
                         "Empleados",
@@ -262,55 +181,35 @@ def reportes(page: ft.Page):
                         ft.Icons.BADGE
                     ),
 
-
-
                     crear_card(
                         "DJs",
                         djs,
                         ft.Icons.MUSIC_NOTE
                     ),
 
-
-
                     crear_card(
                         "Eventos",
                         eventos,
                         ft.Icons.EVENT
                     )
-
                 ],
-
 
                 spacing=20,
 
                 alignment=ft.MainAxisAlignment.START
-
             ),
-
-
-
 
             ft.Container(
-
                 height=25
-
             ),
 
-
-
-
-
             ft.Row(
-
                 [
-
                     crear_card(
                         "Contratos",
                         contratos,
                         ft.Icons.DESCRIPTION
                     ),
-
-
 
                     crear_card(
                         "Pagos",
@@ -318,66 +217,41 @@ def reportes(page: ft.Page):
                         ft.Icons.PAYMENTS
                     ),
 
-
-
                     crear_card(
                         "Ingresos",
 
                         f"$ {float(ingresos):.2f}",
 
                         ft.Icons.ATTACH_MONEY
-
                     )
 
-
                 ],
-
 
                 spacing=20,
 
                 alignment=ft.MainAxisAlignment.START
-
             )
-
 
         ]
 
-
-
         page.update()
 
-
-
-    # ==========================
-    # CONTENEDOR
-    # ==========================
-
+    # contenedor
 
     contenido_reportes = ft.Column(
-
         expand=True
-
     )
-
-
 
     cargar_reportes()
 
-
-
     return ft.Container(
-
         expand=True,
 
         padding=20,
 
-
         content=ft.Column(
-
             [
-
                 ft.Text(
-
                     "Reportes del Sistema",
 
                     size=28,
@@ -385,23 +259,14 @@ def reportes(page: ft.Page):
                     weight=ft.FontWeight.BOLD,
 
                     color=ft.Colors.WHITE
-
                 ),
-
-
 
                 ft.Divider(),
 
-
-
                 contenido_reportes
-
 
             ],
 
-
             expand=True
-
         )
-
     )

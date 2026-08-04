@@ -1,13 +1,10 @@
 import flet as ft
 
-
 from dao.dashboard_dao import DashboardDAO
-
 
 from ui.components.sidebar import sidebar
 from ui.components.navbar import navbar
 from ui.components.graficas import graficas_dashboard
-
 
 from ui.admin.clientes import clientes
 from ui.admin.empleados import empleados
@@ -21,29 +18,17 @@ from ui.admin.reportes import reportes
 from ui.admin.agencia import agencia
 
 
-
 def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
-
-
     contenido = ft.Container(
         expand=True
     )
 
-
-
-    # ==========================
-    # DASHBOARD PRINCIPAL
-    # ==========================
+    # dashboard principal
 
     def mostrar_dashboard():
-
-
         datos_bd = DashboardDAO.obtener_estadisticas()
 
-
-
         datos = {
-
             "clientes": datos_bd.get("clientes", 0),
 
             "eventos": datos_bd.get("eventos", 0),
@@ -59,41 +44,25 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
             "pagos": datos_bd.get("pagos", 0),
 
             "ingresos": datos_bd.get("ingresos", 0)
-
         }
 
-
-
         contenido.content = ft.Column(
-
             [
-
-                # NAVBAR
+                # navbar
 
                 navbar(
-
                     page,
 
                     usuario
-
                 ),
 
-
-
                 ft.Container(
-
                     height=20
-
                 ),
 
-
-
-                # ==========================
-                # PANEL PRINCIPAL
-                # ==========================
+                # panel principal
 
                 ft.Container(
-
                     expand=True,
 
                     bgcolor=ft.Colors.GREY_900,
@@ -102,49 +71,26 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
                     padding=25,
 
-
                     content=graficas_dashboard(datos)
-
                 )
-
 
             ],
 
-
             expand=True
-
         )
-
 
         page.update()
 
-
-
-
-
-    # ==========================
-    # CERRAR SESIÓN
-    # ==========================
+    # cerrar sesión
 
     def confirmar_cierre():
-
-
         def aceptar(e):
-
             cerrar_sesion()
 
-
-
         def cancelar(e):
-
             mostrar_dashboard()
 
-
-
-
-
         contenido.content = ft.Container(
-
             expand=True,
 
             bgcolor=ft.Colors.GREY_900,
@@ -153,14 +99,9 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
 
             padding=30,
 
-
             content=ft.Column(
-
                 [
-
-
                     ft.Text(
-
                         "Cerrar sesión",
 
                         size=30,
@@ -168,83 +109,49 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
                         weight=ft.FontWeight.BOLD,
 
                         color=ft.Colors.WHITE
-
                     ),
 
-
-
                     ft.Text(
-
                         "¿Seguro que deseas salir?",
 
                         color=ft.Colors.WHITE,
 
                         size=18
-
                     ),
 
-
-
                     ft.Row(
-
                         [
-
-
                             ft.ElevatedButton(
-
                                 "Cancelar",
 
                                 on_click=cancelar
-
                             ),
 
-
-
                             ft.ElevatedButton(
-
                                 "Aceptar",
 
                                 on_click=aceptar
-
                             )
-
 
                         ],
 
-
                         alignment=ft.MainAxisAlignment.CENTER
-
                     )
 
-
                 ],
-
 
                 alignment=ft.MainAxisAlignment.CENTER,
 
                 horizontal_alignment=ft.CrossAxisAlignment.CENTER
-
             )
-
         )
-
 
         page.update()
 
-
-
-
-
-    # ==========================
-    # CAMBIO DE MÓDULOS
-    # ==========================
+    # cambio de módulos
 
     def cambiar_pantalla(opcion):
-
-
         pantallas = {
-
-
             "Clientes": clientes,
 
             "Empleados": empleados,
@@ -264,94 +171,52 @@ def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
             "Reportes": reportes,
 
             "Agencia": agencia
-
         }
 
-
-
         if opcion == "Dashboard":
-
             mostrar_dashboard()
 
             return
 
-
-
-
         if opcion == "Cerrar sesión":
-
             confirmar_cierre()
 
             return
 
-
-
-
         if opcion in pantallas:
-
-
             contenido.content = pantallas[opcion](page)
 
             page.update()
 
-
-
-
-
-    # INICIO
+    # inicio
 
     mostrar_dashboard()
 
-
-
     return ft.Container(
-
-
         expand=True,
-
 
         bgcolor=ft.Colors.BLACK,
 
-
         padding=15,
 
-
-
         content=ft.Row(
-
             [
-
-
                 sidebar(
-
                     cambiar_pantalla
-
                 ),
-
-
 
                 ft.VerticalDivider(
-
                     width=1
-
                 ),
 
-
-
                 ft.Container(
-
                     expand=True,
 
                     content=contenido
-
                 )
-
 
             ],
 
-
             expand=True
-
         )
-
     )

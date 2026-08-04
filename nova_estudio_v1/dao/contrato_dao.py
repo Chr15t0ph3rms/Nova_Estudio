@@ -2,7 +2,6 @@ from database.conexion import Conexion
 from modelos.contrato import Contrato
 
 class ContratoDAO:
-
     #SELECT * FROM contrato
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
@@ -24,7 +23,7 @@ class ContratoDAO:
         conexion.close()
         return contratos
 
-    # INSERT
+    # insert
     def insertar(self, contrato):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -45,7 +44,7 @@ class ContratoDAO:
         cursor.close()
         conexion.close()
 
-    # UPDATE
+    # update
     def actualizar(self, contrato):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -67,7 +66,7 @@ class ContratoDAO:
         cursor.close()
         conexion.close()
 
-    # DELETE
+    # delete
     def eliminar(self,id):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -77,7 +76,6 @@ class ContratoDAO:
         conexion.commit()
         cursor.close()
         conexion.close()
-
 
     def obtener_ultimo_id(self):
         conexion = Conexion.obtener_conexion()

@@ -1,5 +1,4 @@
 class Agencia:
-    
     #Constructor
     def __init__(self, id_agencia, agencia_nombre, nombre, app, apm, telefono, correo, empleados):
         self.id_agencia = id_agencia

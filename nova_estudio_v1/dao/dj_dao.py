@@ -3,8 +3,7 @@ from modelos.dj import Dj
 
 
 class DjDAO:
-
-    # SELECT
+    # select
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -12,7 +11,6 @@ class DjDAO:
         registros = cursor.fetchall()
 
         djs = []
-
 
         for registro in registros:
             dj = Dj(
@@ -30,17 +28,13 @@ class DjDAO:
         cursor.close()
         conexion.close()
 
-
         return djs
 
-
-    # INSERT
+    # insert
 
     def insertar(self, dj):
-
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
-
 
         sql = """
         INSERT INTO dj(
@@ -55,9 +49,7 @@ class DjDAO:
         VALUES(%s,%s,%s,%s,%s,%s,%s)
         """
 
-
         cursor.execute(sql, (
-
             dj.id_dj,
             dj.nombre,
             dj.app,
@@ -65,23 +57,18 @@ class DjDAO:
             dj.telefono,
             dj.especialidad,
             dj.disponibilidad
-
         ))
-
 
         conexion.commit()
 
         cursor.close()
         conexion.close()
 
-
-    # UPDATE
+    # update
 
     def actualizar(self, dj):
-
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
-
 
         sql = """
         UPDATE dj
@@ -94,9 +81,7 @@ class DjDAO:
         WHERE id_dj = %s
         """
 
-
         cursor.execute(sql, (
-
             dj.nombre,
             dj.app,
             dj.apm,
@@ -104,63 +89,45 @@ class DjDAO:
             dj.especialidad,
             dj.disponibilidad,
             dj.id_dj
-
         ))
-
 
         conexion.commit()
 
         cursor.close()
         conexion.close()
 
-
-
-    # =============================
-    # DELETE
-    # =============================
+    # delete
 
     def eliminar(self, id):
-
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
-
 
         cursor.execute(
             "DELETE FROM dj WHERE id_dj = %s",
             (id,)
         )
 
-
         conexion.commit()
 
         cursor.close()
         conexion.close()
 
-
-
-    # ULTIMO ID
+    # ultimo id
 
     def obtener_ultimo_id(self):
-
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
-
 
         cursor.execute(
             "SELECT MAX(id_dj) FROM dj"
         )
 
-
         resultado = cursor.fetchone()
-
 
         cursor.close()
         conexion.close()
 
-
         if resultado[0] is None:
-
             return 0
-
 
         return resultado[0]

@@ -5,15 +5,11 @@ from modelos.cliente import Cliente
 
 
 def clientes(page: ft.Page):
-
     dao = ClienteDAO()
 
     cliente_actual = None
 
-
-    # ==========================
-    # CAMPOS
-    # ==========================
+    # campos
 
     nombre = ft.TextField(
         label="Nombre",
@@ -55,10 +51,7 @@ def clientes(page: ft.Page):
         width=250
     )
 
-
-
     formulario = ft.Container(
-
         visible=False,
 
         bgcolor=ft.Colors.GREY_900,
@@ -66,19 +59,12 @@ def clientes(page: ft.Page):
         padding=20,
 
         border_radius=15
-
     )
 
-
-
-    # ==========================
-    # TABLA
-    # ==========================
+    # tabla
 
     tabla = ft.DataTable(
-
         columns=[
-
             ft.DataColumn(ft.Text("ID")),
 
             ft.DataColumn(ft.Text("Nombre")),
@@ -98,21 +84,14 @@ def clientes(page: ft.Page):
             ft.DataColumn(ft.Text("Colonia")),
 
             ft.DataColumn(ft.Text("Acciones"))
-
         ],
 
         rows=[]
-
     )
 
-
-
-    # ==========================
-    # LIMPIAR CAMPOS
-    # ==========================
+    # limpiar campos
 
     def limpiar():
-
         nombre.value = ""
 
         app.value = ""
@@ -129,138 +108,90 @@ def clientes(page: ft.Page):
 
         colonia.value = ""
 
-
-
-    # ==========================
-    # CARGAR DATOS
-    # ==========================
+    # cargar datos
 
     def cargar():
-
         tabla.rows.clear()
-
 
         lista = dao.obtener_todos()
 
-
         for cliente in lista:
-
-
             tabla.rows.append(
-
                 ft.DataRow(
-
                     cells=[
-
-
                         ft.DataCell(
                             ft.Text(str(cliente.id_cliente))
                         ),
-
 
                         ft.DataCell(
                             ft.Text(cliente.nombre)
                         ),
 
-
                         ft.DataCell(
                             ft.Text(cliente.app)
                         ),
-
 
                         ft.DataCell(
                             ft.Text(cliente.apm)
                         ),
 
-
                         ft.DataCell(
                             ft.Text(cliente.telefono)
                         ),
-
 
                         ft.DataCell(
                             ft.Text(cliente.correo)
                         ),
 
-
                         ft.DataCell(
                             ft.Text(cliente.calle)
                         ),
-
 
                         ft.DataCell(
                             ft.Text(str(cliente.numero_exterior))
                         ),
 
-
                         ft.DataCell(
                             ft.Text(cliente.colonia)
                         ),
 
-
-
                         ft.DataCell(
-
                             ft.Row(
-
                                 [
-
                                     ft.IconButton(
-
                                         icon=ft.Icons.EDIT,
 
                                         icon_color=ft.Colors.BLUE,
 
                                         on_click=lambda e,c=cliente:
                                         editar(c)
-
                                     ),
 
-
-
                                     ft.IconButton(
-
                                         icon=ft.Icons.DELETE,
 
                                         icon_color=ft.Colors.RED,
 
                                         on_click=lambda e,c=cliente:
                                         eliminar(c)
-
                                     )
 
-
                                 ]
-
                             )
-
                         )
 
-
                     ]
-
                 )
-
             )
-
 
         page.update()
 
-
-
-    # ==========================
-    # FORMULARIO
-    # ==========================
+    # formulario
 
     def mostrar_formulario(titulo):
-
-
         formulario.content = ft.Column(
-
             [
-
                 ft.Text(
-
                     titulo,
 
                     size=25,
@@ -268,9 +199,7 @@ def clientes(page: ft.Page):
                     weight=ft.FontWeight.BOLD,
 
                     color=ft.Colors.WHITE
-
                 ),
-
 
                 ft.Row(
                     [
@@ -279,14 +208,12 @@ def clientes(page: ft.Page):
                     ]
                 ),
 
-
                 ft.Row(
                     [
                         apm,
                         telefono
                     ]
                 ),
-
 
                 ft.Row(
                     [
@@ -295,7 +222,6 @@ def clientes(page: ft.Page):
                     ]
                 ),
 
-
                 ft.Row(
                     [
                         numero_exterior,
@@ -303,61 +229,40 @@ def clientes(page: ft.Page):
                     ]
                 ),
 
-
                 ft.Row(
-
                     [
-
                         ft.ElevatedButton(
-
                             "Guardar",
 
                             icon=ft.Icons.SAVE,
 
                             on_click=guardar
-
                         ),
 
-
                         ft.TextButton(
-
                             "Cancelar",
 
                             on_click=cerrar_formulario
-
                         )
-
                     ]
-
                 )
-
             ]
-
         )
-
 
         formulario.visible = True
 
         page.update()
 
-
-
     def cerrar_formulario(e=None):
-
         formulario.visible = False
 
         limpiar()
 
         page.update()
 
-
-
-    # ==========================
-    # NUEVO
-    # ==========================
+    # nuevo
 
     def nuevo_cliente(e):
-
         nonlocal cliente_actual
 
         cliente_actual = None
@@ -368,16 +273,11 @@ def clientes(page: ft.Page):
             "Nuevo Cliente"
         ) 
 
-    # ==========================
-    # GUARDAR CLIENTE
-    # ==========================
+    # guardar cliente
 
     def guardar(e):
-
         try:
-
             nuevo = Cliente(
-
                 id_cliente=dao.obtener_ultimo_id()+1,
 
                 nombre=nombre.value,
@@ -399,42 +299,29 @@ def clientes(page: ft.Page):
                 ),
 
                 colonia=colonia.value
-
             )
 
-
             dao.insertar(nuevo)
-
 
             cerrar_formulario()
 
             cargar()
 
-
             mostrar_mensaje(
                 "Cliente agregado correctamente"
             )
 
-
         except Exception as error:
-
             mostrar_mensaje(
                 f"Error: {error}"
             )
 
-
-
-    # ==========================
-    # EDITAR CLIENTE
-    # ==========================
+    # editar cliente
 
     def editar(cliente):
-
         nonlocal cliente_actual
 
-
         cliente_actual = cliente
-
 
         nombre.value = cliente.nombre
 
@@ -454,23 +341,14 @@ def clientes(page: ft.Page):
 
         colonia.value = cliente.colonia
 
-
-
         mostrar_formulario(
             "Editar Cliente"
         )
 
-
-
-    # ==========================
-    # ACTUALIZAR CLIENTE
-    # ==========================
+    # actualizar cliente
 
     def actualizar(e):
-
         try:
-
-
             cliente_actual.nombre = nombre.value
 
             cliente_actual.app = app.value
@@ -491,154 +369,105 @@ def clientes(page: ft.Page):
 
             cliente_actual.colonia = colonia.value
 
-
-
             dao.actualizar(
                 cliente_actual
             )
-
 
             cerrar_formulario()
 
             cargar()
 
-
             mostrar_mensaje(
                 "Cliente actualizado correctamente"
             )
 
-
         except Exception as error:
-
-
             mostrar_mensaje(
                 f"Error al actualizar: {error}"
             )
 
-
-
-    # ==========================
-    # MENSAJES
-    # ==========================
+    # mensajes
 
     def mostrar_mensaje(texto):
-
         page.snack_bar = ft.SnackBar(
-
             content=ft.Text(texto)
-
         )
 
         page.snack_bar.open = True
 
         page.update()
 
-
-    # ==========================
-    # ELIMINAR CLIENTE
-    # ==========================
+    # eliminar cliente
 
     def eliminar(cliente):
-
         print(
             "BOTON ELIMINAR CLIENTE:",
             cliente.id_cliente
         )
 
-
         def confirmar(e):
-
             try:
-
                 print(
                     "ELIMINANDO CLIENTE:",
                     cliente.id_cliente
                 )
 
-
                 dao.eliminar(
                     cliente.id_cliente
                 )
-
 
                 dialogo.open = False
 
                 page.update()
 
-
                 cargar()
-
 
                 mostrar_mensaje(
                     "Cliente eliminado correctamente"
                 )
 
-
             except Exception as error:
-
-
                 print(
                     "ERROR AL ELIMINAR CLIENTE:",
                     error
                 )
 
-
                 mostrar_mensaje(
                     f"Error al eliminar: {error}"
                 )
 
-
-
         def cancelar(e):
-
             dialogo.open = False
 
             page.update()
 
-
-
         dialogo = ft.AlertDialog(
-
             modal=True,
-
 
             title=ft.Text(
                 "Eliminar cliente"
             ),
 
-
             content=ft.Text(
                 f"¿Seguro que deseas eliminar a {cliente.nombre}?"
             ),
 
-
             actions=[
-
-
                 ft.TextButton(
-
                     "Cancelar",
 
                     on_click=cancelar
-
                 ),
 
-
-
                 ft.TextButton(
-
                     "Eliminar",
 
                     icon=ft.Icons.DELETE,
 
                     on_click=confirmar
-
                 )
-
             ]
-
         )
-
 
         page.overlay.append(dialogo)
 
@@ -646,49 +475,30 @@ def clientes(page: ft.Page):
 
         page.update()
 
-
-
-    # ==========================
-    # BOTÓN NUEVO
-    # ==========================
+    # botón nuevo
 
     boton_nuevo = ft.ElevatedButton(
-
         "Nuevo Cliente",
 
         icon=ft.Icons.ADD,
 
         on_click=nuevo_cliente
-
     )
 
-
-
-    # ==========================
-    # INICIO
-    # ==========================
+    # inicio
 
     cargar()
 
-
-
     return ft.Container(
-
         expand=True,
 
         padding=20,
 
-
         content=ft.Column(
-
             [
-
                 ft.Row(
-
                     [
-
                         ft.Text(
-
                             "Gestión de Clientes",
 
                             size=30,
@@ -696,44 +506,27 @@ def clientes(page: ft.Page):
                             weight=ft.FontWeight.BOLD,
 
                             color=ft.Colors.WHITE
-
                         ),
-
 
                         ft.Container(
                             expand=True
                         ),
 
-
                         boton_nuevo
-
                     ]
-
                 ),
-
-
 
                 ft.Divider(),
 
-
-
                 formulario,
 
-
-
                 ft.Container(
-
                     expand=True,
 
                     content=tabla
-
                 )
-
             ],
 
-
             expand=True
-
         )
-
     )

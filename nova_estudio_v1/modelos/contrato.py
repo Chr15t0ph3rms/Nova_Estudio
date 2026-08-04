@@ -1,5 +1,4 @@
 class Contrato:
-    
     #Constructor
     def __init__(self, id_contrato, fecha_firma, costo, paquetes):
         self.id_contrato = id_contrato
