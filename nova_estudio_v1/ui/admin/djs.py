@@ -3,7 +3,6 @@ import flet as ft
 from dao.dj_dao import DjDAO
 from modelos.dj import Dj
 
-
 def djs(page: ft.Page):
     dao = DjDAO()
 
@@ -106,9 +105,7 @@ def djs(page: ft.Page):
         ],
 
         rows=[]
-    ) 
-
-    # limpiar
+    )
 
     def limpiar():
         nombre.value = ""
@@ -343,7 +340,7 @@ def djs(page: ft.Page):
         except Exception as error:
             mostrar_mensaje(
                 f"Error: {error}"
-            ) 
+            )
 
     # editar dj
 

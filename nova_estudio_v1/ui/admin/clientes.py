@@ -3,7 +3,6 @@ import flet as ft
 from dao.cliente_dao import ClienteDAO
 from modelos.cliente import Cliente
 
-
 def clientes(page: ft.Page):
     dao = ClienteDAO()
 
@@ -88,8 +87,6 @@ def clientes(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar campos
 
     def limpiar():
         nombre.value = ""
@@ -271,7 +268,7 @@ def clientes(page: ft.Page):
 
         mostrar_formulario(
             "Nuevo Cliente"
-        ) 
+        )
 
     # guardar cliente
 

@@ -3,7 +3,6 @@ import flet as ft
 from dao.eventos_dao import EventosDAO
 from modelos.eventos import Eventos
 
-
 def eventos(page: ft.Page):
     dao = EventosDAO()
 
@@ -106,8 +105,6 @@ def eventos(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar
 
     def limpiar():
         nombre.value = ""
@@ -220,7 +217,7 @@ def eventos(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -454,7 +451,7 @@ def eventos(page: ft.Page):
 
         page.snack_bar.open = True
 
-        page.update() 
+        page.update()
 
         # eliminar evento
 

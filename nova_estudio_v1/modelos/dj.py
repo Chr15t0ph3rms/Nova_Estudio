@@ -1,5 +1,5 @@
 class Dj:
-    # Constructor
+
     def __init__(
         self,
         id_dj,
@@ -8,8 +8,10 @@ class Dj:
         apm,
         telefono,
         especialidad,
-        disponibilidad
+        disponibilidad,
+        tarifa_hora=500
     ):
+
         self.id_dj = id_dj
         self.nombre = nombre
         self.app = app
@@ -17,8 +19,10 @@ class Dj:
         self.telefono = telefono
         self.especialidad = especialidad
         self.disponibilidad = disponibilidad
+        self.tarifa_hora = tarifa_hora
 
     def mostrar_info(self):
+
         disponibilidad = (
             "Disponible"
             if self.disponibilidad

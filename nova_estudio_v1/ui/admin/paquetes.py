@@ -3,7 +3,6 @@ import flet as ft
 from dao.paquetes_dao import PaquetesDAO
 from modelos.paquetes import Paquetes
 
-
 def paquetes(page: ft.Page):
     dao = PaquetesDAO()
 
@@ -85,8 +84,6 @@ def paquetes(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar
 
     def limpiar():
         nombre.value = ""
@@ -175,7 +172,7 @@ def paquetes(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -363,7 +360,7 @@ def paquetes(page: ft.Page):
 
         page.snack_bar.open = True
 
-        page.update() 
+        page.update()
 
     # eliminar paquete
 

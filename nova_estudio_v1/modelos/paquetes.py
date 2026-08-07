@@ -1,6 +1,5 @@
 class Paquetes:
-    
-    #Constructor
+
     def __init__(self, id_paquetes, nombre, tipo_paquete, costo, descripcion):
         self.id_paquetes = id_paquetes
         self.nombre = nombre

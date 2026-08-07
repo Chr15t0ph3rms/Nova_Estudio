@@ -1,6 +1,5 @@
 class Inventario:
-    
-    #Constructor
+
     def __init__(self, id_inventario, nombre, tipo, estado, cantidad, disponible):
         self.id_inventario = id_inventario
         self.nombre = nombre
@@ -11,7 +10,7 @@ class Inventario:
 
     def prestar(self):
         self.disponible = False
-    
+
     def devolver(self):
         self.disponible = True
 

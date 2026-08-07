@@ -2,7 +2,6 @@ import flet as ft
 
 from database.conexion import Conexion
 
-
 def reportes(page: ft.Page):
     # crear tarjetas
 

@@ -3,7 +3,6 @@ import flet as ft
 from dao.empleados_dao import EmpleadosDAO
 from modelos.empleados import Empleados
 
-
 def empleados(page: ft.Page):
     dao = EmpleadosDAO()
 
@@ -88,8 +87,6 @@ def empleados(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar
 
     def limpiar():
         nombre.value = ""
@@ -188,7 +185,7 @@ def empleados(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -374,7 +371,7 @@ def empleados(page: ft.Page):
 
         page.snack_bar.open = True
 
-        page.update() 
+        page.update()
 
     # eliminar empleado
 

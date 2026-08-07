@@ -3,7 +3,6 @@ import flet as ft
 from dao.agencia_dao import AgenciaDAO
 from modelos.agencia import Agencia
 
-
 def agencia(page: ft.Page):
     dao = AgenciaDAO()
 
@@ -104,9 +103,7 @@ def agencia(page: ft.Page):
         ],
 
         rows=[]
-    ) 
-
-    # limpiar campos
+    )
 
     def limpiar():
         agencia_nombre.value = ""

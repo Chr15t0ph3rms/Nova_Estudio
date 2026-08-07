@@ -1,9 +1,8 @@
 from database.conexion import Conexion
 from modelos.dj import Dj
 
-
 class DjDAO:
-    # select
+
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -20,7 +19,8 @@ class DjDAO:
                 apm = registro[3],
                 telefono = registro[4],
                 especialidad = registro[5],
-                disponibilidad = registro[6]
+                disponibilidad = registro[6],
+                tarifa_hora = registro[7] if len(registro) > 7 and registro[7] is not None else 500
             )
 
             djs.append(dj)
@@ -30,9 +30,8 @@ class DjDAO:
 
         return djs
 
-    # insert
-
     def insertar(self, dj):
+
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
@@ -50,6 +49,7 @@ class DjDAO:
         """
 
         cursor.execute(sql, (
+
             dj.id_dj,
             dj.nombre,
             dj.app,
@@ -57,6 +57,7 @@ class DjDAO:
             dj.telefono,
             dj.especialidad,
             dj.disponibilidad
+
         ))
 
         conexion.commit()
@@ -64,9 +65,8 @@ class DjDAO:
         cursor.close()
         conexion.close()
 
-    # update
-
     def actualizar(self, dj):
+
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
@@ -82,6 +82,7 @@ class DjDAO:
         """
 
         cursor.execute(sql, (
+
             dj.nombre,
             dj.app,
             dj.apm,
@@ -89,6 +90,7 @@ class DjDAO:
             dj.especialidad,
             dj.disponibilidad,
             dj.id_dj
+
         ))
 
         conexion.commit()
@@ -96,9 +98,8 @@ class DjDAO:
         cursor.close()
         conexion.close()
 
-    # delete
-
     def eliminar(self, id):
+
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
@@ -112,9 +113,8 @@ class DjDAO:
         cursor.close()
         conexion.close()
 
-    # ultimo id
-
     def obtener_ultimo_id(self):
+
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
@@ -128,6 +128,7 @@ class DjDAO:
         conexion.close()
 
         if resultado[0] is None:
+
             return 0
 
         return resultado[0]

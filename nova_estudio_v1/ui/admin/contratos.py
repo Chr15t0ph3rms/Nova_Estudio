@@ -3,7 +3,6 @@ import flet as ft
 from dao.contrato_dao import ContratoDAO
 from modelos.contrato import Contrato
 
-
 def contratos(page: ft.Page):
     dao = ContratoDAO()
 
@@ -73,8 +72,6 @@ def contratos(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar
 
     def limpiar():
         fecha_firma.value = ""
@@ -155,7 +152,7 @@ def contratos(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -337,7 +334,7 @@ def contratos(page: ft.Page):
 
         page.snack_bar.open = True
 
-        page.update() 
+        page.update()
 
     # eliminar contrato
 

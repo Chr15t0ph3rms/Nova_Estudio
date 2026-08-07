@@ -1,13 +1,14 @@
 class Pago:
 
-    # Constructor
     def __init__(
         self,
         id_pago,
         id_contrato,
         fecha_pago,
         monto,
-        estado
+        estado,
+        id_cliente=None,
+        id_evento=None
     ):
 
         self.id_pago = id_pago
@@ -15,7 +16,8 @@ class Pago:
         self.fecha_pago = fecha_pago
         self.monto = monto
         self.estado = estado
-
+        self.id_cliente = id_cliente
+        self.id_evento = id_evento
 
     def mostrar_info(self):
 

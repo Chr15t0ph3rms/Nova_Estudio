@@ -17,4 +17,3 @@ def recuperar_view(page: ft.Page):
             ),
         )
     )
-

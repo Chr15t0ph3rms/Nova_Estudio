@@ -2,10 +2,7 @@ import flet as ft
 
 from dao.usuario_dao import UsuarioDAO
 
-
-
 def inicio_sesion_admin(page, abrir_dashboard):
-
 
     correo = ft.TextField(
 
@@ -20,8 +17,6 @@ def inicio_sesion_admin(page, abrir_dashboard):
         color=ft.Colors.BLACK
 
     )
-
-
 
     contraseña = ft.TextField(
 
@@ -41,12 +36,7 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
     )
 
-
-
-
-
     def login(e):
-
 
         usuario = UsuarioDAO.login(
 
@@ -56,13 +46,9 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
         )
 
-
-
         if usuario:
 
-
             datos_usuario = {
-
 
                 "id": usuario[0],
 
@@ -74,10 +60,7 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
                 "rol": usuario[4]
 
-
             }
-
-
 
             abrir_dashboard(
 
@@ -85,10 +68,7 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
             )
 
-
-
         else:
-
 
             page.dialog = ft.AlertDialog(
 
@@ -100,15 +80,9 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
             )
 
-
             page.dialog.open = True
 
             page.update()
-
-
-
-
-
 
     return ft.Container(
 
@@ -118,11 +92,9 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
         alignment=ft.Alignment(0,0),
 
-
         content=ft.Column(
 
             [
-
 
                 ft.Text(
 
@@ -136,8 +108,6 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
                 ),
 
-
-
                 ft.Text(
 
                     "Accede al panel de administración",
@@ -148,14 +118,9 @@ def inicio_sesion_admin(page, abrir_dashboard):
 
                 ),
 
-
-
                 correo,
 
-
                 contraseña,
-
-
 
                 ft.ElevatedButton(
 
@@ -172,7 +137,6 @@ def inicio_sesion_admin(page, abrir_dashboard):
                 )
 
             ],
-
 
             alignment=ft.MainAxisAlignment.CENTER,
 

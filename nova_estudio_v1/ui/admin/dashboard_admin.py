@@ -17,7 +17,6 @@ from ui.admin.djs import djs
 from ui.admin.reportes import reportes
 from ui.admin.agencia import agencia
 
-
 def dashboard_admin(page: ft.Page, cerrar_sesion, usuario):
     contenido = ft.Container(
         expand=True

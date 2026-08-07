@@ -1,16 +1,53 @@
 from database.conexion import Conexion
 from modelos.cliente import Cliente
 
-
 class ClienteDAO:
-    # obtener todos los clientes
+
+    # OBTENER DATOS EXTRA DEL CLIENTE (dirección, teléfono) A PARTIR
+    # DE SU id_usuario (ya logueado vía la tabla usuario)
+
+    @staticmethod
+    def obtener_por_usuario(id_usuario):
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute(
+            "SELECT id_cliente, telefono, calle, numero_exterior, colonia FROM cliente WHERE id_usuario = %s",
+            (id_usuario,)
+        )
+
+        registro = cursor.fetchone()
+
+        cursor.close()
+        conexion.close()
+
+        return registro  # None si este usuario no tiene fila en cliente todavía
+
+    # Login de cliente delegado a UsuarioDAO.login()
+    @staticmethod
+    def login(correo, contraseña):
+        conexion = Conexion.obtener_conexion()
+        cursor = conexion.cursor()
+
+        cursor.execute(
+            "SELECT id_cliente, nombre, correo FROM cliente WHERE correo = %s AND contraseña = %s",
+            (correo, contraseña)
+        )
+
+        registro = cursor.fetchone()
+
+        cursor.close()
+        conexion.close()
+
+        return registro  # None si no hay coincidencia, o (id_cliente, nombre, correo)
+
+    # OBTENER TODOS LOS CLIENTES
 
     def obtener_todos(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
         cursor.execute("SELECT * FROM cliente")
-
         registros = cursor.fetchall()
 
         clientes = []
@@ -27,7 +64,6 @@ class ClienteDAO:
                 numero_exterior=registro[7],
                 colonia=registro[8]
             )
-
             clientes.append(cliente)
 
         cursor.close()
@@ -35,7 +71,7 @@ class ClienteDAO:
 
         return clientes
 
-    # insertar cliente
+    # INSERTAR CLIENTE
 
     def insertar(self, cliente):
         conexion = Conexion.obtener_conexion()
@@ -43,18 +79,8 @@ class ClienteDAO:
 
         sql = """
         INSERT INTO cliente
-        (
-            id_cliente,
-            nombre,
-            app,
-            apm,
-            telefono,
-            correo,
-            calle,
-            numero_exterior,
-            colonia
-        )
-        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+        (id_cliente, nombre, app, apm, telefono, correo, calle, numero_exterior, colonia)
+        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
         """
 
         cursor.execute(sql, (
@@ -70,11 +96,10 @@ class ClienteDAO:
         ))
 
         conexion.commit()
-
         cursor.close()
         conexion.close()
 
-    # actualizar cliente
+    # ACTUALIZAR CLIENTE
 
     def actualizar(self, cliente):
         conexion = Conexion.obtener_conexion()
@@ -83,7 +108,6 @@ class ClienteDAO:
         sql = """
         UPDATE cliente
         SET
-
             nombre=%s,
             app=%s,
             apm=%s,
@@ -92,7 +116,6 @@ class ClienteDAO:
             calle=%s,
             numero_exterior=%s,
             colonia=%s
-
         WHERE id_cliente=%s
         """
 
@@ -109,52 +132,31 @@ class ClienteDAO:
         ))
 
         conexion.commit()
-
         cursor.close()
         conexion.close()
 
-    # eliminar cliente
+    # ELIMINAR CLIENTE
 
     def eliminar(self, id_cliente):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
-        try:
-            cursor.execute(
-                """
-                DELETE FROM cliente
-                WHERE id_cliente=%s
-                """,
+        cursor.execute(
+            "DELETE FROM cliente WHERE id_cliente = %s",
+            (id_cliente,)
+        )
 
-                (id_cliente,)
-            )
+        conexion.commit()
+        cursor.close()
+        conexion.close()
 
-            conexion.commit()
-
-            print("Cliente eliminado correctamente")
-
-        except Exception as error:
-            conexion.rollback()
-
-            print("Error al eliminar cliente:")
-            print(error)
-
-            raise error
-
-        finally:
-            cursor.close()
-            conexion.close()
-
-    # obtener ultimo id
+    # OBTENER ÚLTIMO ID
 
     def obtener_ultimo_id(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
 
-        cursor.execute(
-            "SELECT MAX(id_cliente) FROM cliente"
-        )
-
+        cursor.execute("SELECT MAX(id_cliente) FROM cliente")
         resultado = cursor.fetchone()
 
         cursor.close()
@@ -165,7 +167,6 @@ class ClienteDAO:
 
         return resultado[0]
 
-    # Compatibilidad
-
+    # Método alias para compatibilidad con llamadas que usan el nombre singular
     def obtener_todo(self):
         return self.obtener_todos()

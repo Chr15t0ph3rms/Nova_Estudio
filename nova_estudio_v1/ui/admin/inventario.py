@@ -3,7 +3,6 @@ import flet as ft
 from dao.inventario_dao import InventarioDAO
 from modelos.inventario import Inventario
 
-
 def inventario(page: ft.Page):
     dao = InventarioDAO()
 
@@ -99,8 +98,6 @@ def inventario(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar
 
     def limpiar():
         nombre.value = ""
@@ -200,7 +197,7 @@ def inventario(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -418,7 +415,7 @@ def inventario(page: ft.Page):
 
         page.snack_bar.open = True
 
-        page.update() 
+        page.update()
 
     # eliminar inventario
     # ==========================

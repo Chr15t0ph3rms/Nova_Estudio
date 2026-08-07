@@ -2,7 +2,11 @@ import flet as ft
 import datetime
 
 from dao.dj_dao import DjDAO
-
+from dao.cliente_dao import ClienteDAO
+from dao.eventos_dao import EventosDAO
+from dao.pago_dao import PagoDAO
+from modelos.eventos import Eventos
+from modelos.pago import Pago
 
 def djs(page: ft.Page, usuario=None):
 
@@ -11,9 +15,7 @@ def djs(page: ft.Page, usuario=None):
 
     color = ft.Colors.PURPLE_200  # color de acento para toda la sección de DJs
 
-    # ==========================
-    # PANTALLA 1: LISTA DE DJs
-    # ==========================
+    # Pantalla 1: lista de djs
 
     def mostrar_lista():
 
@@ -37,7 +39,7 @@ def djs(page: ft.Page, usuario=None):
                     ft.Row(tarjetas, wrap=True, spacing=20, run_spacing=20),
                 ],
                 expand=True,
-                scroll=ft.ScrollMode.AUTO,
+                scroll=ft.ScrollMode.ALWAYS,
             ),
         )
 
@@ -123,9 +125,7 @@ def djs(page: ft.Page, usuario=None):
             ),
         )
 
-    # ==========================
-    # PANTALLA 2: COTIZACIÓN (elegir horas -> ver precio)
-    # ==========================
+    # Pantalla 2: cotización (elegir horas -> ver precio)
 
     def intentar_cotizar(dj):
 
@@ -216,9 +216,7 @@ def djs(page: ft.Page, usuario=None):
 
         page.update()
 
-    # ==========================
-    # PANTALLA 3: FORMULARIO DE PAGO
-    # ==========================
+    # Pantalla 3: formulario de pago
 
     def mostrar_pago(dj, horas):
 
@@ -271,10 +269,56 @@ def djs(page: ft.Page, usuario=None):
             # TODO: cuando exista el enlace cliente-evento en la BD, aquí se
             # insertaría el registro real en "contrato"/"pago".
 
+            perfil_cliente = ClienteDAO.obtener_por_usuario(usuario["id"]) if usuario else None
+
+            if perfil_cliente is None:
+                page.show_dialog(
+                    ft.AlertDialog(
+                        title=ft.Text("No se pudo registrar la contratación"),
+                        content=ft.Text("Tu cuenta no tiene un perfil de cliente vinculado todavía."),
+                    )
+                )
+                return
+
+            id_cliente, telefono, calle, numero_exterior, colonia = perfil_cliente
+
+            eventos_dao = EventosDAO()
+            nuevo_id_evento = eventos_dao.obtener_ultimo_id() + 1
+
+            nuevo_evento = Eventos(
+                id_evento=nuevo_id_evento,
+                nombre=f"Evento - DJ {dj.nombre} {dj.app}",
+                fecha=datetime.date.today(),
+                hora=datetime.datetime.now().time(),
+                calle=calle,
+                colonia=colonia,
+                numero_exterior=numero_exterior,
+                costo=total,
+                id_cliente=id_cliente,
+                estado="En proceso",
+            )
+
+            eventos_dao.insertar(nuevo_evento)
+
+            pago_dao = PagoDAO()
+            nuevo_id_pago = pago_dao.obtener_ultimo_id() + 1
+
+            nuevo_pago = Pago(
+                id_pago=nuevo_id_pago,
+                id_contrato=None,
+                fecha_pago=datetime.date.today(),
+                monto=total,
+                estado="Pagado",
+                id_cliente=id_cliente,
+                id_evento=nuevo_id_evento,
+            )
+
+            pago_dao.insertar(nuevo_pago)
+
             page.show_dialog(
                 ft.AlertDialog(
                     title=ft.Text("¡Pago confirmado!"),
-                    content=ft.Text(f"Contrataste a {dj.nombre} por {horas} hora(s) — Total: ${total}"),
+                    content=ft.Text(f"Contrataste a {dj.nombre} por {horas} hora(s) — Total: ${total}. Ya puedes verlo en 'Mis Eventos' y 'Mis Pagos'."),
                 )
             )
 

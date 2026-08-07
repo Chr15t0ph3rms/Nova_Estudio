@@ -3,7 +3,6 @@ import flet as ft
 from dao.pago_dao import PagoDAO
 from modelos.pago import Pago
 
-
 def pagos(page: ft.Page):
     dao = PagoDAO()
 
@@ -82,8 +81,6 @@ def pagos(page: ft.Page):
 
         rows=[]
     )
-
-    # limpiar campos
 
     def limpiar():
         id_contrato.value = ""
@@ -170,7 +167,7 @@ def pagos(page: ft.Page):
                 )
             )
 
-        page.update() 
+        page.update()
 
     # mostrar formulario
 
@@ -366,7 +363,7 @@ def pagos(page: ft.Page):
 
             mostrar_mensaje(
                 f"Error al actualizar: {error}"
-            ) 
+            )
 
     # mensajes
 

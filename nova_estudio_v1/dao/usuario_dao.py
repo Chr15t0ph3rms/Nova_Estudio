@@ -1,8 +1,6 @@
 from database.conexion import Conexion
 
-
 class UsuarioDAO:
-
 
     @staticmethod
     def login(correo, password):
@@ -11,11 +9,10 @@ class UsuarioDAO:
 
         cursor = conexion.cursor()
 
-
         try:
 
             sql = """
-            SELECT 
+            SELECT
                 id_usuario,
                 nombre,
                 apellido,
@@ -26,7 +23,6 @@ class UsuarioDAO:
             AND password = %s
             """
 
-
             cursor.execute(
                 sql,
                 (
@@ -35,12 +31,9 @@ class UsuarioDAO:
                 )
             )
 
-
             usuario = cursor.fetchone()
 
-
             return usuario
-
 
         except Exception as error:
 
@@ -50,7 +43,6 @@ class UsuarioDAO:
             )
 
             return None
-
 
         finally:
 

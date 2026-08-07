@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Conexion:
-    
+
     @staticmethod
     def obtener_conexion():
         return psycopg2.connect(
@@ -16,6 +16,3 @@ class Conexion:
             password=os.getenv("DB_PASSWORD"),
             port=os.getenv("DB_PORT")
         )
-            
-        
-    

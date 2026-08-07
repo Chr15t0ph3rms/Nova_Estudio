@@ -3,7 +3,6 @@ from modelos.inventario import Inventario
 
 class InventarioDAO:
 
-    #SELECT * FROM libro
     def obtener_todo(self):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -12,7 +11,7 @@ class InventarioDAO:
         registros = cursor.fetchall()
 
         inventarios = []
-        for registro in registros : 
+        for registro in registros :
             inventario = Inventario(
                 id_inventario = registro[0],
                 nombre = registro[1],
@@ -26,7 +25,6 @@ class InventarioDAO:
         conexion.close()
         return inventarios
 
-    # INSERT
     def insertar(self, inventario):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -49,7 +47,6 @@ class InventarioDAO:
         cursor.close()
         conexion.close()
 
-    # UPDATE
     def actualizar(self, inventario):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -68,12 +65,11 @@ class InventarioDAO:
                         inventario.disponible,
                         inventario.id_inventario
                         ) )
-        
+
         conexion.commit()
         cursor.close()
         conexion.close()
 
-    # DELETE
     def eliminar(self,id):
         conexion = Conexion.obtener_conexion()
         cursor = conexion.cursor()
@@ -83,7 +79,6 @@ class InventarioDAO:
         conexion.commit()
         cursor.close()
         conexion.close()
-
 
     def obtener_ultimo_id(self):
         conexion = Conexion.obtener_conexion()
@@ -97,6 +92,4 @@ class InventarioDAO:
 
         if resultado[0] is None:
             return 0
-        return resultado[0] 
-
-
+        return resultado[0]

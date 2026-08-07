@@ -2,7 +2,7 @@ import flet as ft
 
 from dao.cliente_dao import ClienteDAO
 from dao.eventos_dao import EventosDAO
-
+from dao.pago_dao import PagoDAO
 
 def color_por_estado(estado):
     estado = (estado or "").lower()
@@ -12,7 +12,6 @@ def color_por_estado(estado):
     if estado == "cancelado":
         return ft.Colors.RED
     return ft.Colors.AMBER  # "en proceso" u otro valor
-
 
 def mis_eventos(page: ft.Page, usuario=None):
 
@@ -57,7 +56,7 @@ def mis_eventos(page: ft.Page, usuario=None):
                 [
                     encabezado(),
                     ft.Container(height=10),
-                    ft.Column(tarjetas, spacing=15, scroll=ft.ScrollMode.AUTO),
+                    ft.Column(tarjetas, spacing=15, scroll=ft.ScrollMode.ALWAYS),
                 ],
                 expand=True,
             ),
@@ -88,6 +87,10 @@ def mis_eventos(page: ft.Page, usuario=None):
     def cancelar_evento(id_evento):
 
         eventos_dao.actualizar_estado(id_evento, "Cancelado")
+
+        pago_dao = PagoDAO()
+        pago_dao.actualizar_estado_por_evento(id_evento, "Cancelado")
+
         cargar()
         page.update()
 

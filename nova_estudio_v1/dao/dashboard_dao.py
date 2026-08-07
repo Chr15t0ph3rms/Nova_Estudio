@@ -1,13 +1,16 @@
 from database.conexion import Conexion
 
-
 class DashboardDAO:
+
     @staticmethod
     def contar(tabla):
+
         conexion = Conexion.obtener_conexion()
+
         cursor = conexion.cursor()
 
         try:
+
             cursor.execute(
                 f"SELECT COUNT(*) FROM {tabla}"
             )
@@ -17,47 +20,49 @@ class DashboardDAO:
             return resultado
 
         except Exception as error:
-            print("Error contando:", tabla, error)
+
+            print(error)
 
             return 0
 
         finally:
+
             cursor.close()
             conexion.close()
 
-    # suma de ingresos
-
     @staticmethod
-    def obtener_ingresos():
+    def obtener_ingresos_totales():
+
         conexion = Conexion.obtener_conexion()
+
         cursor = conexion.cursor()
 
         try:
+
             cursor.execute(
-                """
-                SELECT COALESCE(SUM(monto),0)
-                FROM pago
-                """
+                "SELECT COALESCE(SUM(monto), 0) FROM pago"
             )
 
             resultado = cursor.fetchone()[0]
 
-            return float(resultado)
+            return resultado
 
         except Exception as error:
-            print("Error ingresos:", error)
+
+            print(error)
 
             return 0
 
         finally:
+
             cursor.close()
             conexion.close()
 
-    # estadisticas generales
-
     @staticmethod
     def obtener_estadisticas():
+
         return {
+
             "clientes":
             DashboardDAO.contar("cliente"),
 
@@ -77,8 +82,6 @@ class DashboardDAO:
             DashboardDAO.contar("contrato"),
 
             "pagos":
-            DashboardDAO.contar("pago"),
+            DashboardDAO.contar("pago")
 
-            "ingresos":
-            DashboardDAO.obtener_ingresos()
         }

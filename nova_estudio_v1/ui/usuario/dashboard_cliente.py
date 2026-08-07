@@ -12,7 +12,6 @@ from ui.usuario.djs import djs as vista_djs
 from ui.usuario.mis_eventos import mis_eventos
 from ui.usuario.mis_pagos import mis_pagos
 
-
 def dashboard_cliente(page: ft.Page, cerrar_sesion, usuario):
 
     contenido = ft.Container(expand=True)
@@ -25,9 +24,7 @@ def dashboard_cliente(page: ft.Page, cerrar_sesion, usuario):
         (ft.Icons.PAYMENTS, "Mis Pagos"),
     ]
 
-    # ==========================
-    # DASHBOARD
-    # ==========================
+    # Dashboard
 
     def mostrar_dashboard():
 
@@ -80,9 +77,7 @@ def dashboard_cliente(page: ft.Page, cerrar_sesion, usuario):
 
         page.update()
 
-    # ==========================
-    # CONFIRMAR CIERRE (igual que en dashboard_admin)
-    # ==========================
+    # Confirmar cierre (igual que en dashboard_admin)
 
     def confirmar_cierre():
 
@@ -118,9 +113,7 @@ def dashboard_cliente(page: ft.Page, cerrar_sesion, usuario):
 
         page.update()
 
-    # ==========================
-    # CAMBIO DE PANTALLAS
-    # ==========================
+    # Cambio de pantallas
 
     def cambiar_pantalla(opcion):
 
